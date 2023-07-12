@@ -1,4 +1,4 @@
-#This is NEW CODE on the main branch that I pulled down on 7.6.23 at 1:30 pm. I've been making edits.
+#This is NEW CODE on the main branch that I pulled down on 7.7.23 at 4:30 pm. I've been making edits.
 
 #######################
 #People can use https://apps.vtcourtforms.org/run/RFApackage/RFApackage/#/1 to test my intervew and submit feedback -- and I can keep working on this RFApackage in the Suffolk playground. Then I can "update" the RFA "Package". That will update the demo interview. (Go to Package Management in the login dropdown menu. Put this in first field https://github.com/VTskier/docassemble-RFApackage and then hit Update. OR scroll down and hit the Update button next to the RFApackage.)
@@ -238,7 +238,7 @@ code: |
   nav.set_section('service')
   details_for_law_enforcement
   location_of_home
-  vehicle_make
+  vehicle
   relationship_for_LE
   employer
   house2
@@ -380,7 +380,7 @@ subquestion: |
   <h3 class="h4">Information you will need</h3>
   * To complete this interview, you will need to know the date or dates when the abuse occurred and give a detailed description of the abuse. This includes the most recent incident and the most serious incident. You will need to fully describe the incidents and make it clear how severe or how frequent the abuse has been.
   * You will need to give a safe address and telephone number where the court can reach you. If you don’t have one, ask an advocate from the [Vermont Network.](https://www.vtnetwork.org/get-help/)
-  * You will need either a home address or work address for the "defendant" -- the person who is doing the abuse.
+  * You will need an address of some kind for the "defendant" -- the person who is doing the abuse. If you don't know the defendant's home address, you can give their work address. Or give the address of the place where they are staying. You need to provide at least one address.
   * You will see important questions about weapons that the defendant might have access to. If you list what they are and where they are located, the court can order law enforcement to collect them to help keep you safe.
   <h3 class="h4">After answering the questions</h3>
   * At the end you will get a chance to preview your forms and make changes if you need to. 
@@ -521,9 +521,11 @@ id: initial_screening_questions_5_exit_b
 question: |
   Stop
 subquestion: |
-  <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** It’s time to stop and ask for advice! If the defendant is not currently a Vermont resident, then there may be a question as to whether Vermont courts have jurisdiction over the defendant. 
+  <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** It’s time to stop and ask for advice!
   
-  Vermont needs to have jurisdiction over the defendant to make the Relief from Abuse order work. 
+  If the defendant is not currently a Vermont resident, there may be a question as to whether Vermont courts have “jurisdiction” over the defendant.
+  
+  If the Vermont courts do not have jurisdiction, they may not have the power to issue a Relief from Abuse order that the defendant must obey.
   
   Ask a lawyer, like the lawyers at [Legal Services Vermont and Vermont Legal Aid](https://vtlawhelp.org). Find out whether you should use these forms or not.
 continue button field: initial_screening_questions_5_exit_b
@@ -536,11 +538,11 @@ id: initial_screening_questions_5_important_note
 question: |
   About the defendant's address
 subquestion: |
-  <i class="fa-solid fa-circle-exclamation fa-3x"></i>  **Important.** The court will need an address of some kind. If you don't know the defendant's home address, you can give their work address. You need to provide at least one of these addresses.
+  <i class="fa-solid fa-circle-exclamation fa-3x"></i>  **Important.** The court will need an address of some kind. If you don't know the defendant's home address, you can give their work address. Or give the address of the place where they are staying. You need to provide at least one address.
   
-  If the defendant is not currently a Vermont resident, then there may be a question as to whether Vermont courts have jurisdiction over the defendant. 
+  If the defendant is not currently a Vermont resident, there may be a question as to whether Vermont courts have "jurisdiction" over the defendant. 
   
-  Vermont needs to have jurisdiction over the defendant to make the Relief from Abuse order work. 
+  If the Vermont courts do not have jurisdiction, they may not have the power to issue a Relief from Abuse order that the defendant must obey.
   
   Ask a lawyer, like the lawyers at [Legal Services Vermont and Vermont Legal Aid](https://vtlawhelp.org). Find out whether you should use these forms or not.
 continue button field: initial_screening_questions_5_important_note
@@ -555,7 +557,7 @@ fields:
       It can be:
       
       * the county you live in, or
-      * the county you left when you were fleeing from abuse (even if you left Vermont), or
+      * the Vermont county you left when you were fleeing from abuse, or
       * the county the other person lives in (the "defendant").
       
       Not sure what county? [Check this list of cities and towns to find the county.](https://en.m.wikipedia.org/wiki/List_of_municipalities_in_Vermont#Cities)
@@ -783,7 +785,9 @@ sets:
 question: |
   What is the defendant's address?
 subquestion: |
-  The court will need an address. If you don't know any part of their home address, enter "Unknown". But be sure to enter the defendant's work address later in this interview. You need to provide at least one of these addresses.
+  The court will need an address of some kind. If you don't know any part of their home address, enter "Unknown."
+  
+  Later in this interview you can give the address where they work or where they are staying. You need to provide at least one address.
 fields:
   - code: |
       other_parties[0].address_fields(default_state=AL_DEFAULT_STATE)  
@@ -870,11 +874,11 @@ fields:
   - "The defendant stalked the child/children": recent_incident_stalked_children
     datatype: yesnoradio
     show if: recent_incident_stalked
-  - "Vermont law says it is stalking if it has happened two times or more. On what date did they first stalk you?": recent_incident_stalked_date2
-    datatype: date
+  - "Vermont law says it is stalking if it has happened two times or more. On what date did they first stalk you?": recent_incident_stalked_date1
+    maxlength: 10
     show if: recent_incident_stalked
-  - "What was the second date that they stalked you?": recent_incident_stalked_date1
-    datatype: date
+  - "What was the second date that they stalked you?": recent_incident_stalked_date2
+    maxlength: 10
     show if: recent_incident_stalked
   - note: |
       ---
@@ -1329,13 +1333,16 @@ subquestion: |
 fields:
   - "The house or building number on the street (Example: **Only** enter '10' if it's 10 Main Street.)": house
     maxlength: 10
+    required: False
   - "Name of the street or Town Road number (Example: Enter 'Main Street')": other_parties1_street_only
     maxlength: 20
+    required: False
   - "Town / city": other_parties1_city
-    maxlength: 23 
-  - "State": other_parties1_state
+    maxlength: 23
+    required: False
+  - "State abbreviation, like 'VT'": other_parties1_state
     maxlength: 5
-    default: VT
+    required: False
   - "If you don't have a street address, describe the location of the home.": location_of_home
     input type: area
     required: False
@@ -1357,20 +1364,27 @@ question: |
 subquestion: |
   If you don't know an answer on this screen, leave it blank.
 fields:
+  - "Does the defendant have a vehicle?": vehicle
+    datatype: yesnoradio
   - "What brand car or truck do they drive? (Ford, Honda, etc.)": vehicle_make
     maxlength: 19
+    show if: vehicle
     required: False
   - "What model car or truck? (F-150, Civic)": vehicle_model
     maxlength: 17
+    show if: vehicle
     required: False
   - "Color of car or truck": vehicle_color
     maxlength: 13
+    show if: vehicle
     required: False
   - "Vehicle plate number": vehicle_plate
     maxlength: 14
+    show if: vehicle
     required: False
   - "Vehicle year": vehicle_year
     maxlength: 6
+    show if: vehicle
     required: False
 ---
 id: More on your relationship to defendant
@@ -1396,44 +1410,55 @@ question: |
 subquestion: |
   Tell us about the defendant's workplace and work hours. Law enforcement may serve the order there if they cannot find the defendant at home.
   
-  Fill in what you can. If you don't know or they do not work, leave it blank.
+  Fill in what you can. If you don't know something, leave it blank.
   
-  However, if you did not enter their home address, it's important to enter a work address so law enforcement can find the defendant.
+  However, if you did not enter their home address, it's important to enter a work address or another address so law enforcement can find the defendant.
 fields:
+  - "Does the defendant work?": employed
+    datatype: yesnoradio
   - "Defendant's employer": employer
     maxlength: 36
+    show if: employed
     required: False
   - "Their employers street address": employers_street_address
     maxlength: 29
+    show if: employed
     required: False
   - "Employers city and state": employers_city_state
     maxlength: 36
+    show if: employed
     required: False
   - note: |
-      Enter their work hours.
+      Enter their work hours if you know them.
   - "Mondays:": work_mondays
     maxlength: 11
+    show if: employed
     required: False
   - "Tuesdays:": work_tues
     maxlength: 11
+    show if: employed
     required: False
   - "Wednesdays:": work_weds
     maxlength: 11
+    show if: employed
     required: False
   - "Thursdays:": work_thurs
     maxlength: 11
+    show if: employed
     required: False
   - "Fridays:": work_fri
     maxlength: 11
+    show if: employed
     required: False
   - "Saturdays:": work_sat
     maxlength: 11
+    show if: employed
     required: False
   - "Sundays:": work_sun
     maxlength: 11
+    show if: employed
     required: False
 ---
-#Make all these not required
 id: Other places the defendant might be
 question: |
   Other places the defendant might be
@@ -1491,11 +1516,15 @@ subquestion: |
 fields:
   - note: |
       <h2 class="h4">Defendant's sex/gender:</h2>
-      Note that law enforcement only offers these two checkboxes at this time.
   - "Female": sex_female
     datatype: yesno
   - "Male": sex_male
     datatype: yesno
+  - "Other": sex_other
+    datatype: yesno
+  - Enter their gender: other_sex_field
+    maxlength: 16
+    show if: sex_other
   - note: |
       <h2 class="h4">Race:</h2>
   - "Choose at least one": race
@@ -1508,7 +1537,7 @@ fields:
       - Native American: race_native
       - Asian: race_asian
       - Other: race_other
-  - Enter your race: other_race_field
+  - Enter their race: other_race_field
     maxlength: 12
     show if: race["race_other"]
       
@@ -1968,9 +1997,9 @@ review:
       
       The defendant stalked the child/children: **${ yesno(recent_incident_stalked_children) }**
       
-      Vermont law says it is stalking if has happened two times or more. On what date did they first stalk you?: **${ showifdef('recent_incident_stalked_date2') }**
+      Vermont law says it is stalking if has happened two times or more. On what date did they first stalk you?: **${ showifdef('recent_incident_stalked_date1') }**
       
-      What was the second date that they stalked you?: **${ showifdef('recent_incident_stalked_date1') }**
+      What was the second date that they stalked you?: **${ showifdef('recent_incident_stalked_date2') }**
       
       % endif
       
@@ -2265,8 +2294,10 @@ review:
     button: |
       **The defendant's vehicle (their car or truck)**
       
+      Does the defendant have a vehicle?: **${ word(yesno(vehicle)) }**
+      
       % if vehicle_make != '':
-      What brand car or truck do they drive? (Ford, Honda, etc.): **${ yesno('vehicle_make') }**
+      What brand car or truck do they drive? (Ford, Honda, etc.): **${ showifdef('vehicle_make') }**
       % endif
       
       % if vehicle_model != '':
@@ -2304,6 +2335,8 @@ review:
     button: |
       **Defendant's work information**
       
+      Does the defendant work?: **${ word(yesno(employed)) }**
+
       % if employer != '':
       Defendant's employer: **${ showifdef('employer') }**
       % endif
@@ -2382,55 +2415,71 @@ review:
       Phone number at that location: **${ showifdef('other_location2_phone') }**
       % endif
 
-  - Edit: sex_female
+  - Edit: race
     button: |
       **What the defendant looks like**
 
       % if sex_female:
-      Female: **${ yesno(sex_female) }**
+      
+      Female: **${ word(yesno(sex_female)) }**
       % endif
       
       % if sex_male:
+      
       Male: **${ word(yesno(sex_male)) }**
+      % endif
+      
+      % if sex_other:
+      
+      Other: **${ other_sex_field }**
       % endif
       
       Race:
       
       % if race["race_white"]:
+      
         - **White**
       % endif
       
       % if race["race_black"]:
+      
         - **Black**
       % endif
       
       % if race["race_native"]:
+      
         - **Native American**
       % endif
       
       % if race["race_asian"]:
+      
         - **Asian**
       % endif
       
       % if race["race_other"]:
+      
         - **Other** -- ${ other_race_field }
       % endif
       
       Skin color/tone:
 
       % if skin["skin_light"]:
+      
         - **Light** 
       % endif
       
       % if skin["skin_medium"]:
+      
         - **Medium** 
       % endif
       
       % if skin["skin_dark"]:
+      
         - **Dark** 
       % endif
       
       % if skin["skin_other"]:
+      
         - **Other** 
       % endif
      
@@ -2731,6 +2780,8 @@ subquestion: |
   
   You can also use the Share feature to share a link to your interview with a trusted person. Important: If you use the Share feature, that person will be able to see AND change your answers.
   
+  Work with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get support during the RFA process.
+  
   ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
   
   
@@ -2852,7 +2903,7 @@ attachment:
       - "docket_number": ${ docket_number }
       - "trial_court_county": ${ trial_court_name }
       - "users1_name": ${ users[0] }
-      - "users1_address_address": ${ users[0].address.address }
+      - "users1_address_address": ${ users[0].address.line_one() }
       - "users1_address_mailing": ${ users1_address_mailing }
       - "users1_address_city": ${ users[0].address.city }
       - "users1_address_state": ${ users[0].address.state }
@@ -2925,8 +2976,8 @@ attachment:
       - "recent_incident_stalked_users1": ${ recent_incident_stalked_users1 }
       - "recent_incident_stalked_children": ${ recent_incident_stalked_children }
       - "recent_incident_stalked": ${ recent_incident_stalked }
-      - "recent_incident_stalked_date2": ${ format_date(recent_incident_stalked_date2, format='M/d/yyyy') }
-      - "recent_incident_stalked_date1": ${ format_date(recent_incident_stalked_date1, format='M/d/yyyy') }
+      - "recent_incident_stalked_date1": ${ recent_incident_stalked_date1 }
+      - "recent_incident_stalked_date2": ${ recent_incident_stalked_date2 }
       - "recent_incident_assault_children": ${ recent_incident_assault_children }
       - "recent_incident_assault": ${ recent_incident_assault }
       - "recent_incident_assault_users1": ${ recent_incident_assault_users1 }
