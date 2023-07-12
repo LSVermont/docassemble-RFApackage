@@ -521,9 +521,11 @@ id: initial_screening_questions_5_exit_b
 question: |
   Stop
 subquestion: |
-  <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** It’s time to stop and ask for advice! If the defendant is not currently a Vermont resident, then there may be a question as to whether Vermont courts have jurisdiction over the defendant. 
+  <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** It’s time to stop and ask for advice!
   
-  Vermont needs to have jurisdiction over the defendant to make the Relief from Abuse order work. 
+  If the defendant is not currently a Vermont resident, there may be a question as to whether Vermont courts have “jurisdiction” over the defendant.
+  
+  If the Vermont courts do not have jurisdiction, they may not have the power to issue a Relief from Abuse order that the defendant must obey.
   
   Ask a lawyer, like the lawyers at [Legal Services Vermont and Vermont Legal Aid](https://vtlawhelp.org). Find out whether you should use these forms or not.
 continue button field: initial_screening_questions_5_exit_b
@@ -2413,59 +2415,71 @@ review:
       Phone number at that location: **${ showifdef('other_location2_phone') }**
       % endif
 
-  - Edit: sex_female
+  - Edit: race
     button: |
       **What the defendant looks like**
 
       % if sex_female:
-      Female: **${ yesno(sex_female) }**
+      
+      Female: **${ word(yesno(sex_female)) }**
       % endif
       
       % if sex_male:
+      
       Male: **${ word(yesno(sex_male)) }**
       % endif
       
       % if sex_other:
+      
       Other: **${ other_sex_field }**
       % endif
       
       Race:
       
       % if race["race_white"]:
+      
         - **White**
       % endif
       
       % if race["race_black"]:
+      
         - **Black**
       % endif
       
       % if race["race_native"]:
+      
         - **Native American**
       % endif
       
       % if race["race_asian"]:
+      
         - **Asian**
       % endif
       
       % if race["race_other"]:
+      
         - **Other** -- ${ other_race_field }
       % endif
       
       Skin color/tone:
 
       % if skin["skin_light"]:
+      
         - **Light** 
       % endif
       
       % if skin["skin_medium"]:
+      
         - **Medium** 
       % endif
       
       % if skin["skin_dark"]:
+      
         - **Dark** 
       % endif
       
       % if skin["skin_other"]:
+      
         - **Other** 
       % endif
      
@@ -2766,6 +2780,8 @@ subquestion: |
   
   You can also use the Share feature to share a link to your interview with a trusted person. Important: If you use the Share feature, that person will be able to see AND change your answers.
   
+  Work with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get support during the RFA process.
+  
   ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
   
   
@@ -2887,7 +2903,7 @@ attachment:
       - "docket_number": ${ docket_number }
       - "trial_court_county": ${ trial_court_name }
       - "users1_name": ${ users[0] }
-      - "users1_address_address": ${ users[0].address.address }
+      - "users1_address_address": ${ users[0].address.line_one() }
       - "users1_address_mailing": ${ users1_address_mailing }
       - "users1_address_city": ${ users[0].address.city }
       - "users1_address_state": ${ users[0].address.state }
