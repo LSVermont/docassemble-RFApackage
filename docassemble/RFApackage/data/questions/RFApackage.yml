@@ -789,11 +789,11 @@ fields:
 ---
 id: Gather defendants address
 question: |
-  What is the defendant's address?
+  What is the defendant's home address?
 subquestion: |
-  The court will need an address of some kind. If you don't know any part of the defendant's home address, later in this interview you can give the address where they work or where they are staying. You will need to provide at least one address.
+  The court will need an address of some kind. Include what you can of the defendant's home address. Later in this interview you can give the address where they work or where they are staying. **You will need to provide at least one address.**
 fields:
-  - I don't know the defendant's address: defendant_address_unknown
+  - I don't know the defendant's home address: defendant_address_unknown
     datatype: yesno
     disable others: True
   - Street address: other_parties[0].address.address
@@ -834,7 +834,7 @@ question: |
 subquestion: |
   This is where you will describe the **most recent** incident of abuse. Be as detailed as possible. The judge needs to know exactly what happened. If you don't give enough details, you may not get a RFA order.
   
-  See the [VTLawHelp.org legal help website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3#forms) for tips on what to include in your description. This information will be part of your "Affidavit".
+  See the [VTLawHelp.org legal help website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3#forms) for tips on what to include in your description. This information will be part of your "Affidavit". Note: The defendant will get a copy of the affidavit if the judge gives you a temporary order or if the case goes to a hearing.
 fields:
   - "When was the most recent incident?": recent_incident_date
     maxlength: 14
@@ -1305,10 +1305,10 @@ fields:
     datatype: object_radio
     choices:
       - users[0].address
-    none of the above: A new address
+    none of the above: A different address
     default: users[0].address
     show if: users1_no_shelter
-  - "On one line, include: street address, apt./unit number, town and state abbreviation": A_new_residence_shared_address
+  - "For a different address: On one line include the street address, apt./unit number, town and state abbreviation": A_new_residence_shared_address
     required: False
     maxlength: 42
     show if: users1_no_shelter
@@ -1318,8 +1318,8 @@ fields:
     maxlength: 1
     show if: users1_no_shelter
     choices: 
-      - The home is rented: residence_owned
-      - The home is owned: residence_rented
+      - The home is rented: residence_rented
+      - The home is owned: residence_owned
       - I don't know: i_dont_know
   
   - In whose name?: whose_name
@@ -1444,11 +1444,11 @@ fields:
     maxlength: 36
     show if: employed
     required: False
-  - "Their employers street address": employers_street_address
+  - "Their employer's street address": employers_street_address
     maxlength: 29
     show if: employed
     required: False
-  - "Employers city and state": employers_city_state
+  - "Employer's city and state": employers_city_state
     maxlength: 36
     show if: employed
     required: False
@@ -1743,9 +1743,9 @@ fields:
 ---
 id: preview RFApackage
 question: |
-  Preview your form before you sign it
+  Preview your forms before you sign them
 subquestion: |
-  Here is a preview of the form you will sign on the next page.   
+  Here is a preview of the forms you will sign on the next page.   
   
   ${ al_user_bundle.as_pdf(key='preview') }
 
@@ -2078,7 +2078,7 @@ review:
       
       % if sex_other:
       
-      Other: **${ other_sex_field }**
+      Sex/gender: **${ other_sex_field }**
       % endif
       
       Race:
@@ -2105,7 +2105,7 @@ review:
       
       % if race["race_other"]:
       
-        - **Other** - **${ other_race_field }**
+        - **${ other_race_field }**
       % endif
       
       Skin color/tone:
@@ -2215,7 +2215,7 @@ review:
       % endif
       
       % if hair_color["hair_other"]:
-        - **Other** -- ${ other_hair_field }
+        - **${ other_hair_field }**
       % endif
       
       % if hair_beard:
