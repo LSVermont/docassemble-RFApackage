@@ -1314,7 +1314,7 @@ fields:
     maxlength: 42
     show if: users1_no_shelter
   - Rent or own?: rent_or_own
-    input type: radio
+    datatype: radio
     minlength: 1
     maxlength: 1
     show if: users1_no_shelter
@@ -1322,9 +1322,8 @@ fields:
       - The home is rented: residence_rented
       - The home is owned: residence_owned
       - I don't know: i_dont_know
-  
   - In whose name?: whose_name
-    input type: radio
+    datatype: radio
     minlength: 1
     maxlength: 1
     show if: users1_no_shelter
@@ -1581,10 +1580,6 @@ fields:
       - "Light": skin_light
       - "Medium": skin_medium
       - "Dark": skin_dark
-      - "Other": skin_other 
-  - Enter skin tone: other_skin_tone
-    maxlength: 12
-    show if: skin["skin_other"]
   - note: |
       <h2 class="h4">Height:</h2>
   - "Height -- feet": other_parties1_height_ft
@@ -2977,12 +2972,12 @@ attachment:
       - "incarcerated": ${ incarcerated }
       - "users1_no_shelter": ${ users1_no_shelter }
       - "residence_shared_address": ${ residence_shared_address }
-      - "residence_of_users1": ${ whose_name["residence_of_users1"]  }
-      - "residence_owned": ${ rent_or_own["residence_owned"] }
-      - "residence_rented": ${ rent_or_own["residence_rented"] }
-      - "residence_of_OP": ${ whose_name["residence_of_OP"] }
-      - "residence_of_other": ${ whose_name["residence_of_other"] }
-      - "residence_of_both": ${ whose_name["residence_of_both"] }
+      - "residence_of_users1": ${ whose_name == "residence_of_users1"  }
+      - "residence_owned": ${ rent_or_own == "residence_owned" }
+      - "residence_rented": ${ rent_or_own == "residence_rented" }
+      - "residence_of_OP": ${ whose_name == "residence_of_OP" }
+      - "residence_of_other": ${ whose_name == "residence_of_other" }
+      - "residence_of_both": ${ whose_name == "residence_of_both" }
       - "reach_up_users1": ${ reach_up_users1 }
       - "reach_up_OP": ${ reach_up_OP }
       - "request_not_abuse_children": ${ request_not_abuse_children }
