@@ -1,5 +1,3 @@
-#This is NEW CODE on the main branch that I pulled down on 7.7.23 at 4:30 pm. I've been making edits.
-
 #######################
 #People can use https://apps.vtcourtforms.org/run/RFApackage/RFApackage/#/1 to test my intervew and submit feedback -- and I can keep working on this RFApackage in the Suffolk playground. Then I can "update" the RFA "Package". That will update the demo interview. (Go to Package Management in the login dropdown menu. Put this in first field https://github.com/VTskier/docassemble-RFApackage and then hit Update. OR scroll down and hit the Update button next to the RFApackage.)
 #######################
@@ -791,11 +789,11 @@ fields:
 ---
 id: Gather defendants address
 question: |
-  What is the defendant's address?
+  What is the defendant's home address?
 subquestion: |
-  The court will need an address of some kind. If you don't know any part of the defendant's home address, later in this interview you can give the address where they work or where they are staying. You will need to provide at least one address.
+  The court will need an address of some kind. Include what you can of the defendant's home address. Later in this interview you can give the address where they work or where they are staying. **You will need to provide at least one address.**
 fields:
-  - I don't know the defendant's address: defendant_address_unknown
+  - I don't know the defendant's home address: defendant_address_unknown
     datatype: yesno
     disable others: True
   - Street address: other_parties[0].address.address
@@ -836,7 +834,7 @@ question: |
 subquestion: |
   This is where you will describe the **most recent** incident of abuse. Be as detailed as possible. The judge needs to know exactly what happened. If you don't give enough details, you may not get a RFA order.
   
-  See the [VTLawHelp.org legal help website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3#forms) for tips on what to include in your description. This information will be part of your "Affidavit".
+  See the [VTLawHelp.org legal help website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3#forms) for tips on what to include in your description. This information will be part of your "Affidavit". Note: The defendant will get a copy of the affidavit if the judge gives you a temporary order or if the case goes to a hearing.
 fields:
   - "When was the most recent incident?": recent_incident_date
     maxlength: 14
@@ -991,6 +989,7 @@ fields:
   - "Include any information not already described before. Be as specific as possible.": danger_more_abuse_why
     input type: area
     show if: danger_more_abuse
+    maxlength: 330
     required: False
 ---
 objects:
@@ -1307,10 +1306,10 @@ fields:
     datatype: object_radio
     choices:
       - users[0].address
-    none of the above: A new address
+    none of the above: A different address
     default: users[0].address
     show if: users1_no_shelter
-  - "On one line, include: street address, apt./unit number, town and state abbreviation": A_new_residence_shared_address
+  - "For a different address: On one line include the street address, apt./unit number, town and state abbreviation": A_new_residence_shared_address
     required: False
     maxlength: 42
     show if: users1_no_shelter
@@ -1320,8 +1319,8 @@ fields:
     maxlength: 1
     show if: users1_no_shelter
     choices: 
-      - The home is rented: residence_owned
-      - The home is owned: residence_rented
+      - The home is rented: residence_rented
+      - The home is owned: residence_owned
       - I don't know: i_dont_know
   
   - In whose name?: whose_name
@@ -1370,6 +1369,7 @@ fields:
     required: False
   - "If you don't have a street address, describe the location of the home.": location_of_home
     input type: area
+    maxlength: 220
     required: False
   - "Describe what the defendant's home looks like. If it's an apartment, include the apartment number.": description_of_home
     input type: area
@@ -1386,11 +1386,12 @@ validation code: |
 id: About the defendant's vehicle
 question: |
   The defendant's vehicle (their car or truck)
-subquestion: |
-  If you don't know an answer on this screen, leave it blank.
 fields:
   - "Does the defendant have a vehicle?": vehicle
     datatype: yesnoradio
+  - note: |
+      If you don't know an answer on this screen, leave it blank.
+    show if: vehicle
   - "What brand car or truck do they drive? (Ford, Honda, etc.)": vehicle_make
     maxlength: 19
     show if: vehicle
@@ -1445,11 +1446,11 @@ fields:
     maxlength: 36
     show if: employed
     required: False
-  - "Their employers street address": employers_street_address
+  - "Their employer's street address": employers_street_address
     maxlength: 29
     show if: employed
     required: False
-  - "Employers city and state": employers_city_state
+  - "Employer's city and state": employers_city_state
     maxlength: 36
     show if: employed
     required: False
@@ -1718,6 +1719,7 @@ fields:
   - "Why will the officer be in danger?": danger_for_officer_why
     input type: area
     show if: danger_for_officer
+    maxlength: 220
 ---
 id: Signing your forms
 question: |
@@ -1744,9 +1746,9 @@ fields:
 ---
 id: preview RFApackage
 question: |
-  Preview your form before you sign it
+  Preview your forms before you sign them
 subquestion: |
-  Here is a preview of the form you will sign on the next page.   
+  Here is a preview of the forms you will sign on the next page.   
   
   ${ al_user_bundle.as_pdf(key='preview') }
 
@@ -1778,7 +1780,7 @@ event: review_RFApackage
 question: |
   Review your answers
 subquestion: |
-  Edit your answers here and when you are done, scroll to the bottom and select "Resume."
+  Edit your answers here. When you are done, scroll to the bottom and select "Resume."
 review:
   - note: | 
       ##Information about you##
@@ -1849,35 +1851,35 @@ review:
       % endif
 
       % if rent_or_own["residence_owned"]:
-      - **The house is owned** 
+      - **The home is owned** 
       % endif
       
       % if rent_or_own["residence_rented"]:
-      - **The house is rented** 
+      - **The home is rented** 
       % endif
       
       % if rent_or_own["i_dont_know"]:
-      - **You don't know if the house is rented or owned** 
+      - **You don't know if the home is rented or owned** 
       % endif
       
       % if whose_name["residence_of_both"]:
-         - **The house is rented or owned by ${ users[0] } and ${ other_parties[0] }** 
+         - **The home is rented or owned by ${ users[0] } and ${ other_parties[0] }** 
       % endif
       
       % if whose_name["residence_of_users1"]:
-         - **The house is rented or owned by ${ users[0] }** 
+         - **The home is rented or owned by ${ users[0] }** 
       % endif
       
       % if whose_name["residence_of_OP"]:
-        - **The house is rented or owned by ${ other_parties[0] }**
+        - **The home is rented or owned by ${ other_parties[0] }**
       % endif
       
       % if whose_name["residence_of_other"]:
-        - **The house is rented or owned by someone else** 
+        - **The home is rented or owned by someone else** 
       % endif
       
       % if whose_name["I_dont_know"]:
-        - **You don't know who rents or owns the house** 
+        - **You don't know who rents or owns the home** 
       % endif
   - note: | 
       ##Information about the defendant##
@@ -2079,7 +2081,7 @@ review:
       
       % if sex_other:
       
-      Other: **${ other_sex_field }**
+      Sex/gender: **${ other_sex_field }**
       % endif
       
       Race:
@@ -2106,7 +2108,7 @@ review:
       
       % if race["race_other"]:
       
-        - **Other** - **${ other_race_field }**
+        - **${ other_race_field }**
       % endif
       
       Skin color/tone:
@@ -2216,7 +2218,7 @@ review:
       % endif
       
       % if hair_color["hair_other"]:
-        - **Other** -- ${ other_hair_field }
+        - **${ other_hair_field }**
       % endif
       
       % if hair_beard:
@@ -2330,7 +2332,7 @@ review:
       % endif
       
       % if other_recent_incident_state:
-      - State/province of the country of the most recent incident if outside of the U.S.: **${other_recent_incident_state}
+      - State/province of the country of the most recent incident if outside of the U.S.: **${other_recent_incident_state}**
       % endif
       
       - Most recent incident description: **${ recent_incident_description }**
@@ -2609,6 +2611,11 @@ review:
       - The defendant is likely to be under the influence of drugs or alcohol: **${ yesno(under_infl) }**
       
       - The officer who serves this order will be in any danger: **${ yesno(danger_for_officer) }**
+      
+      % if danger_for_officer_why != '':
+      Why the officer will be in danger: **${ showifdef('danger_for_officer_why') }**
+      % endif
+    
 ---
 continue button field: users.revisit
 question: |
