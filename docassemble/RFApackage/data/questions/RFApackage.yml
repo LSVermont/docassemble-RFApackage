@@ -3077,6 +3077,7 @@ attachment:
       - "other_parties1_aliases": ${ other_parties1_aliases }
       - "sex_female": ${ sex_female }
       - "sex_male": ${ sex_male }
+      - "other_sex_field": ${ other_sex_field }
       - "race_white": ${ race["race_white"] }
       - "race_black": ${ race["race_black"] }
       - "race_native": ${ race["race_native"] }
