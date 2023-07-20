@@ -945,14 +945,14 @@ fields:
   - "In what state was the most serious incident?": serious_incident_state
     code: states_list() 
     required: False
-  - "If it happened outside of the United States, enter the province / state here and the country.": other_recent_incident_state
+  - "If it happened outside of the United States, enter the province / state here and the country.": other_serious_incident_state
     required: False
     maxlength: 12
   - "Describe the most serious incident with as much detail as possible.": serious_incident_description
     input type: area
     rows: 20  
 validation code: |
-  if (recent_incident_state == "") and (other_recent_incident_state == ""):
+  if (serious_incident_state == "") and (other_serious_incident_state == ""):
     validation_error("Please enter a state in the United States, or an area outside of the United States")
 ---
 id: What happened other incidents
@@ -2807,14 +2807,24 @@ attachment:
       - "recent_incident_date": ${ recent_incident_date }
       - "recent_incident_time": ${ recent_incident_time }
       - "recent_incident_town": ${ recent_incident_town }
-      - "recent_incident_state": ${ recent_incident_state }
+      - "recent_incident_state": |
+          % if recent_incident_state: 
+          ${ recent_incident_state }
+          % elif other_recent_incident_state:
+          ${ other_recent_incident_state }
+          % endif 
       - "recent_incident_description": ${ RFAaffidavit.safe_value("recent_incident_description") }
       - "recent_incident_most_serious_yes": ${ recent_incident_most_serious }
       - "recent_incident_most_serious_no": ${ not recent_incident_most_serious }
       - "serious_incident_date": ${ serious_incident_date }
       - "serious_incident_time": ${ serious_incident_time }
       - "serious_incident_town": ${ serious_incident_town }
-      - "serious_incident_state": ${ serious_incident_state }
+      - "serious_incident_state": |
+          % if serious_incident_state: 
+          ${ serious_incident_state }
+          % elif other_serious_incident_state:
+          ${ other_serious_incident_state }
+          % endif
       - "serious_incident_description": ${ RFAaffidavit.safe_value("serious_incident_description") }
       - "other_incident_description": ${ RFAaffidavit.safe_value("other_incident_description") }
       - "other_parties1_weapon_yes": ${ weapons.there_are_any == True}
