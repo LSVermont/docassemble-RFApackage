@@ -945,14 +945,14 @@ fields:
   - "In what state was the most serious incident?": serious_incident_state
     code: states_list() 
     required: False
-  - "If it happened outside of the United States, enter the province / state here and the country.": other_recent_incident_state
+  - "If it happened outside of the United States, enter the province / state here and the country.": other_serious_incident_state
     required: False
     maxlength: 12
   - "Describe the most serious incident with as much detail as possible.": serious_incident_description
     input type: area
     rows: 20  
 validation code: |
-  if (recent_incident_state == "") and (other_recent_incident_state == ""):
+  if (serious_incident_state == "") and (other_serious_incident_state == ""):
     validation_error("Please enter a state in the United States, or an area outside of the United States")
 ---
 id: What happened other incidents
@@ -1314,7 +1314,7 @@ fields:
     maxlength: 42
     show if: users1_no_shelter
   - Rent or own?: rent_or_own
-    input type: radio
+    datatype: radio
     minlength: 1
     maxlength: 1
     show if: users1_no_shelter
@@ -1322,9 +1322,8 @@ fields:
       - The home is rented: residence_rented
       - The home is owned: residence_owned
       - I don't know: i_dont_know
-  
   - In whose name?: whose_name
-    input type: radio
+    datatype: radio
     minlength: 1
     maxlength: 1
     show if: users1_no_shelter
@@ -1581,10 +1580,6 @@ fields:
       - "Light": skin_light
       - "Medium": skin_medium
       - "Dark": skin_dark
-      - "Other": skin_other 
-  - Enter skin tone: other_skin_tone
-    maxlength: 12
-    show if: skin["skin_other"]
   - note: |
       <h2 class="h4">Height:</h2>
   - "Height -- feet": other_parties1_height_ft
@@ -2812,14 +2807,24 @@ attachment:
       - "recent_incident_date": ${ recent_incident_date }
       - "recent_incident_time": ${ recent_incident_time }
       - "recent_incident_town": ${ recent_incident_town }
-      - "recent_incident_state": ${ recent_incident_state }
+      - "recent_incident_state": |
+          % if recent_incident_state: 
+          ${ recent_incident_state }
+          % elif other_recent_incident_state:
+          ${ other_recent_incident_state }
+          % endif 
       - "recent_incident_description": ${ RFAaffidavit.safe_value("recent_incident_description") }
       - "recent_incident_most_serious_yes": ${ recent_incident_most_serious }
       - "recent_incident_most_serious_no": ${ not recent_incident_most_serious }
       - "serious_incident_date": ${ serious_incident_date }
       - "serious_incident_time": ${ serious_incident_time }
       - "serious_incident_town": ${ serious_incident_town }
-      - "serious_incident_state": ${ serious_incident_state }
+      - "serious_incident_state": |
+          % if serious_incident_state: 
+          ${ serious_incident_state }
+          % elif other_serious_incident_state:
+          ${ other_serious_incident_state }
+          % endif
       - "serious_incident_description": ${ RFAaffidavit.safe_value("serious_incident_description") }
       - "other_incident_description": ${ RFAaffidavit.safe_value("other_incident_description") }
       - "other_parties1_weapon_yes": ${ weapons.there_are_any == True}
@@ -2977,12 +2982,12 @@ attachment:
       - "incarcerated": ${ incarcerated }
       - "users1_no_shelter": ${ users1_no_shelter }
       - "residence_shared_address": ${ residence_shared_address }
-      - "residence_of_users1": ${ whose_name["residence_of_users1"]  }
-      - "residence_owned": ${ rent_or_own["residence_owned"] }
-      - "residence_rented": ${ rent_or_own["residence_rented"] }
-      - "residence_of_OP": ${ whose_name["residence_of_OP"] }
-      - "residence_of_other": ${ whose_name["residence_of_other"] }
-      - "residence_of_both": ${ whose_name["residence_of_both"] }
+      - "residence_of_users1": ${ whose_name == "residence_of_users1"  }
+      - "residence_owned": ${ rent_or_own == "residence_owned" }
+      - "residence_rented": ${ rent_or_own == "residence_rented" }
+      - "residence_of_OP": ${ whose_name == "residence_of_OP" }
+      - "residence_of_other": ${ whose_name == "residence_of_other" }
+      - "residence_of_both": ${ whose_name == "residence_of_both" }
       - "reach_up_users1": ${ reach_up_users1 }
       - "reach_up_OP": ${ reach_up_OP }
       - "request_not_abuse_children": ${ request_not_abuse_children }
@@ -3082,6 +3087,7 @@ attachment:
       - "other_parties1_aliases": ${ other_parties1_aliases }
       - "sex_female": ${ sex_female }
       - "sex_male": ${ sex_male }
+      - "other_sex_field": ${ other_sex_field }
       - "race_white": ${ race["race_white"] }
       - "race_black": ${ race["race_black"] }
       - "race_native": ${ race["race_native"] }
