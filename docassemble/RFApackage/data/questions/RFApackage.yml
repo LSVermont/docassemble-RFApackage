@@ -1,6 +1,3 @@
-#######################
-#People can use https://apps.vtcourtforms.org/run/RFApackage/RFApackage/#/1 to test my intervew and submit feedback -- and I can keep working on this RFApackage in the Suffolk playground. Then I can "update" the RFA "Package". That will update the demo interview. (Go to Package Management in the login dropdown menu. Put this in first field https://github.com/VTskier/docassemble-RFApackage and then hit Update. OR scroll down and hit the Update button next to the RFApackage.)
-#######################
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -331,7 +328,7 @@ subquestion: |
 #  (:comment-alt:) in the navigation bar to connect to a live advocate for help.
 #  % endif
 fields:
-  - To continue, please accept our [terms of use](https://vtlawhelp.org/vlh-privacy).: acknowledged_information_use
+  - To continue, please accept our [terms of use](https://vtlawhelp.org/vtcourtforms/terms-of-use).: acknowledged_information_use
     datatype: checkboxes
     none of the above: False    
     minlength: 1
@@ -857,7 +854,7 @@ fields:
     datatype: yesnoradio  
   - Your children were the target of the recent abuse: recent_incident_children
     datatype: yesnoradio   
-  - Which of your children were the target of the recent abuse?: recent_incident_children_names 
+  - Which of the children were the target of the recent abuse?: recent_incident_children_names 
     datatype: object_checkboxes
     required: False
     none of the above: False
