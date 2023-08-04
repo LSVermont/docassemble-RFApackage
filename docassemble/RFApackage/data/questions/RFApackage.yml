@@ -1717,7 +1717,7 @@ id: Signing your forms
 question: |
   Attestation and signature
 subquestion: |
-  You must agree to sign your documents.
+  You must agree to this statement before you can sign your documents. Check the box to agree.
 fields:
   - "I declare that my statements are true and accurate to the best of my knowledge and belief. I understand that if my statements are false, I will be subject to the penalty of perjury or to other sanctions in the discretion of the court.": attestation
     datatype: yesno
