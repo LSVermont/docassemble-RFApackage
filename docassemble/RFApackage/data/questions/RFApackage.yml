@@ -205,7 +205,7 @@ code: |
   ex_spouse
   other_parties.gather()
   set_progress(32)
-  other_parties[0].birthdate
+  other_parties[0].birth_month
   defendant_address_unknown
   other_parties[0].phone_number
   incarcerated
@@ -781,11 +781,39 @@ content: |
 ---
 id: birthdate question
 question: |
-  When was ${ other_parties[0].name } born
+  When was ${ other_parties[0].name } born?
 fields:
-  - Birthdate: other_parties[0].birthdate
+  - Month: other_parties[0].birth_month
+    choices:
+      - January: 1
+      - February: 2
+      - March: 3
+      - April: 4
+      - May: 5
+      - June: 6
+      - July: 7
+      - August: 8
+      - September: 9
+      - October: 10
+      - November: 11
+      - December: 12
     required: False
-    datatype: BirthDate
+  - Day: other_parties[0].birth_day
+    datatype: integer
+    code: |
+      range(1,31+1)
+    required: False
+  - Year: other_parties[0].birth_year
+    code: |
+      list(range(today().year, today().year - 20 - 1, -1))
+    required: False
+  - note: |
+      **What is ${ other_parties }'s approximate age?**
+  - Age: other_parties[0].age
+    datatype: integer
+    code: |
+      range(1,100+1)
+    required: False
 ---
 id: Gather defendants address
 question: |
@@ -2649,8 +2677,8 @@ rows: other_parties
 columns:
   - Name: |
       row_item.name.full() if defined("row_item.name.last") else ""
-  - Birthdate: |
-      row_item.birthdate if defined("row_item.birthdate") else ""
+  - Birth year: |
+      row_item.birth_year if defined("row_item.birth_year") else ""
   - Address: |
       row_item.address.block() if defined("row_item.address.zip") else ""
   - Phone number: |
@@ -2664,7 +2692,7 @@ columns:
   
 edit:
   - name.last
-  - birthdate
+  - birth_year
   - address.zip
   - phone_number
   - mobile_number
@@ -2776,8 +2804,14 @@ attachment:
       - "other_parties1_name__1": ${ other_parties[0] }
       - "other_parties1_name": ${ other_parties[0] }
       - "other_parties1_birthdate": |
-          % if other_parties[0].birthdate: 
-          ${ format_date(other_parties[0].birthdate, format='M/d/yyyy') }
+          % if other_parties[0].birth_month:
+          ${ other_parties[0].birth_month }/
+          % endif
+          % if other_parties[0].birth_day:
+          ${ other_parties[0].birth_day }/
+          % endif
+          % if other_parties[0].birth_year:
+          ${ other_parties[0].birth_year }
           % endif
       - "other_parties1_address_address": |
           % if defendant_address_unknown: 
@@ -2902,8 +2936,14 @@ attachment:
       - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
       - "other_parties1_name": ${ other_parties[0] }
       - "other_parties1_birthdate": |
-          % if other_parties[0].birthdate: 
-          ${ format_date(other_parties[0].birthdate, format='M/d/yyyy') }
+          % if other_parties[0].birth_month:
+          ${ other_parties[0].birth_month }/
+          % endif
+          % if other_parties[0].birth_day:
+          ${ other_parties[0].birth_day }/
+          % endif
+          % if other_parties[0].birth_year:
+          ${ other_parties[0].birth_year }
           % endif
       - "other_parties1_address_address": |
           % if defendant_address_unknown: 
@@ -3084,10 +3124,19 @@ attachment:
       - "other_parties1_name_first": ${ other_parties[0].name.first }
       - "other_parties1_name_middle": ${ other_parties[0].name.middle }
       - "other_parties1_birthdate": |
-          % if other_parties[0].birthdate: 
-          ${ format_date(other_parties[0].birthdate, format='M/d/yyyy') }
+          % if other_parties[0].birth_month:
+          ${ other_parties[0].birth_month }/
           % endif
-      - "other_parties1_age": ${ other_parties[0].age_in_years() }
+          % if other_parties[0].birth_day:
+          ${ other_parties[0].birth_day }/
+          % endif
+          % if other_parties[0].birth_year:
+          ${ other_parties[0].birth_year }
+          % endif
+      - "other_parties1_age": |
+          % if other_parties[0].age > 0:
+          ${ other_parties[0].age }
+          % endif
       - "other_parties1_aliases": ${ other_parties1_aliases }
       - "sex_female": ${ sex_female }
       - "sex_male": ${ sex_male }
