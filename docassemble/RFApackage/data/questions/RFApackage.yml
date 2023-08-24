@@ -1,3 +1,8 @@
+#I'm trying out the form requires digital signature option here. It doesn't seem to work.
+#I added users signature to review screen.
+---
+code: |
+  al_form_requires_digital_signature = False
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -141,6 +146,7 @@ code: |
   user_role = "plaintiff"
   user_ask_role = "plaintiff"
   nav.set_section("screening")
+  #users[0].signature
   ##initial_screening_questions##
   extend_or_change
   if extend_or_change:
@@ -1764,6 +1770,8 @@ fields:
       ${ today() }
   -  note: |
        You can change this date later if you want.
+       
+       On the next screen, you can use your mouse or use your finger to sign your name.
      show if: attestation
 ---
 id: preview RFApackage
@@ -1783,6 +1791,7 @@ subquestion: |
 continue button field: RFApackage_preview_question    
 ---
 code: |
+  al_form_requires_digital_signature = False
   signature_fields = ['users[0].signature']
 ---
 code: |
@@ -1811,6 +1820,7 @@ review:
     - users[0].address.address
     - reach_up_users1
     - users[0].mailing_address.address
+    - users[0].signature
     button: |
       **Plaintiff**
       % if users.there_are_any:
@@ -2658,12 +2668,15 @@ columns:
       row_item.phone_number if defined("row_item.phone_number") else ""
   - Email: |
       row_item.email if defined("row_item.email") else ""
+  - Signature: |
+      row_item.signature if defined("row_item.signature") else ""
 edit:
   - name.middle
   - birthdate
   - address.zip
   - phone_number
   - email
+  - signature
 confirm: True
 ---
 continue button field: other_parties.revisit
