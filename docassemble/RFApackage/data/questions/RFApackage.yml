@@ -4,6 +4,15 @@
 code: |
   al_form_requires_digital_signature = False
 ---
+id: persons signature
+generic object: ALIndividual
+question: |
+  ${x}, please sign below
+#signature: x.signature
+#under: |
+  #${x}
+progress: 99
+---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.ALToolbox:phone-number-validation.yml
@@ -146,10 +155,11 @@ code: |
   user_role = "plaintiff"
   user_ask_role = "plaintiff"
   nav.set_section("screening")
-  #users[0].signature
+  printed_signature
+  users[0].signature
   ##initial_screening_questions##
-  extend_or_change
-  if extend_or_change:
+  what_want_to_do
+  if what_want_to_do["extend_or_change"]:
     initial_screening_questions_1_exit
     
   relationship_question
@@ -254,7 +264,7 @@ code: |
   RFApackage_preview_question
   nav.set_section('signature')
   printed_signature
-  users[0].signature
+  #users[0].signature
   nav.set_section('get_docs')
   RFApackage_download
   interview_order_RFApackage = True
@@ -321,7 +331,7 @@ subquestion: |
   
   <i class="fas fa-file-text fa-2x"></i> This guided interview will produce a complete package of 4 forms needed to ask the court for a Relief from Abuse (RFA) order in Vermont: the Complaint, Affidavit, Confidential Notification form and Protection Order Service Information form. Learn more about RFA orders and this interview on the next screen.
   
-  <i class="fas fa-clock fa-2x"></i> It may take you over 1 hour to complete this interview. Consider creating a free account so you can save your progress. At any time choose "sign up" in the menu above, or "register" below.
+  <i class="fas fa-clock fa-2x"></i> It may take you over 1 hour to complete this interview.
   
   <i class="fas fa-share-nodes fa-2x"></i> Use the Share feature at the bottom of the page to share your progress with a trusted friend or advocate.
   
@@ -366,9 +376,10 @@ question: |
 subquestion: |
   Some important things to know about asking the court for a Relief from Abuse order (RFA) in Vermont:
   
-  * There is no charge for an RFA order. It is free. 
-  * **Even when the courts are closed, it’s after hours, or it’s a weekend or holiday, you can start a Relief from Abuse case.** You may be able to get a temporary order right away to help keep you safe. At these times, you can email these forms or simply call and ask for help. Call the Vermont courts’ answering service at 1-800-540-9990. Say that you need help applying for a Relief from Abuse order over the phone. If you call, you need to leave a message with a number where they can call you back within an hour.
-  * Applying for an RFA order can be a very dangerous time. Work with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan — whether you end up asking for an RFA or not.
+  * There is no fee for an RFA order. It is free. 
+  * **Even when the courts are closed, it’s after hours, or it’s a weekend or holiday, you can start a Relief from Abuse case.** You may be able to get a temporary order right away to help keep you safe. At these times, you can email these forms and then make a follow-up call to the courts. Or simply call and ask for help. Call the Vermont courts’ answering service at 1-800-540-9990. Say that you need help applying for a Relief from Abuse order over the phone. If you call, you need to leave a message with a number where they can call you back within an hour.
+  * Many people in Vermont get an RFA without a lawyer. But you do not have to do this on your own. You can get help from one of the member organizations of the [Vermont Network Against Domestic and Sexual Violence](https://www.vtnetwork.org/get-help/).
+  * Applying for an RFA order can be a very dangerous time. Consider working with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan — whether you end up asking for an RFA or not.
   * For details on the whole RFA process, visit the [RFA Roadmap on the VTLawHelp.org website.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-1)
 ---
 id: RFApackage_intro_2
@@ -380,11 +391,11 @@ subquestion: |
   * If you are in danger right now, dial 911.
   * Use this interview if you are asking for an RFA order for you, **or** both you and your children. (There are different forms for [asking for an RFA only on behalf of a child or children.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3))
   * The forms in this interview can only be used in Vermont courts.
-  * Consider creating an account and saving your work along the way. You could log in later to review your answers with an advocate. Choose “sign up” in the menu above, or “register” below.
+  * Consider creating an account and saving your work along the way. You could log in later to review your answers with an advocate. Choose “sign up” in the menu above, or “register” below. Even if you don’t create an account, at the end you can download your completed forms and the instructions sheet for the next steps to take. You can email the filled-in PDF forms to yourself or someone else, too.
   * Click "Share" at the bottom of this page to share a link to your progress with someone you trust. Important: The person you share this link with will be able to see AND change your answers.
   <h3 class="h4">Information you will need</h3>
   * To complete this interview, you will need to know the date or dates when the abuse occurred and give a detailed description of the abuse. This includes the most recent incident and the most serious incident. You will need to fully describe the incidents and make it clear how severe or how frequent the abuse has been.
-  * You will need to give a safe address and telephone number where the court can reach you. If you don’t have one, ask an advocate from the [Vermont Network.](https://www.vtnetwork.org/get-help/)
+  * You will need to give a safe address and telephone number where the court can reach you. If you don’t have one, ask an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/)
   * You will need an address of some kind for the "defendant" -- the person who is doing the abuse. If you don't know the defendant's home address, you can give their work address. Or give the address of the place where they are staying. You need to provide at least one address.
   * You will see important questions about weapons that the defendant might have access to. If you list what they are and where they are located, the court can order law enforcement to collect them to help keep you safe.
   <h3 class="h4">After answering the questions</h3>
@@ -401,9 +412,14 @@ subquestion: |
 id: initial_screening_questions_1
 question: |
   See if this interview is right for your situation
+subquestion: |
+  Note: A red asterisk <span style="color:red;">*</span> means an answer is required before you can move on.
 fields:
-  - "Do you want to extend or change an existing RFA order?": extend_or_change
-    datatype: yesnoradio
+  - What do you want to do?: what_want_to_do
+    input type: radio
+    choices:
+      - "Ask the court for a new Relief from Abuse order": new_order
+      - "Extend or change an existing RFA order": extend_or_change
 ---
 id: initial_screening_questions_1_exit
 question: |
@@ -441,9 +457,11 @@ id: initial_screening_questions_2_exit
 question: |
   Stop
 subquestion: |
-  <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** In this situation, if you are under age 16, these are **not** the right forms to fill out. **Do not use this interview.**
+  <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** In this situation, if you are under age 16, these are **not** the right forms to fill out.
   
-  [Learn about your options on this page of the VTLawHelp.org website.](https://vtlawhelp.org/protection-minors) You can also find out who to contact for help.
+  You can get help, but do **not** use this interview.
+  
+  Instead, [learn about your options on this page of the VTLawHelp.org website.](https://vtlawhelp.org/protection-minors) You can also find out who to contact for help.
 continue button field: initial_screening_questions_2_exit
 buttons:
   - Exit: exit
@@ -661,6 +679,7 @@ question: |
 fields: 
   - no label: reach_up_users1
     datatype: yesnoradio
+    required: False
 ---
 id: Gather users contact information
 question: |
@@ -772,6 +791,8 @@ fields:
 id: About the defendant
 question: |
   About the defendant
+subquestion: |
+  Select all that apply.
 fields:
   - "Defendant gets Reach Up benefits": reach_up_OP
     datatype: yesno
@@ -783,11 +804,17 @@ fields:
 template: list_of_crimes
 subject: See the list of crimes
 content: |
-  Those crimes are: murder, attempted murder, kidnapping, domestic assault, aggravated domestic assault, sexual assault, aggravated sexual assault, stalking, aggravated stalking, lewd or lascivious conduct with a child, use of a child in a sexual performance, or consenting to a sexual performance.
+  Those crimes are:
+  * murder
+  * attempted murder
+  * kidnapping
+  * domestic assault, aggravated domestic assault, sexual assault, aggravated sexual assault, stalking, aggravated stalking, lewd or lascivious conduct with a child, use of a child in a sexual performance, or consenting to a sexual performance.
 ---
 id: birthdate question
 question: |
   When was ${ other_parties[0].name } born?
+subquestion: |
+  If you don’t know their birth date, leave the first fields blank. Be sure to give an estimated age, however.
 fields:
   - Month: other_parties[0].birth_month
     choices:
@@ -811,15 +838,14 @@ fields:
     required: False
   - Year: other_parties[0].birth_year
     code: |
-      list(range(today().year, today().year - 20 - 1, -1))
+      list(range(today().year, today().year - 90 - 1, -1))
     required: False
   - note: |
-      **What is ${ other_parties }'s approximate age?**
+      **About how old is ${ other_parties }?**
   - Age: other_parties[0].age
     datatype: integer
     code: |
       range(1,100+1)
-    required: False
 ---
 id: Gather defendants address
 question: |
@@ -872,6 +898,8 @@ subquestion: |
 fields:
   - "When was the most recent incident?": recent_incident_date
     maxlength: 14
+  - note: |
+      If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something like “late December 20XX.”
   - "What was the time of the most recent incident? You can estimate if you don't know for sure.": recent_incident_time
     required: False
     maxlength: 16
@@ -881,6 +909,8 @@ fields:
   - "In what state was the most recent incident?": recent_incident_state
     code: states_list() 
     required: False
+  - note: |
+      Please enter either a state, above, or the area outside the U.S., below.
   - "If it happened outside of the United States, enter the province / state here and the country.": other_recent_incident_state
     required: False
     maxlength: 12
@@ -928,10 +958,10 @@ fields:
   - "The defendant stalked the child/children": recent_incident_stalked_children
     datatype: yesnoradio
     show if: recent_incident_stalked
-  - "Vermont law says it is stalking if it has happened two times or more. On what date did they first stalk you?": recent_incident_stalked_date1
+  - "Vermont law says it is stalking if it has happened two times or more. When did they first stalk you?": recent_incident_stalked_date1
     maxlength: 10
     show if: recent_incident_stalked
-  - "What was the second date that they stalked you?": recent_incident_stalked_date2
+  - "What was the second time that they stalked you?": recent_incident_stalked_date2
     maxlength: 10
     show if: recent_incident_stalked
   - note: |
@@ -970,6 +1000,8 @@ subquestion: |
 fields:
   - "When was the most serious incident?": serious_incident_date
     maxlength: 16
+  - note: |
+      If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something like “late December 20XX.”
   - "What was the time of the most serious incident?": serious_incident_time
     required: False
     maxlength: 13
@@ -1006,7 +1038,7 @@ id: Danger of more abuse
 question: |
   Danger of more abuse
 subquestion: |
-  It's important to answer **Yes** to this question if you want to get a court order that starts right away.
+  If you want to get a court order that starts right way, answer **Yes** to this question.
 fields:
   - "Is there immediate danger of more abuse from the defendant?": danger_more_abuse
     datatype: yesnoradio
@@ -1107,6 +1139,9 @@ subquestion: |
 fields:
   - "Order the defendant to not abuse me or my children, and not interfere with our personal liberty": request_not_abuse
     datatype: yesno
+  - note: |
+      Note: It would be helpful to gather copies of your utility bills, rent payments and other bills that you’d like covered. The judge may ask to see them at a hearing.
+    show if: request_not_abuse
   - "I want the order to protect me from this.": request_not_abuse_users1
     datatype: yesno
     show if: request_not_abuse
@@ -1145,6 +1180,9 @@ fields:
     datatype: yesno
   - "Order the defendant to pay temporary child support": request_child_support
     datatype: yesno
+  - note: |
+      Note: It would be helpful to gather copies of your utility bills, rent payments and other bills that you’d like covered. The judge may ask to see them at a hearing.
+    show if: request_child_support
   - "Order the defendant to stop cruelly treating pets": request_no_pet_harm
     datatype: yesno
   - "I want the order to protect the pets owned by me or the defendant.": request_no_pet_users1
@@ -1328,7 +1366,7 @@ data:
 ---
 id: About your home
 question: |
-  Do you need shelter or a place to stay?  
+  Asking to have the defendant removed from your home  
 subquestion: |
   Have you been or will you be forced from your home -- and be without shelter -- unless the defendant is ordered to leave your home? In other words, do you need the defendant to be removed from your home in order to be safe?
 fields:
@@ -1615,14 +1653,14 @@ fields:
       - "Dark": skin_dark
   - note: |
       <h2 class="h4">Height:</h2>
-  - "Height -- feet": other_parties1_height_ft
-    maxlength: 5
-  - "Height -- inches": other_parties1_height_in
-    maxlength: 5
+  - "Feet": other_parties1_height_ft
+    maxlength: 2
+  - "Inches": other_parties1_height_in
+    maxlength: 2
   - note: |
       <h2 class="h4">Weight:</h2>
   - "Weight -- in pounds": other_parties1_weight_lbs
-    maxlength: 5
+    maxlength: 3
   - note: |
       <h2 class="h4">Eye color:</h2>
   - "Select one.": eyes
@@ -1771,7 +1809,7 @@ fields:
   -  note: |
        You can change this date later if you want.
        
-       On the next screen, you can use your mouse or use your finger to sign your name.
+       On the next screen, you can use your mouse or use your finger (on a phone) to sign your name.
      show if: attestation
 ---
 id: preview RFApackage
@@ -1791,7 +1829,6 @@ subquestion: |
 continue button field: RFApackage_preview_question    
 ---
 code: |
-  al_form_requires_digital_signature = False
   signature_fields = ['users[0].signature']
 ---
 code: |
@@ -2396,9 +2433,9 @@ review:
       
       - The defendant stalked the child/children: **${ yesno(recent_incident_stalked_children) }**
       
-      - First stalking date: **${ showifdef('recent_incident_stalked_date1') }**
+      - First stalking: **${ showifdef('recent_incident_stalked_date1') }**
       
-      - Second stalking date: **${ showifdef('recent_incident_stalked_date2') }**
+      - Second stalking: **${ showifdef('recent_incident_stalked_date2') }**
       % endif
       
       % if recent_incident_assault:
@@ -2764,7 +2801,7 @@ subquestion: |
   
   You can also use the Share feature to share a link to your interview with a trusted person. Important: If you use the Share feature, that person will be able to see AND change your answers.
   
-  Work with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get support during the RFA process.
+  Consider working with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get support during the RFA process.
   
   ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
   
