@@ -23,6 +23,20 @@ input.labelauty+label,
 .al-title {
     line-height: 1.2em;
 }
+/* This below is trying to indent "show if" subquestions */
+.dashowif .da-form-group.row {
+    margin-left: 36%;
+    margin-right: 0rem;
+    border: .25px solid var(--bs-border-color);
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 1rem;
+    padding-right: calc(var(--bs-gutter-x) * .5);
+}
+.dashowif .da-form-group.row label {
+    width: 100%;
+    text-align: left !important;
+}
 .fa-2x {
     font-size: 2em;
     color: #1f455c;
@@ -45,7 +59,7 @@ input.labelauty+label,
     --bs-btn-font-size: 1.2rem;
     --bs-btn-border-radius: 0.25rem;
 }
-#####side navigation -progress words- grey color and square background
+/* side navigation -progress words- grey color and square background */
 
 .nav-pills {
     --bs-nav-pills-link-active-color: #797575;
@@ -78,7 +92,7 @@ input.labelauty+label,
     color: #797575;
 }
 
-####account menu dropdown toggle color
+/* account menu dropdown toggle color */ 
 
 .navbar-nav .nav-link .dropdown-toggle .d-none .d-md-block  {
     color: #797575;

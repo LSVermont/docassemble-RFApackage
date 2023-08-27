@@ -1,17 +1,15 @@
-#I'm trying out the form requires digital signature option here. It doesn't seem to work.
-#I added users signature to review screen.
----
-code: |
-  al_form_requires_digital_signature = False
----
-id: persons signature
-generic object: ALIndividual
-question: |
-  ${x}, please sign below
-#signature: x.signature
-#under: |
-  #${x}
-progress: 99
+#I added users signature to review screen but now cannot edit it. Moved my test interview order pieces down where they belong to see if that fixes it. Does signature end up on PDF?
+
+#I added css to style.css to indent show-if subquestions. Go through interview on phone and computer to see what else it impacted
+
+#The form does not require digital signature option didn't work until I put it in the interview order code block
+
+#I changed order of download list
+
+#I extended the possible years of birth for Def.
+
+#
+
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -155,11 +153,10 @@ code: |
   user_role = "plaintiff"
   user_ask_role = "plaintiff"
   nav.set_section("screening")
-  printed_signature
-  users[0].signature
+
   ##initial_screening_questions##
   what_want_to_do
-  if what_want_to_do["extend_or_change"]:
+  if what_want_to_do == 'extend_or_change':
     initial_screening_questions_1_exit
     
   relationship_question
@@ -264,9 +261,9 @@ code: |
   RFApackage_preview_question
   nav.set_section('signature')
   printed_signature
-  #users[0].signature
+  al_form_requires_digital_signature = False
+  basic_questions_signature_flow    
   nav.set_section('get_docs')
-  RFApackage_download
   interview_order_RFApackage = True
   
 ---
@@ -302,7 +299,7 @@ code: |
   RFApackage_intro
   RFApackage_intro_2
   interview_order_RFApackage
-  signature_date
+
   # Store anonymous data for analytics / statistics
   store_variables_snapshot(
       persistent=True,
@@ -805,10 +802,30 @@ template: list_of_crimes
 subject: See the list of crimes
 content: |
   Those crimes are:
+  
   * murder
+  
   * attempted murder
+  
   * kidnapping
-  * domestic assault, aggravated domestic assault, sexual assault, aggravated sexual assault, stalking, aggravated stalking, lewd or lascivious conduct with a child, use of a child in a sexual performance, or consenting to a sexual performance.
+  
+  * domestic assault
+  
+  * aggravated domestic assault
+  
+  * sexual assault
+  
+  * aggravated sexual assault
+  
+  * stalking
+  
+  * aggravated stalking
+  
+  * lewd or lascivious conduct with a child
+  
+  * use of a child in a sexual performance, or
+  
+  * consenting to a sexual performance.
 ---
 id: birthdate question
 question: |
@@ -838,7 +855,7 @@ fields:
     required: False
   - Year: other_parties[0].birth_year
     code: |
-      list(range(today().year, today().year - 90 - 1, -1))
+      list(range(today().year, today().year - 100 - 1, -1))
     required: False
   - note: |
       **About how old is ${ other_parties }?**
@@ -899,7 +916,7 @@ fields:
   - "When was the most recent incident?": recent_incident_date
     maxlength: 14
   - note: |
-      If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something like “late December 20XX.”
+      If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something short like “December 20XX.”
   - "What was the time of the most recent incident? You can estimate if you don't know for sure.": recent_incident_time
     required: False
     maxlength: 16
@@ -910,7 +927,7 @@ fields:
     code: states_list() 
     required: False
   - note: |
-      Please enter either a state, above, or the area outside the U.S., below.
+      <span style="color:red;">*</span> Please enter either a state, above, or the area outside the U.S., below.
   - "If it happened outside of the United States, enter the province / state here and the country.": other_recent_incident_state
     required: False
     maxlength: 12
@@ -1809,7 +1826,7 @@ fields:
   -  note: |
        You can change this date later if you want.
        
-       On the next screen, you can use your mouse or use your finger (on a phone) to sign your name.
+       On the next screen, you can choose how to sign your documents.
      show if: attestation
 ---
 id: preview RFApackage
@@ -2815,13 +2832,13 @@ progress: 100
 objects:
   - RFAcomplaint: ALDocument.using(title="RFA Complaint", filename="1_RFA-complaint", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFAaffidavit: ALDocument.using(title="RFA Affidavit", filename="3_RFA-affidavit", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - RFAconfidentialcontactinfo: ALDocument.using(title="RFA Confidential Contact Info", filename="4_RFA-confidential-contact-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - RFAconfidentialcontactinfo: ALDocument.using(title="Confidential Contact Info", filename="4_RFA-confidential-contact-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFAserviceinfo: ALDocument.using(title="Protection Order Service Info", filename="2_RFA-service-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFApackage_Post_interview_instructions: ALDocument.using(title="Instructions for Next Steps to Take", filename="RFApackage_next_steps.docx", enabled=True, has_addendum=False)
 ---
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[RFApackage_Post_interview_instructions, RFAaffidavit, RFAconfidentialcontactinfo, RFAcomplaint, RFAserviceinfo], filename="RFApackage", title="Download all forms", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[RFAcomplaint, RFAaffidavit, RFAconfidentialcontactinfo, RFAserviceinfo, RFApackage_Post_interview_instructions], filename="RFApackage", title="Download all forms", enabled=True)
   #- al_court_bundle: ALDocumentBundle.using(elements=[RFAaffidavit, RFAconfidentialcontactinfo, RFAcomplaint, RFAserviceinfo],  filename="RFApackage", title="All forms to deliver to court", enabled=True)
 ---
 attachment:
@@ -2839,139 +2856,6 @@ attachment:
   docx template file: RFApackage_next_steps.docx
   variable name: RFApackage_Post_interview_instructions[i]
   skip undefined: True
----
-attachment:
-  name: 3 RFA-affidavit
-  filename: 3_RFA-affidavit
-  variable name: RFAaffidavit[i]
-  skip undefined: True
-  pdf template file: 3_RFA-affidavit.pdf
-  fields:
-      - "docket_number": ${ docket_number }
-      - "trial_court_county": ${ trial_court_name }
-      - "users1_name": ${ users[0] }
-      - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
-      - "other_parties1_name__1": ${ other_parties[0] }
-      - "other_parties1_name": ${ other_parties[0] }
-      - "other_parties1_birthdate": |
-          % if other_parties[0].birth_month:
-          ${ other_parties[0].birth_month }/
-          % endif
-          % if other_parties[0].birth_day:
-          ${ other_parties[0].birth_day }/
-          % endif
-          % if other_parties[0].birth_year:
-          ${ other_parties[0].birth_year }
-          % endif
-      - "other_parties1_address_address": |
-          % if defendant_address_unknown: 
-          Unknown
-          % else: 
-          ${ other_parties[0].address.line_one() }
-          % endif
-      - "other_parties1_address_city": |
-          % if defendant_address_unknown: 
-          Unknown
-          % else: 
-          ${ other_parties[0].address.city }
-          % endif
-      - "other_parties1_address_state": |
-          % if defendant_address_unknown: 
-          Unknown
-          % else: 
-          ${ other_parties[0].address.state }
-          % endif
-      - "other_parties1_address_zip": |
-          % if defendant_address_unknown: 
-          Unknown
-          % else: 
-          ${ other_parties[0].address.zip }
-          % endif 
-      - "recent_incident_date": ${ recent_incident_date }
-      - "recent_incident_time": ${ recent_incident_time }
-      - "recent_incident_town": ${ recent_incident_town }
-      - "recent_incident_state": |
-          % if recent_incident_state: 
-          ${ recent_incident_state }
-          % elif other_recent_incident_state:
-          ${ other_recent_incident_state }
-          % endif 
-      - "recent_incident_description": ${ RFAaffidavit.safe_value("recent_incident_description") }
-      - "recent_incident_most_serious_yes": ${ recent_incident_most_serious }
-      - "recent_incident_most_serious_no": ${ not recent_incident_most_serious }
-      - "serious_incident_date": ${ serious_incident_date }
-      - "serious_incident_time": ${ serious_incident_time }
-      - "serious_incident_town": ${ serious_incident_town }
-      - "serious_incident_state": |
-          % if serious_incident_state: 
-          ${ serious_incident_state }
-          % elif other_serious_incident_state:
-          ${ other_serious_incident_state }
-          % endif
-      - "serious_incident_description": ${ RFAaffidavit.safe_value("serious_incident_description") }
-      - "other_incident_description": ${ RFAaffidavit.safe_value("other_incident_description") }
-      - "other_parties1_weapon_yes": ${ weapons.there_are_any == True}
-      - "other_parties1_weapon_no": ${ weapons.there_are_any == False }
-      - "other_parties1_weapon_DK": ${ weapons.there_are_any == None }
-      - "weapon1": ${ weapons[0].description }
-      - "weapon1_location": ${ weapons[0].location }
-      - "weapon2": ${ weapons[1].description }
-      - "weapon2_location": ${ weapons[1].location }
-      - "weapon3_location": ${ weapons[2].location }
-      - "weapon3": ${ weapons[2].description }
-      - "weapon4_location": ${ weapons[3].location }
-      - "weapon4": ${ weapons[3].description }
-      - "weapon5_location": ${ weapons[4].location }
-      - "weapon5": ${ weapons[4].description }
-      - "weapon6_location": ${ weapons[5].location }
-      - "weapon6": ${ weapons[5].description }
-      - "weapon7": ${ weapons[6].description }
-      - "weapon7_location": ${ weapons[6].location }
-      - "weapon8": ${ weapons[7].description }
-      - "weapon8_location": ${ weapons[7].location }
-      - "extra_sheets_attached": |
-          % if RFAaffidavit.has_overflow(): 
-            1
-          % else:
-            0
-          % endif
-      - "weapons_overflow": ${ RFAaffidavit.has_overflow() }
-      - "used_weapon_yes": ${ used_weapon }
-      - "used_weapon_no": ${ not used_weapon }
-      - "used_weapon_how": ${ used_weapon_how }
-      - "danger_more_abuse_yes": ${ danger_more_abuse }
-      - "danger_more_abuse_no": ${ not danger_more_abuse }
-      - "danger_more_abuse_why": ${ RFAaffidavit.safe_value("danger_more_abuse_why") }
-      - "other_parties1_military_yes": ${ other_parties1_military }
-      - "other_parties1_military_no": ${ not other_parties1_military }
-      - "printed_signature": ${ printed_signature }
-      - "affidavit_signature_date": ${ format_date(signature_date, format='M/d/yyyy') }
-      - "users1_signature": ${ users[0].signature_if_final(i) }
----
-attachment:
-  name: 4 RFA-confidential-contact-info
-  filename: 4_RFA-confidential-contact-info
-  variable name: RFAconfidentialcontactinfo[i]
-  skip undefined: True
-  pdf template file: 4_RFA-confidential-contact-info.pdf
-  fields:
-      - "docket_number__1": ${ docket_number }
-      - "docket_number__2": ${ docket_number }
-      - "docket_number": ${ docket_number }
-      - "trial_court_county": ${ trial_court_name }
-      - "users1_name": ${ users[0] }
-      - "users1_address_address": ${ users[0].address.line_one() }
-      - "users1_address_mailing": ${ users[0].mailing_address.on_one_line() }
-      - "users1_address_city": ${ users[0].address.city }
-      - "users1_address_state": ${ users[0].address.state }
-      - "users1_address_zip": ${ users[0].address.zip }
-      - "users1_phone_number": ${ users[0].phone_number }
-      - "users1_work_phone_number": ${ users1_work_phone_number }
-      - "users1_email": ${ users[0].email }
-      - "share_contact_yes": ${ share_contact }
-      - "share_contact_no": ${ not share_contact }
-      - "signature_date": ${ format_date(signature_date, format='M/d/yyyy') }
-      - "users1_signature": ${ users[0].signature_if_final(i) }
 ---
 attachment:
   name: 1 RFA-complaint
@@ -3142,6 +3026,140 @@ attachment:
       - "request_other_description": ${ request_other_description }
       - "request_other": ${ other_request }
       - "request_all_emergency": ${ request_all_emergency }
+      - "signature_date": ${ format_date(signature_date, format='M/d/yyyy') }
+      - "users1_signature": ${ users[0].signature_if_final(i) }
+
+---
+attachment:
+  name: 3 RFA-affidavit
+  filename: 3_RFA-affidavit
+  variable name: RFAaffidavit[i]
+  skip undefined: True
+  pdf template file: 3_RFA-affidavit.pdf
+  fields:
+      - "docket_number": ${ docket_number }
+      - "trial_court_county": ${ trial_court_name }
+      - "users1_name": ${ users[0] }
+      - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
+      - "other_parties1_name__1": ${ other_parties[0] }
+      - "other_parties1_name": ${ other_parties[0] }
+      - "other_parties1_birthdate": |
+          % if other_parties[0].birth_month:
+          ${ other_parties[0].birth_month }/
+          % endif
+          % if other_parties[0].birth_day:
+          ${ other_parties[0].birth_day }/
+          % endif
+          % if other_parties[0].birth_year:
+          ${ other_parties[0].birth_year }
+          % endif
+      - "other_parties1_address_address": |
+          % if defendant_address_unknown: 
+          Unknown
+          % else: 
+          ${ other_parties[0].address.line_one() }
+          % endif
+      - "other_parties1_address_city": |
+          % if defendant_address_unknown: 
+          Unknown
+          % else: 
+          ${ other_parties[0].address.city }
+          % endif
+      - "other_parties1_address_state": |
+          % if defendant_address_unknown: 
+          Unknown
+          % else: 
+          ${ other_parties[0].address.state }
+          % endif
+      - "other_parties1_address_zip": |
+          % if defendant_address_unknown: 
+          Unknown
+          % else: 
+          ${ other_parties[0].address.zip }
+          % endif 
+      - "recent_incident_date": ${ recent_incident_date }
+      - "recent_incident_time": ${ recent_incident_time }
+      - "recent_incident_town": ${ recent_incident_town }
+      - "recent_incident_state": |
+          % if recent_incident_state: 
+          ${ recent_incident_state }
+          % elif other_recent_incident_state:
+          ${ other_recent_incident_state }
+          % endif 
+      - "recent_incident_description": ${ RFAaffidavit.safe_value("recent_incident_description") }
+      - "recent_incident_most_serious_yes": ${ recent_incident_most_serious }
+      - "recent_incident_most_serious_no": ${ not recent_incident_most_serious }
+      - "serious_incident_date": ${ serious_incident_date }
+      - "serious_incident_time": ${ serious_incident_time }
+      - "serious_incident_town": ${ serious_incident_town }
+      - "serious_incident_state": |
+          % if serious_incident_state: 
+          ${ serious_incident_state }
+          % elif other_serious_incident_state:
+          ${ other_serious_incident_state }
+          % endif
+      - "serious_incident_description": ${ RFAaffidavit.safe_value("serious_incident_description") }
+      - "other_incident_description": ${ RFAaffidavit.safe_value("other_incident_description") }
+      - "other_parties1_weapon_yes": ${ weapons.there_are_any == True}
+      - "other_parties1_weapon_no": ${ weapons.there_are_any == False }
+      - "other_parties1_weapon_DK": ${ weapons.there_are_any == None }
+      - "weapon1": ${ weapons[0].description }
+      - "weapon1_location": ${ weapons[0].location }
+      - "weapon2": ${ weapons[1].description }
+      - "weapon2_location": ${ weapons[1].location }
+      - "weapon3_location": ${ weapons[2].location }
+      - "weapon3": ${ weapons[2].description }
+      - "weapon4_location": ${ weapons[3].location }
+      - "weapon4": ${ weapons[3].description }
+      - "weapon5_location": ${ weapons[4].location }
+      - "weapon5": ${ weapons[4].description }
+      - "weapon6_location": ${ weapons[5].location }
+      - "weapon6": ${ weapons[5].description }
+      - "weapon7": ${ weapons[6].description }
+      - "weapon7_location": ${ weapons[6].location }
+      - "weapon8": ${ weapons[7].description }
+      - "weapon8_location": ${ weapons[7].location }
+      - "extra_sheets_attached": |
+          % if RFAaffidavit.has_overflow(): 
+            1
+          % else:
+            0
+          % endif
+      - "weapons_overflow": ${ RFAaffidavit.has_overflow() }
+      - "used_weapon_yes": ${ used_weapon }
+      - "used_weapon_no": ${ not used_weapon }
+      - "used_weapon_how": ${ used_weapon_how }
+      - "danger_more_abuse_yes": ${ danger_more_abuse }
+      - "danger_more_abuse_no": ${ not danger_more_abuse }
+      - "danger_more_abuse_why": ${ RFAaffidavit.safe_value("danger_more_abuse_why") }
+      - "other_parties1_military_yes": ${ other_parties1_military }
+      - "other_parties1_military_no": ${ not other_parties1_military }
+      - "printed_signature": ${ printed_signature }
+      - "affidavit_signature_date": ${ format_date(signature_date, format='M/d/yyyy') }
+      - "users1_signature": ${ users[0].signature_if_final(i) }
+---
+attachment:
+  name: 4 RFA-confidential-contact-info
+  filename: 4_RFA-confidential-contact-info
+  variable name: RFAconfidentialcontactinfo[i]
+  skip undefined: True
+  pdf template file: 4_RFA-confidential-contact-info.pdf
+  fields:
+      - "docket_number__1": ${ docket_number }
+      - "docket_number__2": ${ docket_number }
+      - "docket_number": ${ docket_number }
+      - "trial_court_county": ${ trial_court_name }
+      - "users1_name": ${ users[0] }
+      - "users1_address_address": ${ users[0].address.line_one() }
+      - "users1_address_mailing": ${ users[0].mailing_address.on_one_line() }
+      - "users1_address_city": ${ users[0].address.city }
+      - "users1_address_state": ${ users[0].address.state }
+      - "users1_address_zip": ${ users[0].address.zip }
+      - "users1_phone_number": ${ users[0].phone_number }
+      - "users1_work_phone_number": ${ users1_work_phone_number }
+      - "users1_email": ${ users[0].email }
+      - "share_contact_yes": ${ share_contact }
+      - "share_contact_no": ${ not share_contact }
       - "signature_date": ${ format_date(signature_date, format='M/d/yyyy') }
       - "users1_signature": ${ users[0].signature_if_final(i) }
 ---
