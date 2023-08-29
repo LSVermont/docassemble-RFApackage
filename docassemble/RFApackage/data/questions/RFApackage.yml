@@ -1,4 +1,6 @@
-#I added users signature to review screen but now cannot edit it. Moved my test interview order pieces down where they belong to see if that fixes it. Does signature end up on PDF?
+#I added users signature to review screen but now cannot edit it. Moved my test interview order pieces down where they belong to see if that fixes it. 
+
+#Need to make sure signature date gets on forms
 
 #I added css to style.css to indent show-if subquestions. Go through interview on phone and computer to see what else it impacted
 
@@ -8,7 +10,7 @@
 
 #I extended the possible years of birth for Def.
 
-#
+#I fixed this    if weapons.number() > 8: 
 
 ---
 include:
@@ -109,7 +111,7 @@ code: |
   AL_ORGANIZATION_TITLE = "VTCourtForms"
 ---
 code: |
-  AL_ORGANIZATION_HOMEPAGE = "https://vtlawhelp.org/"
+  AL_ORGANIZATION_HOMEPAGE = "https://vtlawhelp.org/vtcourtforms"
 ---
 objects:
   - al_logo: DAStaticFile.using(filename="LSV_bug.png")
@@ -332,8 +334,6 @@ subquestion: |
   
   <i class="fas fa-share-nodes fa-2x"></i> Use the Share feature at the bottom of the page to share your progress with a trusted friend or advocate.
   
-  <i class="fas fa-sign-out-alt fa-2x"></i> After saving or printing your work, log out and close your web browser.
-  
   VTCourtForms interviews were created by Legal Services Vermont with support from the Legal Services Corporation. It is free to use this program. This site is not a lawyer. Visit our [VTLawHelp.org website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-1) for more information about Relief from Abuse orders.
   
   [FILE big_logo, 30%, Legal Services Vermont logo]
@@ -386,10 +386,13 @@ question: |
 subquestion: |  
   * Make sure you are in a safe place. It takes time to work through this interview. It may take 1 hour or more.
   * If you are in danger right now, dial 911.
+  * Use a computer or device that no one else has access to. If you don't have access to a safe device, consider contacting an advocate at the [Vermont Network](https://www.vtnetwork.org/get-help/) so they can fill out the forms for you.
+  * QUICK EXIT: There is an "Exit and delete my answers" option under the Menu at the top of the screen. This is a way to clear the answers you filled in.
+  * Consider creating an account and saving your work along the way. You could log in later to review your answers with an advocate. Choose “sign up” in the menu above, or “register” below. Even if you don’t create an account, at the end you can download your completed forms and the instructions sheet for the next steps to take. You can email the filled-in PDF forms to yourself or someone else, too. You can also send yourself or an advocate a link to your interview at anytime by using the Share feature.
+  * If you are signed into your account, you can save your work and then log out so no one can come along and see what you were working on.
+  * Click "Share" at the bottom of this page to share a link to your progress with someone you trust. Important: The person you share this link with will be able to see AND change your answers.
   * Use this interview if you are asking for an RFA order for you, **or** both you and your children. (There are different forms for [asking for an RFA only on behalf of a child or children.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3))
   * The forms in this interview can only be used in Vermont courts.
-  * Consider creating an account and saving your work along the way. You could log in later to review your answers with an advocate. Choose “sign up” in the menu above, or “register” below. Even if you don’t create an account, at the end you can download your completed forms and the instructions sheet for the next steps to take. You can email the filled-in PDF forms to yourself or someone else, too.
-  * Click "Share" at the bottom of this page to share a link to your progress with someone you trust. Important: The person you share this link with will be able to see AND change your answers.
   <h3 class="h4">Information you will need</h3>
   * To complete this interview, you will need to know the date or dates when the abuse occurred and give a detailed description of the abuse. This includes the most recent incident and the most serious incident. You will need to fully describe the incidents and make it clear how severe or how frequent the abuse has been.
   * You will need to give a safe address and telephone number where the court can reach you. If you don’t have one, ask an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/)
@@ -427,8 +430,8 @@ subquestion: |
   [Find the right forms to extend or change an existing RFA order on this page of the VTLawHelp.org website.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-6) You can also find out who to contact for help.
 continue button field: initial_screening_questions_1_exit
 buttons:
-  - Exit: exit
-    url: https://vtlawhelp.org
+  - Go to information: exit
+    url: https://vtlawhelp.org/roadmap/relief-from-abuse/step-6
 ---
 id: initial_screening_questions_2
 question: |
@@ -461,8 +464,8 @@ subquestion: |
   Instead, [learn about your options on this page of the VTLawHelp.org website.](https://vtlawhelp.org/protection-minors) You can also find out who to contact for help.
 continue button field: initial_screening_questions_2_exit
 buttons:
-  - Exit: exit
-    url: https://vtlawhelp.org
+  - Go to information: exit
+    url: https://vtlawhelp.org/protection-minors
 ---    
 id: initial_screening_questions_2_exit_a
 question: |
@@ -473,8 +476,8 @@ subquestion: |
   [On this page of the VTLawHelp.org website](https://vtlawhelp.org/stalking-and-sexual-assault), learn about other options that include getting an Order Against Sexual Assault or an Order Against Stalking. You can also find out who to contact for help.
 continue button field: initial_screening_questions_2_exit_a
 buttons:
-  - Exit: exit
-    url: https://vtlawhelp.org
+  - Go to information: exit
+    url: https://vtlawhelp.org/stalking-and-sexual-assault
 ---
 id: initial_screening_questions_3
 question: |
@@ -496,8 +499,8 @@ subquestion: |
   [On this page of the VTLawHelp.org website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3), learn about the other forms to use when asking for an RFA order **only** on behalf of a child or children. You can also find out who to contact for help.
 continue button field: initial_screening_questions_3_exit
 buttons:
-  - Exit: exit
-    url: https://vtlawhelp.org
+  - Go to information: exit
+    url: https://vtlawhelp.org/roadmap/relief-from-abuse/step-3
 ---
 id: initial_screening_questions_4
 question: |
@@ -534,8 +537,8 @@ subquestion: |
   Consult with a lawyer or legal aid organization in your state or the defendant’s home state.
 continue button field: initial_screening_questions_5_exit_a
 buttons:
-  - Exit: exit
-    url: https://vtlawhelp.org
+  - Go to legal aid website: exit
+    url: https://vtlawhelp.org/how-we-can-help
 ---
 id: initial_screening_questions_5_exit_b
 question: |
@@ -550,8 +553,8 @@ subquestion: |
   Ask a lawyer, like the lawyers at [Legal Services Vermont and Vermont Legal Aid](https://vtlawhelp.org). Find out whether you should use these forms or not.
 continue button field: initial_screening_questions_5_exit_b
 buttons:
-  - Exit: exit
-    url: https://vtlawhelp.org
+  - Go to legal aid website: exit
+    url: https://vtlawhelp.org/how-we-can-help
     
 ---
 id: initial_screening_questions_5_important_note
@@ -2515,7 +2518,7 @@ review:
       Weapons
       % for item in weapons:
       
-        1. **${ item.description }**
+        1. **${ item.description }    ${ item.location }**
       
       % endfor   
       
@@ -3120,7 +3123,7 @@ attachment:
       - "weapon8": ${ weapons[7].description }
       - "weapon8_location": ${ weapons[7].location }
       - "extra_sheets_attached": |
-          % if RFAaffidavit.has_overflow(): 
+          % if weapons.number() > 8: 
             1
           % else:
             0
