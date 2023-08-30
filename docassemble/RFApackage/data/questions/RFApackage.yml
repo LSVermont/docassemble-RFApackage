@@ -299,7 +299,6 @@ code: |
   nav.set_section("intro")
   al_intro_screen
   RFApackage_intro
-  RFApackage_intro_2
   interview_order_RFApackage
 
   # Store anonymous data for analytics / statistics
@@ -330,11 +329,11 @@ subquestion: |
   
   <i class="fas fa-file-text fa-2x"></i> This guided interview will produce a complete package of 4 forms needed to ask the court for a Relief from Abuse (RFA) order in Vermont: the Complaint, Affidavit, Confidential Notification form and Protection Order Service Information form. Learn more about RFA orders and this interview on the next screen.
   
-  <i class="fas fa-clock fa-2x"></i> It may take you over 1 hour to complete this interview.
+  <i class="fas fa-clock fa-2x"></i> It may take you over 1 hour to complete this interview. Make sure you are in a safe place.
   
-  <i class="fas fa-share-nodes fa-2x"></i> Use the Share feature at the bottom of the page to share your progress with a trusted friend or advocate.
+  <i class="fas fa-circle-info fa-2x"></i> It is free to use this program. This site is not a lawyer. Visit our [VTLawHelp.org website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-1) for more information about Relief from Abuse orders.
   
-  VTCourtForms interviews were created by Legal Services Vermont with support from the Legal Services Corporation. It is free to use this program. This site is not a lawyer. Visit our [VTLawHelp.org website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-1) for more information about Relief from Abuse orders.
+  VTCourtForms interviews were created by Legal Services Vermont with support from the Legal Services Corporation and assistance from the Suffolk University Legal Innovation and Technology (LIT) Lab Document Assembly Line Project. We also had help from Vermont Legal Aid, Vermont Judiciary and other Vermont organizations.
   
   [FILE big_logo, 30%, Legal Services Vermont logo]
 #  Tap the {green words} in any screen for a definition or more information.
@@ -369,51 +368,23 @@ continue button field: al_intro_screen
 id: RFApackage_intro
 continue button field: RFApackage_intro
 question: |
-  What to know before you start
+  Important information before you start!
 subquestion: |
-  Some important things to know about asking the court for a Relief from Abuse order (RFA) in Vermont:
+  If you haven't reviewed this important information already on the VTLawHelp.org website, take time to do so:
   
-  * There is no fee for an RFA order. It is free. 
-  * **Even when the courts are closed, it’s after hours, or it’s a weekend or holiday, you can start a Relief from Abuse case.** You may be able to get a temporary order right away to help keep you safe. At these times, you can email these forms and then make a follow-up call to the courts. Or simply call and ask for help. Call the Vermont courts’ answering service at 1-800-540-9990. Say that you need help applying for a Relief from Abuse order over the phone. If you call, you need to leave a message with a number where they can call you back within an hour.
-  * Many people in Vermont get an RFA without a lawyer. But you do not have to do this on your own. You can get help from one of the member organizations of the [Vermont Network Against Domestic and Sexual Violence](https://www.vtnetwork.org/get-help/).
-  * Applying for an RFA order can be a very dangerous time. Consider working with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan — whether you end up asking for an RFA or not.
-  * For details on the whole RFA process, visit the [RFA Roadmap on the VTLawHelp.org website.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-1)
----
-id: RFApackage_intro_2
-continue button field: RFApackage_intro_2
-question: |
-  About using this guided interview
-subquestion: |  
-  * Make sure you are in a safe place. It takes time to work through this interview. It may take 1 hour or more.
-  * If you are in danger right now, dial 911.
-  * Use a computer or device that no one else has access to. If you don't have access to a safe device, consider contacting an advocate at the [Vermont Network](https://www.vtnetwork.org/get-help/) so they can fill out the forms for you.
-  * QUICK EXIT: There is an "Exit and delete my answers" option under the Menu at the top of the screen. This is a way to clear the answers you filled in.
-  * Consider creating an account and saving your work along the way. You could log in later to review your answers with an advocate. Choose “sign up” in the menu above, or “register” below. Even if you don’t create an account, at the end you can download your completed forms and the instructions sheet for the next steps to take. You can email the filled-in PDF forms to yourself or someone else, too. You can also send yourself or an advocate a link to your interview at anytime by using the Share feature.
-  * If you are signed into your account, you can save your work and then log out so no one can come along and see what you were working on.
-  * Click "Share" at the bottom of this page to share a link to your progress with someone you trust. Important: The person you share this link with will be able to see AND change your answers.
-  * Use this interview if you are asking for an RFA order for you, **or** both you and your children. (There are different forms for [asking for an RFA only on behalf of a child or children.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3))
-  * The forms in this interview can only be used in Vermont courts.
-  <h3 class="h4">Information you will need</h3>
-  * To complete this interview, you will need to know the date or dates when the abuse occurred and give a detailed description of the abuse. This includes the most recent incident and the most serious incident. You will need to fully describe the incidents and make it clear how severe or how frequent the abuse has been.
-  * You will need to give a safe address and telephone number where the court can reach you. If you don’t have one, ask an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/)
-  * You will need an address of some kind for the "defendant" -- the person who is doing the abuse. If you don't know the defendant's home address, you can give their work address. Or give the address of the place where they are staying. You need to provide at least one address.
-  * You will see important questions about weapons that the defendant might have access to. If you list what they are and where they are located, the court can order law enforcement to collect them to help keep you safe.
-  <h3 class="h4">After answering the questions</h3>
-  * At the end you will get a chance to preview your forms and make changes if you need to. 
-  * Then you can download, print and/or save a PDF of your completed forms.
-  * You will also get an instruction sheet about how to get the completed forms to the court – this includes emailing them or dropping them off at your local family court.
+  * [Things to know before you start](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#what-to-know)
+  * [About using this guided interview **safely**](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#about-this-interview)
+  * [Information you will need on hand](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#info-you-need)
+  * [After answering the questions](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#after-questions)
   
   Next, let’s make sure this is the right interview for your situation.
-  
-  
-  
-  
 ---
 id: initial_screening_questions_1
 question: |
   See if this interview is right for your situation
 subquestion: |
-  Note: A red asterisk <span style="color:red;">*</span> means an answer is required before you can move on.
+  **Note**: A red asterisk <span style="color:red;">*</span> means an answer is required before you can move on.
+  
 fields:
   - What do you want to do?: what_want_to_do
     input type: radio
