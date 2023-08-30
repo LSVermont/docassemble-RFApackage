@@ -521,7 +521,7 @@ subquestion: |
   
   If the Vermont courts do not have jurisdiction, they may not have the power to issue a Relief from Abuse order that the defendant must obey.
   
-  Ask a lawyer, like the lawyers at [Legal Services Vermont and Vermont Legal Aid](https://vtlawhelp.org). Find out whether you should use these forms or not.
+  Ask a lawyer, like the lawyers at [Legal Services Vermont and Vermont Legal Aid](https://vtlawhelp.org/how-we-can-help). Find out whether you should use these forms or not.
 continue button field: initial_screening_questions_5_exit_b
 buttons:
   - Go to legal aid website: exit
@@ -538,7 +538,7 @@ subquestion: |
   
   If the Vermont courts do not have jurisdiction, they may not have the power to issue a Relief from Abuse order that the defendant must obey.
   
-  Ask a lawyer, like the lawyers at [Legal Services Vermont and Vermont Legal Aid](https://vtlawhelp.org). Find out whether you should use these forms or not.
+  Ask a lawyer, like the lawyers at [Legal Services Vermont and Vermont Legal Aid](https://vtlawhelp.org/how-we-can-help). Find out whether you should use these forms or not.
 continue button field: initial_screening_questions_5_important_note
 ---
 id: choose a court
@@ -1130,9 +1130,6 @@ subquestion: |
 fields:
   - "Order the defendant to not abuse me or my children, and not interfere with our personal liberty": request_not_abuse
     datatype: yesno
-  - note: |
-      Note: It would be helpful to gather copies of your utility bills, rent payments and other bills that you’d like covered. The judge may ask to see them at a hearing.
-    show if: request_not_abuse
   - "I want the order to protect me from this.": request_not_abuse_users1
     datatype: yesno
     show if: request_not_abuse
@@ -1169,10 +1166,13 @@ fields:
     datatype: yesno
   - "Order the defendant to pay my temporary living expenses": request_living_expenses
     datatype: yesno
+  - note: |
+      Note: It would be helpful to gather copies of your utility bills, rent payments and other bills that you’d like covered. The judge may ask to see them at a hearing.
+    show if: request_living_expenses
   - "Order the defendant to pay temporary child support": request_child_support
     datatype: yesno
   - note: |
-      Note: It would be helpful to gather copies of your utility bills, rent payments and other bills that you’d like covered. The judge may ask to see them at a hearing.
+      Note: If you need help with child support, contact the [Vermont Office of Child Support](https://dcf.vermont.gov/ocs/parents) as well.
     show if: request_child_support
   - "Order the defendant to stop cruelly treating pets": request_no_pet_harm
     datatype: yesno
@@ -1188,7 +1188,6 @@ fields:
     
   - "Order me to get temporary possession and control of the pet(s)": request_control_of_pet
     datatype: yesno
-    show if: request_no_pet_harm  
   - "Order the defendant to stay a certain distance away": request_stay_away
     datatype: yesno
   - "How many feet away? (300 feet is the standard stay-away order)": request_stay_away_feet
@@ -2489,7 +2488,7 @@ review:
       Weapons
       % for item in weapons:
       
-        1. **${ item.description }    ${ item.location }**
+        1. **${ item.description }  --  ${ item.location }**
       
       % endfor   
       
@@ -2663,6 +2662,10 @@ review:
   - Edit: notify_served
     button: |
       - You wish to be notified after the order is served: **${ yesno(notify_served) }**
+      
+      % if notify_served:
+      - At this number: **${ users1_notify_phone_number  }**
+      % endif
       
       - The defendant will try to avoid being served this order: **${ yesno(avoid_served) }**
       
