@@ -1,16 +1,14 @@
-#I worked on users.table and review screen user info, and now can edit signature
-
-#I added css to style.css to indent show-if subquestions. Go through interview on phone and computer to see what else it impacted
-
-#I cannot get signature_date to show on review screen or on PDFs  - Edit: | - signature_date  button: |
+#I removed the css file I had edited. Needs work.
 
 #Why is this review block not showing?   - Edit:   - users1_no_shelter
-# Should it be
+# Should it be...
 #You would like the defendant to be removed from your home in order to be safe: users1_no_shelter
 #The address of the home -- on one line:**${val('residence_shared_address')}**
 #% if rent_or_own != '':
 #The home is **${ val('rent_or_own')}** by **${val('whose_name')}**
 #% endif
+
+#And also need to show house (Def. address for LE) on review screen
 
 ---
 include:
@@ -1002,6 +1000,8 @@ fields:
   - "In what state was the most serious incident?": serious_incident_state
     code: states_list() 
     required: False
+  - note: |
+      <span style="color:red;">*</span> Please enter either a state, above, or the area outside the U.S., below.
   - "If it happened outside of the United States, enter the province / state here and the country.": other_serious_incident_state
     required: False
     maxlength: 12
@@ -1846,7 +1846,6 @@ review:
     - users.revisit
     #- users[0].address.address
     #- users[0].mailing_address.address
-    #- reach_up_users1
     button: |
       **Plaintiff / You**
       % if users.there_are_any:
@@ -1865,7 +1864,7 @@ review:
         - Mailing: **${ users[0].mailing_address.on_one_line() }**
       % endif
       - Your signature: ${ users[0].signature }
-      - Reach Up benefits: **${ yesno(reach_up_users1) }**
+
   - Edit: 
     - users[0].phone_number
     button: |
@@ -1882,8 +1881,13 @@ review:
       % endif
   - Edit: 
     - share_contact
+    - reach_up_users1
     button: |
       - You consent to the release of your address and contact information: **${ yesno(share_contact) }**
+
+      % if reach_up_users1 != '':
+      - You get Reach Up benefits: **${ showifdef(yesno('reach_up_users1')) }**
+      % endif
       
   - Edit: children.revisit
     button: |
@@ -1893,8 +1897,7 @@ review:
       - **${ item }**
       % endfor
       
-  - Edit: 
-    - users1_no_shelter
+  - Edit: users1_no_shelter
     button: |
       **Your safe shelter**
       
@@ -1972,12 +1975,19 @@ review:
       % endif
       % endfor
       
-  - Edit: other_parties[0].birth_day
+  - Edit: other_parties_estimated_age
     button: |
-      % if other_parties[0].birth_day != '':
-      - Defendant's birthday: **${ showifdef('other_parties[0].birth_month') }/${ showifdef('other_parties[0].birth_day') }/${ showifdef('other_parties[0].birth_year') }**
+      % if other_parties[0].birth_month:
+      - Defendant's birthday: ${ other_parties[0].birth_month }/
       % endif
-      - About this old: **${ showifdef('other_parties_estimated_age') }**
+      % if other_parties[0].birth_day:
+      ${ other_parties[0].birth_day }/
+      % endif
+      % if other_parties[0].birth_year:
+      ${ other_parties[0].birth_year }
+      % endif
+      
+      - Defendant is about this old: **${ showifdef('other_parties_estimated_age') }**
 
   - Edit: 
     - reach_up_OP
@@ -2008,9 +2018,12 @@ review:
       - Other phone: **${ showifdef('other_parties1_other_phone_number') }**  
       % endif
       
-  - Edit: best_contact_time
+  - Edit: 
+    - house
+    - best_contact_time
+    - other_parties1_street_only
     button: |
-      **Defendant's home address -- for law enforcement**
+      **Defendant's home address -- details for law enforcement**
       
       - The house or building number on the street -- ONLY the number: **${ showifdef('house') }**
       
@@ -2330,9 +2343,11 @@ review:
 
   - note: | 
       ##Your relationship to the defendant##
-  - Edit: relationship_question
-    button: |
-      - **${ showifdef('relationship_question') }**
+      
+#  - Edit: relationship_question
+#    button: |
+#      - **${ showifdef('relationship_question') }**
+      
   - Edit: 
     - is_spouse   
     button: |
@@ -2363,26 +2378,27 @@ review:
       % if other_relationship:
       - A different relationship to you: **${ yesno(other_relationship) }** - **${ other_relationship_description }**
       % endif
-  - Edit: relationship_for_LE
+  - Edit:
+    - relationship_for_LE
     button: |
       % if relationship_for_LE["spouse_or_ex_spouse"]:
-        -  You are the spouse or ex-spouse (former spouse) of the defendant: **${ word(yesno(relationship_for_LE["spouse_or_ex_spouse"])) }** 
+      -  You are the spouse or ex-spouse (former spouse) of the defendant: **${ word(yesno(relationship_for_LE["spouse_or_ex_spouse"])) }** 
       % endif
       
       % if relationship_for_LE["lived_together"]:
-        - The defendant and you have lived together while having a sexual relationship together: **${ word(yesno(relationship_for_LE["lived_together"])) }**
+      - The defendant and you have lived together while having a sexual relationship together: **${ word(yesno(relationship_for_LE["lived_together"])) }**
       % endif
       
       % if relationship_for_LE["had_kids_together"]:
-        - The defendant and you have a child or children in common: **${ word(yesno(relationship_for_LE["had_kids_together"])) }**
+      - The defendant and you have a child or children in common: **${ word(yesno(relationship_for_LE["had_kids_together"])) }**
       % endif
       
       % if relationship_for_LE["defendants_child"]:
-        - You are the defendant’s child or step-child, **or** you are filing on behalf of that child or step-child: **${ word(yesno(relationship_for_LE["defendants_child"])) }**
+      - You are the defendant’s child or step-child, **or** you are filing on behalf of that child or step-child: **${ word(yesno(relationship_for_LE["defendants_child"])) }**
       % endif
       
       % if relationship_for_LE["plaintiffs_child"]:
-        - You are the child of a person who currently or has in the past lived with the defendant while having a sexual relationship together, **or** you are  filing on behalf of that person: **${ word(yesno(relationship_for_LE["plaintiffs_child"])) }**
+      - You are the child of a person who currently or has in the past lived with the defendant while having a sexual relationship together, **or** you are  filing on behalf of that person: **${ word(yesno(relationship_for_LE["plaintiffs_child"])) }**
       % endif
   - note: | 
       ##What happened##
@@ -2711,10 +2727,9 @@ review:
       % endif
     
 
-#  - Edit: |
-#    - signature_date
-#    button: |
-#      - Signature date to put on forms: **${ (format_date(signature_date, format='M/d/yyyy') }**
+  - Edit: signature_date
+    button: |
+      Signature date to put on forms: **${ (format_date(signature_date, format='M/d/yyyy')) }**
   - note: |       
       Attestation you agreed to: "I declare that my statements are true and accurate to the best of my knowledge and belief. I understand that if my statements are false, I will be subject to the penalty of perjury or to other sanctions in the discretion of the court."
      
