@@ -1,16 +1,16 @@
-#I added users signature to review screen but now cannot edit it. Moved my test interview order pieces down where they belong to see if that fixes it. 
-
-#Need to make sure signature date gets on forms
+#I worked on users.table and review screen user info, and now can edit signature
 
 #I added css to style.css to indent show-if subquestions. Go through interview on phone and computer to see what else it impacted
 
-#The form does not require digital signature option didn't work until I put it in the interview order code block
+#I cannot get signature_date to show on review screen or on PDFs  - Edit: | - signature_date  button: |
 
-#I changed order of download list
-
-#I extended the possible years of birth for Def.
-
-#I fixed this    if weapons.number() > 8: 
+#Why is this review block not showing?   - Edit:   - users1_no_shelter
+# Should it be
+#You would like the defendant to be removed from your home in order to be safe: users1_no_shelter
+#The address of the home -- on one line:**${val('residence_shared_address')}**
+#% if rent_or_own != '':
+#The home is **${ val('rent_or_own')}** by **${val('whose_name')}**
+#% endif
 
 ---
 include:
@@ -370,11 +370,11 @@ continue button field: RFApackage_intro
 question: |
   Important information before you start!
 subquestion: |
-  If you haven't reviewed this important information already on the VTLawHelp.org website, take time to do so:
+  If you haven't reviewed this important information already on the VTLawHelp.org website, please take time to do so:
   
   * [Things to know before you start](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#what-to-know)
   * [About using this guided interview **safely**](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#about-this-interview)
-  * [Information you will need on hand](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#info-you-need)
+  * [Information you will need at hand](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#info-you-need)
   * [After answering the questions](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#after-questions)
   
   Next, let’s make sure this is the right interview for your situation.
@@ -833,7 +833,7 @@ fields:
     required: False
   - note: |
       **About how old is ${ other_parties }?**
-  - Age: other_parties[0].age
+  - Age: other_parties_estimated_age
     datatype: integer
     code: |
       range(1,100+1)
@@ -1844,17 +1844,18 @@ review:
       ##Information about you##
   - Edit: 
     - users.revisit
-    - users[0].address.address
-    - reach_up_users1
-    - users[0].mailing_address.address
-    - users[0].signature
+    #- users[0].address.address
+    #- users[0].mailing_address.address
+    #- reach_up_users1
     button: |
-      **Plaintiff**
+      **Plaintiff / You**
       % if users.there_are_any:
       % for item in users:
       
         - **${ item }**
       
+        - Birthday: **${ format_date(users[0].birthdate, format='M/d/yyyy') }**
+        
         - Address: **${ item.address.on_one_line() }**
       
       % endfor
@@ -1863,7 +1864,7 @@ review:
       % if users[0].mailing_address != '':
         - Mailing: **${ users[0].mailing_address.on_one_line() }**
       % endif
-      
+      - Your signature: ${ users[0].signature }
       - Reach Up benefits: **${ yesno(reach_up_users1) }**
   - Edit: 
     - users[0].phone_number
@@ -1883,6 +1884,7 @@ review:
     - share_contact
     button: |
       - You consent to the release of your address and contact information: **${ yesno(share_contact) }**
+      
   - Edit: children.revisit
     button: |
       **Children**
@@ -1890,6 +1892,7 @@ review:
       % for item in children:
       - **${ item }**
       % endfor
+      
   - Edit: 
     - users1_no_shelter
     button: |
@@ -1956,6 +1959,7 @@ review:
       - Other names the defendant uses (aliases): **${ showifdef('other_parties1_aliases') }**
       % endif
       
+      
       % for item in other_parties:
       % if defendant_address_unknown:
       
@@ -1967,6 +1971,25 @@ review:
       
       % endif
       % endfor
+      
+  - Edit: other_parties[0].birth_day
+    button: |
+      % if other_parties[0].birth_day != '':
+      - Defendant's birthday: **${ showifdef('other_parties[0].birth_month') }/${ showifdef('other_parties[0].birth_day') }/${ showifdef('other_parties[0].birth_year') }**
+      % endif
+      - About this old: **${ showifdef('other_parties_estimated_age') }**
+
+  - Edit: 
+    - reach_up_OP
+    - other_parties1_military
+    - incarcerated
+    button: |
+      - Reach Up benefits: **${ yesno(reach_up_OP) }**
+      
+      - Current member of the military: **${ yesno(other_parties1_military) }**
+      
+      - Incarcerated (in jail) and has been convicted of one of the crimes specified in 15 V.S.A. 1103 (c)(1)(B): **${ yesno(incarcerated) }**
+      
   - Edit: other_parties[0].phone_number
     button: |
       % if other_parties[0].phone_number != '':
@@ -1984,13 +2007,14 @@ review:
       % if other_parties1_other_phone_number != '':
       - Other phone: **${ showifdef('other_parties1_other_phone_number') }**  
       % endif
-  - Edit: house
+      
+  - Edit: best_contact_time
     button: |
-      **Defendant's home address**
+      **Defendant's home address -- for law enforcement**
       
-      - The house or building number on the street: **${ showifdef('house') }**
+      - The house or building number on the street -- ONLY the number: **${ showifdef('house') }**
       
-      - Name of the street or Town Road number: **${ showifdef('other_parties1_street_only') }**
+      - Name of the street or Town Road number -- ONLY the street name: **${ showifdef('other_parties1_street_only') }**
       
       - Town / city: **${ showifdef('other_parties1_city') }**
       
@@ -2281,38 +2305,29 @@ review:
       % endif
       
       % if hair_beard:
-      **Beard**: ${ yesno(hair_beard) }
+      Beard: **${ yesno(hair_beard) }**
       % endif
       
       % if hair_mustache:
-      **Mustache**: ${ yesno(hair_mustache) }
+      Mustache: **${ yesno(hair_mustache) }**
       % endif
       
       % if tattoos: 
-      **Tattoos**: ${ yesno(tattoos) } - **${ showifdef('tattoos_location') }**
+      Tattoos: **${ yesno(tattoos) } - ${ showifdef('tattoos_location') }**
       % endif
       
       % if scars:
-      **Scars or marks**: ${ word(yesno(scars)) } - **${ showifdef('scars_location') }**
+      Scars or marks: **${ word(yesno(scars)) } - ${ showifdef('scars_location') }**
       % endif
       
       % if piercing:
-      **Body piercing / earrings**: ${ word(yesno(piercing)) } - **${ showifdef('piercing_location') }**
+      Body piercing / earrings: **${ word(yesno(piercing)) } - ${ showifdef('piercing_location') }**
       % endif
       
       % if other_marks:
-      **Other identifying marks**: ${ word(yesno(other_marks)) } - **${ showifdef('marks_location') }**
+      Other identifying marks: **${ word(yesno(other_marks)) } - ${ showifdef('marks_location') }**
       % endif
-  - Edit: 
-    - reach_up_OP
-    - other_parties1_military
-    - incarcerated
-    button: |
-      - Reach Up benefits: **${ yesno(reach_up_OP) }**
-      
-      - Current member of the military: **${ yesno(other_parties1_military) }**
-      
-      - Incarcerated (in jail) and has been convicted of one of the crimes specified in 15 V.S.A. 1103 (c)(1)(B): **${ yesno(incarcerated) }**
+
   - note: | 
       ##Your relationship to the defendant##
   - Edit: relationship_question
@@ -2391,7 +2406,7 @@ review:
       % endif
       
       % if other_recent_incident_state:
-      - State/province of the country of the most recent incident if outside of the U.S.: **${other_recent_incident_state}**
+      - State/province/country of the most recent incident if outside of the U.S.: **${other_recent_incident_state}**
       % endif
       
       - Most recent incident description: **${ recent_incident_description }**
@@ -2437,24 +2452,40 @@ review:
       - The defendant sexually assault the child/children: **${ yesno(recent_incident_assault_children) }**
       
       % endif
+
+
+  - Edit: 
+    - recent_incident_most_serious
+    - serious_incident_description
+    button: |
+      Was most recent also the most serious incident: **${ yesno(recent_incident_most_serious) }**
+      
   - Edit:
     - serious_incident_description
     button: |
       **Most serious incident**
           
       % if serious_incident_date:      
-      Date of the most serious incident: **${ serious_incident_date }**
+      - Date of the most serious incident: **${ serious_incident_date }**
       % endif
       
       % if serious_incident_time:
-      Time of the most serious incident: **${ serious_incident_time }**
+      - Time of the most serious incident: **${ serious_incident_time }**
       % endif
 
       % if serious_incident_town:
-      Town of the most serious incident: **${ serious_incident_town }**
+      - Town of the most serious incident: **${ serious_incident_town }**
       % endif
 
-      Most serious incident description: **${ serious_incident_description }**
+      % if serious_incident_state:
+      - State of the most serious incident: **${ serious_incident_state }**
+      % endif
+      
+      % if other_serious_incident_state:
+      - State/province/country of the most serious incident if outside of the U.S.: **${other_serious_incident_state}**
+      % endif
+
+      - Most serious incident description: **${ serious_incident_description }**
   - Edit:
     - other_incident
     button: |
@@ -2664,7 +2695,7 @@ review:
       - You wish to be notified after the order is served: **${ yesno(notify_served) }**
       
       % if notify_served:
-      - At this number: **${ users1_notify_phone_number  }**
+      - At this phone number: **${ users1_notify_phone_number  }**
       % endif
       
       - The defendant will try to avoid being served this order: **${ yesno(avoid_served) }**
@@ -2679,6 +2710,14 @@ review:
       Why the officer will be in danger: **${ showifdef('danger_for_officer_why') }**
       % endif
     
+
+#  - Edit: |
+#    - signature_date
+#    button: |
+#      - Signature date to put on forms: **${ (format_date(signature_date, format='M/d/yyyy') }**
+  - note: |       
+      Attestation you agreed to: "I declare that my statements are true and accurate to the best of my knowledge and belief. I understand that if my statements are false, I will be subject to the penalty of perjury or to other sanctions in the discretion of the court."
+     
 ---
 continue button field: users.revisit
 question: |
@@ -2695,18 +2734,15 @@ columns:
       row_item.birthdate if defined("row_item.birthdate") else ""
   - Address: |
       row_item.address.block() if defined("row_item.address.zip") else ""
-  - Phone number: |
-      row_item.phone_number if defined("row_item.phone_number") else ""
-  - Email: |
-      row_item.email if defined("row_item.email") else ""
+  - Mailing: |
+      row_item.mailing_address if defined("row_item.mailing_address") else ""
   - Signature: |
       row_item.signature if defined("row_item.signature") else ""
 edit:
   - name.middle
   - birthdate
   - address.zip
-  - phone_number
-  - email
+  - mailing_address
   - signature
 confirm: True
 ---
@@ -2721,25 +2757,13 @@ rows: other_parties
 columns:
   - Name: |
       row_item.name.full() if defined("row_item.name.last") else ""
-  - Birth year: |
-      row_item.birth_year if defined("row_item.birth_year") else ""
   - Address: |
       row_item.address.block() if defined("row_item.address.zip") else ""
-  - Phone number: |
-      row_item.phone_number if defined("row_item.phone_number") else ""
-  - Mobile number: |
-      row_item.mobile_number if defined("row_item.mobile_number") else ""
-  - House number: |
-      row_item.house if defined("row_item.house") else ""
-  - Street name: |
-      row_item.other_parties1_street_only if defined("row_item.other_parties1_street_only") else ""
   
 edit:
   - name.last
-  - birth_year
   - address.zip
-  - phone_number
-  - mobile_number
+
 confirm: True
 ---
 continue button field: children.revisit
@@ -3179,8 +3203,8 @@ attachment:
           ${ other_parties[0].birth_year }
           % endif
       - "other_parties1_age": |
-          % if other_parties[0].age > 0:
-          ${ other_parties[0].age }
+          % if other_parties_estimated_age > 0:
+          ${ other_parties_estimated_age }
           % endif
       - "other_parties1_aliases": ${ other_parties1_aliases }
       - "sex_female": ${ sex_female }
