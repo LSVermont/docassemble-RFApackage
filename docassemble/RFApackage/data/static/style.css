@@ -1,0 +1,89 @@
+.bg-dark {
+  background-color: #1f455c !important;  /* nav bar color */
+}
+.da-form-group .da-form-label, 
+.da-subquestion,
+input.labelauty+label,
+.da-form-group.row.da-field-container.da-field-container-note,
+.nav.flex-column.nav-pills.danav.danav-vertical.danavlinks {
+    font-size: 1.1rem;
+}
+.border-around-text {
+    border: 1px solid;
+    border-radius: 10px;
+    border-color: #092a69;
+    box-shadow: 2px 2px 8px #69868e;
+    padding: 18px 12px 12px 18px;
+    margin: 16px 0px 24px 0px;
+}
+.title-row-1 {
+    font-size: 1.1rem;
+    font-weight: normal;
+}
+.al-title {
+    line-height: 1.2em;
+}
+.fa-2x {
+    font-size: 2em;
+    color: #1f455c;
+    margin-right: 10px;
+}
+.fa-3x {
+    font-size: 3em;
+    color: #1f455c;
+    margin-right: 10px;
+}
+.daicon {
+    box-shadow: 2px 2px 8px #69868e;
+    border-style: solid;
+    border-width: 1px;
+    border-color: gray;
+}
+.btn-group-sm>.btn, .btn-sm {
+    --bs-btn-padding-y: 0.25rem;
+    --bs-btn-padding-x: 0.5rem;
+    --bs-btn-font-size: 1.2rem;
+    --bs-btn-border-radius: 0.25rem;
+}
+#####side navigation -progress words- grey color and square background
+
+.nav-pills {
+    --bs-nav-pills-link-active-color: #797575;
+    --bs-nav-pills-link-active-bg: #797575;
+    --bs-nav-link-color: #797575;
+    --bs-nav-link-hover-color: #797575;
+    --bs-nav-link-disabled-color: #797575;
+}
+.nav-pills .nav-link {
+    border-radius: 0;
+}
+.nav .flex-column .nav-pills .danav .danav-vertical .danavlinks .nav-link {
+    color: #797575;
+}
+.nav-link .danavlink {
+    color: #797575;
+    --bs-nav-link-color: #797575;
+}
+.nav-link .danavlink .nav-link:focus, .nav-link:hover, .nav-link:visited {
+    color: #797575;   
+}
+.nav-link .danavlink .nav-link:focus, .nav-link:hover, .nav-link:visited {
+    color: #797575;   
+}
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    background-color: #797575;
+}
+.nav-pills .nav-link {
+    color: #797575;
+}
+
+####account menu dropdown toggle color
+
+.navbar-nav .nav-link .dropdown-toggle .d-none .d-md-block  {
+    color: #797575;
+}
+
+.navbar-nav .nav-item .dropdown {
+    color: #797575;
+}
