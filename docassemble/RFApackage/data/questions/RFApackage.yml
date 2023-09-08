@@ -1,4 +1,12 @@
-#I removed the css file I had edited. Needs work.
+#Need to make the updates to Next Step document
+
+#Need to work on css file to help with the sub-questions on the "what you want in order" screen and other screen
+
+#When I added another kids name as to whom was abused, that name did not show up on the PDF
+
+#I may need to adjust overflow trigger numbers since I worked on the PDFs. This may be why the sentences get cut off incorrectly.
+
+#Need to show the weapon overflow when I put in 9th through 12 weapons.
 
 #Why is this review block not showing?   - Edit:   - users1_no_shelter
 # Should it be...
@@ -9,7 +17,8 @@
 #% endif
 
 #And also need to show house (Def. address for LE) on review screen
-
+#And also show Do you feel that you are in immediate danger >>>> If yes, please include any information not already described above
+#Also need to show names of kids for custody
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -2731,7 +2740,7 @@ review:
     button: |
       Signature date to put on forms: **${ (format_date(signature_date, format='M/d/yyyy')) }**
   - note: |       
-      Attestation you agreed to: "I declare that my statements are true and accurate to the best of my knowledge and belief. I understand that if my statements are false, I will be subject to the penalty of perjury or to other sanctions in the discretion of the court."
+      Required attestation on your affidavit: "I declare that my statements are true and accurate to the best of my knowledge and belief. I understand that if my statements are false, I will be subject to the penalty of perjury or to other sanctions in the discretion of the court."
      
 ---
 continue button field: users.revisit
