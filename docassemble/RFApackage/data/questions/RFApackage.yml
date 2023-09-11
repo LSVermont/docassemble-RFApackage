@@ -1,10 +1,10 @@
-#I updated the Next Steps document
+#Updated Next Steps document to include some court info, which still needs work.
+
+#Uploaded courts list csv so I can work with that later
 
 #Need to show the weapon overflow when I put in 9th through 12 weapons.
 
 #Need to work on css file to help with the sub-questions on the "what you want in order" screen and other screen
-
-#Reduce the size of the PDF of the complaint. 7 MB!!!
 
 #Why is this review block not showing?   - Edit:   - users1_no_shelter
 # Should it be...
@@ -2889,6 +2889,18 @@ attachment:
   docx template file: RFApackage_next_steps.docx
   variable name: RFApackage_Post_interview_instructions[i]
   skip undefined: True
+  fields:
+      - "address_county": ${ trial_court_name }
+      - "division": ${ trial_court_name }
+      - "name": ${ trial_court_name }
+      - "address_address": ${ trial_court_name }
+      - "address_unit": ${ trial_court_name }
+      - "address_city": ${ trial_court_name }
+      - "address_state": ${ trial_court_name }
+      - "address_zip": ${ trial_court_name }
+      - "arbitrary_attribute": ${ trial_court_name }
+      - "phone": ${ trial_court_name }
+      - "email": ${ trial_court_name }
 ---
 attachment:
   name: 1 RFA-complaint
