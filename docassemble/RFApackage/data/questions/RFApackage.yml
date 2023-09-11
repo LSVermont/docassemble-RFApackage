@@ -1,10 +1,6 @@
-#I adjusted overflow trigger numbers since I worked on the PDFs. Now overflow text reads correctly.
-
-#I updated the overflow template to say family court and increase font size.
+#I updated the Next Steps document
 
 #Need to show the weapon overflow when I put in 9th through 12 weapons.
-
-#Need to make the updates to Next Step document
 
 #Need to work on css file to help with the sub-questions on the "what you want in order" screen and other screen
 
@@ -24,6 +20,7 @@
 #Trying to get race etc to show on review screen
 
 #I can't figure out how to show names of kids for custody in review screen
+
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -3348,7 +3345,7 @@ code: |
   RFAaffidavit.overflow_fields["serious_incident_description"].label = "Please describe the most serious incident with as much detail as possible."
   RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 2052
   RFAaffidavit.overflow_fields["other_incident_description"].label = "Please describe the any other incident(s) with as much detail as possible."
-  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
+  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 598
   RFAaffidavit.overflow_fields["used_weapon_how"].label = "Describe in detail how they used or threatened to use weapon?"
   RFAaffidavit.overflow_fields.gathered = True
 ---
