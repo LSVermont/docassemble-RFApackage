@@ -1,12 +1,14 @@
+#I adjusted overflow trigger numbers since I worked on the PDFs. Now overflow text reads correctly.
+
+#I updated the overflow template to say family court and increase font size.
+
+#Need to show the weapon overflow when I put in 9th through 12 weapons.
+
 #Need to make the updates to Next Step document
 
 #Need to work on css file to help with the sub-questions on the "what you want in order" screen and other screen
 
-#When I added another kids name as to whom was abused, that name did not show up on the PDF
-
-#I may need to adjust overflow trigger numbers since I worked on the PDFs. This may be why the sentences get cut off incorrectly.
-
-#Need to show the weapon overflow when I put in 9th through 12 weapons.
+#Reduce the size of the PDF of the complaint. 7 MB!!!
 
 #Why is this review block not showing?   - Edit:   - users1_no_shelter
 # Should it be...
@@ -16,9 +18,12 @@
 #The home is **${ val('rent_or_own')}** by **${val('whose_name')}**
 #% endif
 
-#And also need to show house (Def. address for LE) on review screen
-#And also show Do you feel that you are in immediate danger >>>> If yes, please include any information not already described above
-#Also need to show names of kids for custody
+# or if variable: rent_or_own 
+#    is: rent
+
+#Trying to get race etc to show on review screen
+
+#I can't figure out how to show names of kids for custody in review screen
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -326,12 +331,13 @@ subquestion: |
   <i>THIS TOOL IS IN DEVELOPMENT & UNDERGOING REVIEW. Thank you, reviewers!</i>
   
   <div class="border-around-text">
-  <p>Welcome to ${ AL_ORGANIZATION_TITLE}.</p>
   
   <p>${ AL_ORGANIZATION_TITLE } can help you complete and download forms in 3 steps:</p>
   <ul><li><b>Step 1:</b> Answer questions that will fill in court forms for you.</li>
   <li><b>Step 2:</b> Preview the completed forms.</li>
-  <li><b>Step 3:</b> Download, save or print the final forms. You will need to mail, email, efile or deliver them to the court on your own.</li></ul>
+  <li><b>Step 3:</b> Download, save, print or email the final forms.</li></ul>
+  
+  <p>You will need to mail, email, efile or deliver them to the court on your own. VTCourtForms will give you instructions.</p>
   </div>  
   
   <i class="fas fa-file-text fa-2x"></i> This guided interview will produce a complete package of 4 forms needed to ask the court for a Relief from Abuse (RFA) order in Vermont: the Complaint, Affidavit, Confidential Notification form and Protection Order Service Information form. Learn more about RFA orders and this interview on the next screen.
@@ -379,7 +385,7 @@ question: |
 subquestion: |
   If you haven't reviewed this important information already on the VTLawHelp.org website, please take time to do so:
   
-  * [Things to know before you start](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#what-to-know)
+  * [What to know before you start](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#what-to-know)
   * [About using this guided interview **safely**](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#about-this-interview)
   * [Information you will need at hand](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#info-you-need)
   * [After answering the questions](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#after-questions)
@@ -1055,7 +1061,7 @@ fields:
   - "Include any information not already described before. Be as specific as possible.": danger_more_abuse_why
     input type: area
     show if: danger_more_abuse
-    maxlength: 330
+    maxlength: 315
     required: False
 ---
 objects:
@@ -1987,13 +1993,13 @@ review:
   - Edit: other_parties_estimated_age
     button: |
       % if other_parties[0].birth_month:
-      - Defendant's birthday: ${ other_parties[0].birth_month }/
+      - Defendant's birthday: **${ other_parties[0].birth_month }**/
       % endif
       % if other_parties[0].birth_day:
-      ${ other_parties[0].birth_day }/
+      **${ other_parties[0].birth_day }**/
       % endif
       % if other_parties[0].birth_year:
-      ${ other_parties[0].birth_year }
+      **${ other_parties[0].birth_year }**
       % endif
       
       - Defendant is about this old: **${ showifdef('other_parties_estimated_age') }**
@@ -2026,7 +2032,17 @@ review:
       % if other_parties1_other_phone_number != '':
       - Other phone: **${ showifdef('other_parties1_other_phone_number') }**  
       % endif
+
+  - Edit: house
+    button: |
+      % if house:
+      Details about where the defendant lives -- formatted for law enforcement form. Including:
       
+      - House number: **${ house }**
+
+      - Name of the street: **${ other_parties1_street_only }**
+      % endif
+
   - Edit: 
     - house
     - best_contact_time
@@ -2170,71 +2186,60 @@ review:
       Phone number at that location: **${ showifdef('other_location2_phone') }**
       % endif
 
-  - Edit: race
+  - Edit: 
+    - lenses_glasses
     button: |
       **What the defendant looks like**
 
       % if sex_female:
-      
       Female: **${ word(yesno(sex_female)) }**
       % endif
       
-      % if sex_male:
-      
+      % if sex_male:      
       Male: **${ word(yesno(sex_male)) }**
       % endif
       
-      % if sex_other:
-      
+      % if sex_other:      
       Sex/gender: **${ other_sex_field }**
       % endif
       
       Race:
       
-      % if race["race_white"]:
-      
+      % if race["race_white"]:      
         - **White**
       % endif
       
-      % if race["race_black"]:
-      
+      % if race["race_black"]:      
         - **Black**
       % endif
       
-      % if race["race_native"]:
-      
+      % if race["race_native"]:     
         - **Native American**
       % endif
       
-      % if race["race_asian"]:
-      
+      % if race["race_asian"]:      
         - **Asian**
       % endif
       
-      % if race["race_other"]:
-      
+      % if race["race_other"]:      
         - **${ other_race_field }**
       % endif
       
       Skin color/tone:
 
-      % if skin["skin_light"]:
-      
+      % if skin["skin_light"]:      
         - **Light** 
       % endif
       
-      % if skin["skin_medium"]:
-      
+      % if skin["skin_medium"]:     
         - **Medium** 
       % endif
       
-      % if skin["skin_dark"]:
-      
+      % if skin["skin_dark"]:      
         - **Dark** 
       % endif
       
-      % if skin["skin_other"]:
-      
+      % if skin["skin_other"]:     
         - **Other** 
       % endif
        
@@ -2441,7 +2446,7 @@ review:
       - Your children were the target of the recent abuse: **${ yesno(recent_incident_children) }**
       
       % if recent_incident_children:
-      - The children who were the target of the recent abuse: **${ showifdef('recent_incident_children_names') }**, **${ showifdef('recent_incident_other_children') }**
+      - The children who were the target of the recent abuse: **${ showifdef('recent_incident_other_children') }**  **${ showifdef('recent_incident_children_names') }** 
       % endif
       
       % if recent_incident_harm:
@@ -2523,12 +2528,17 @@ review:
       ##Your safety##
   - Edit: 
     - danger_more_abuse
+    - danger_more_abuse_why
     - weapons.revisit
     - weapons.there_are_any
     - used_firearm
     - used_weapon
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse) }**
+      
+      % if danger_more_abuse:
+      - Information not already described before: **${ danger_more_abuse_why }**
+      % endif
       
       % if used_firearm:
       - The defendant has used, displayed or threatened to use a gun/firearm against you or against another family member?: **${ yesno(used_firearm) }**
@@ -2647,12 +2657,13 @@ review:
       % endif
       
       % if request_temp_PRR:
-      Award temporary Parental Rights and Responsibilities (custody) of your child/children to you or someone else: **${ yesno(request_temp_PRR) }**
+      Award temporary Parental Rights and Responsibilities (custody) of your child/children to you or someone else: **${ yesno(request_temp_PRR) }** 
       % endif
       
       % if other_request:
       You are asking for something else: **${ showifdef('request_other_description') }**
       % endif
+  
   - Edit: request_all_emergency
     button: |
       You request this RFA on an emergency basis: **${ yesno(request_all_emergency) }** 
@@ -2961,7 +2972,12 @@ attachment:
       - "recent_incident_date": ${ recent_incident_date }
       - "recent_incident_users1": ${ recent_incident_users1 }
       - "recent_incident_children": ${ recent_incident_children }
-      - "recent_incident_children_names": ${ recent_incident_children_names }
+      - "recent_incident_children_names": |
+          % if defined('recent_incident_other_children'):
+          ${ recent_incident_other_children }, ${ recent_incident_children_names }
+          % elif defined('recent_incident_children_names'):
+          ${ recent_incident_children_names }
+          % endif 
       - "recent_incident_harm": ${ recent_incident_harm }
       - "recent_incident_fear": ${ recent_incident_fear }
       - "recent_incident_abused": ${ recent_incident_abused }
@@ -3153,10 +3169,10 @@ attachment:
       - "weapons_overflow": ${ RFAaffidavit.has_overflow() }
       - "used_weapon_yes": ${ used_weapon }
       - "used_weapon_no": ${ not used_weapon }
-      - "used_weapon_how": ${ used_weapon_how }
+      - "used_weapon_how": ${ RFAaffidavit.safe_value("used_weapon_how") }
       - "danger_more_abuse_yes": ${ danger_more_abuse }
       - "danger_more_abuse_no": ${ not danger_more_abuse }
-      - "danger_more_abuse_why": ${ RFAaffidavit.safe_value("danger_more_abuse_why") }
+      - "danger_more_abuse_why": ${ danger_more_abuse_why }
       - "other_parties1_military_yes": ${ other_parties1_military }
       - "other_parties1_military_no": ${ not other_parties1_military }
       - "printed_signature": ${ printed_signature }
@@ -3324,18 +3340,16 @@ attachment:
       - "danger_for_officer_why": ${ RFAserviceinfo.safe_value("danger_for_officer_why") }
 ---
 code: |
-  RFAaffidavit.overflow_fields['weapons'].label = "Weapons"
+  RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
   RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 9
-  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1246
+  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1142
   RFAaffidavit.overflow_fields["recent_incident_description"].label = "Please describe the most recent incident with as much detail as possible."
-  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 870
+  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
   RFAaffidavit.overflow_fields["serious_incident_description"].label = "Please describe the most serious incident with as much detail as possible."
-  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 2262
+  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 2052
   RFAaffidavit.overflow_fields["other_incident_description"].label = "Please describe the any other incident(s) with as much detail as possible."
-  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 602
-  RFAaffidavit.overflow_fields["used_weapon_how"].label = "Describe in detail how they used or threatened to use it?"
-  RFAaffidavit.overflow_fields["danger_more_abuse_why"].overflow_trigger = 258
-  RFAaffidavit.overflow_fields["danger_more_abuse_why"].label = "Explain why you think there is danger of more abuse. Be as specific as possible."
+  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
+  RFAaffidavit.overflow_fields["used_weapon_how"].label = "Describe in detail how they used or threatened to use weapon?"
   RFAaffidavit.overflow_fields.gathered = True
 ---
 code:  |
