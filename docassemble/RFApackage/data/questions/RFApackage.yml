@@ -1,10 +1,10 @@
+#Worked on css file. See id: What you want to ask for in the RFA order. Also need to do the what happened screen
+
 #Updated Next Steps document to include some court info, which still needs work.
 
 #Uploaded courts list csv so I can work with that later
 
 #Need to show the weapon overflow when I put in 9th through 12 weapons.
-
-#Need to work on css file to help with the sub-questions on the "what you want in order" screen and other screen
 
 #Why is this review block not showing?   - Edit:   - users1_no_shelter
 # Should it be...
@@ -1144,9 +1144,11 @@ fields:
     datatype: yesno
   - "I want the order to protect me from this.": request_not_abuse_users1
     datatype: yesno
+    css class: indent-me
     show if: request_not_abuse
   - "I want the order to protect my child/children from this.": request_not_abuse_children
     datatype: yesno
+    css class: indent-me
     show if: request_not_abuse
   - note: |
       ---
@@ -1156,15 +1158,19 @@ fields:
     datatype: yesno
   - "I want the order to stop stalking.": request_no_stalking
     datatype: yesno
+    css class: indent-me    
     show if: request_no_stalking_assault
   - "I want the order to stop sexual assault.": request_no_assault
     datatype: yesno
+    css class: indent-me
     show if: request_no_stalking_assault
   - "I want the order to protect me from this.": request_no_assault_users1
     datatype: yesno
+    css class: indent-me
     show if: request_no_stalking_assault
   - "I want the order to protect my child/children from this.": request_no_assault_children
     datatype: yesno
+    css class: indent-me
     show if: request_no_stalking_assault
   - note: |
       ---
@@ -1190,9 +1196,11 @@ fields:
     datatype: yesno
   - "I want the order to protect the pets owned by me or the defendant.": request_no_pet_users1
     datatype: yesno
+    css class: indent-me
     show if: request_no_pet_harm
   - "I want the order to protect the pets owned by my child/children.": request_no_pet_children
     datatype: yesno
+    css class: indent-me
     show if: request_no_pet_harm    
   - note: |
       ---
@@ -1204,12 +1212,15 @@ fields:
     datatype: yesno
   - "How many feet away? (300 feet is the standard stay-away order)": request_stay_away_feet
     maxlength: 5
+    css class: indent-me
     show if: request_stay_away
   - "I want the order to protect me from this.": request_stay_away_users1
     datatype: yesno
+    css class: indent-me
     show if: request_stay_away
   - "I want the order to protect my child/children from this.": request_stay_away_children
     datatype: yesno
+    css class: indent-me
     show if: request_stay_away
   - note: |
       ---
@@ -1219,9 +1230,11 @@ fields:
     datatype: yesno
   - "I want the order to protect me from this.": request_no_contact_users1
     datatype: yesno
+    css class: indent-me
     show if: request_no_contact
   - "I want the order to protect my child/children from this.": request_no_contact_children
     datatype: yesno
+    css class: indent-me
     show if: request_no_contact
   - note: |
       ---
