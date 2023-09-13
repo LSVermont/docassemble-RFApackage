@@ -244,7 +244,7 @@ code: |
   other_incident
   set_progress(50)
   danger_more_abuse
-  nav.set_section('weapons')
+  nav.set_section('ask_weapons')
   weapons.gather()
   used_firearm
   nav.set_section('order')
@@ -273,13 +273,11 @@ code: |
   notify_served
   nav.set_section("review_RFApackage")
   RFApackage_preview_question
-  nav.set_section('signature')
+  nav.set_section('sign')
   printed_signature
   al_form_requires_digital_signature = False
   basic_questions_signature_flow    
-  nav.set_section('get_docs')
   interview_order_RFApackage = True
-  
 ---
 sections:
   - intro: Introduction
@@ -287,11 +285,11 @@ sections:
   - about: About you
   - defendant: About the defendant
   - incidents: What happened
-  - weapons: Weapons
+  - ask_weapons: Weapons
   - order: What you want in the RFA order
   - service: Info for law enforcement to serve the order
   - review_RFApackage: Edit your answers
-  - signature: Signature
+  - sign: Signature
   - get_docs: Get your documents
 #progressive: False
 ##################
@@ -321,6 +319,7 @@ code: |
           "reached_interview_end": True,
       },
   )
+  nav.set_section('get_docs')
   RFApackage_download
 ---
 id: basic questions intro screen
@@ -638,8 +637,8 @@ subquestion: |
 fields:
   - code: |
       users[0].address_fields(default_state=AL_DEFAULT_STATE)
-  - Do you have a mailing address that is different from your street address?: users_mailing_address_different
-    datatype: yesnoradio
+  - I have a mailing address that is different from my street address: users_mailing_address_different
+    datatype: yesno
   - Mailing address: users[0].mailing_address.address
     address autocomplete: True
     show if: users_mailing_address_different
@@ -774,7 +773,7 @@ fields:
 ---
 id: About the defendant
 question: |
-  About the defendant
+  More about the defendant
 subquestion: |
   Select all that apply.
 fields:
