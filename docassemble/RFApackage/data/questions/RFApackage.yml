@@ -1,10 +1,14 @@
+#Updated trigger number for weapons (was 9; made it 8 and it worked) for addendum. Now need to show the weapon location on the addendum. I can't figure out how to do that.
+
+#Updated affidavit addendum template with court name and extra spaces
+
 #Worked on css file. See id: What you want to ask for in the RFA order. Also need to do the what happened screen
 
 #Updated Next Steps document to include some court info, which still needs work.
 
 #Uploaded courts list csv so I can work with that later
 
-#Need to show the weapon overflow when I put in 9th through 12 weapons.
+
 
 #Why is this review block not showing?   - Edit:   - users1_no_shelter
 # Should it be...
@@ -3188,7 +3192,10 @@ attachment:
           % else:
             0
           % endif
-      - "weapons_overflow": ${ RFAaffidavit.has_overflow() }
+      - "weapons_overflow": |
+          % if weapons.number() > 8: 
+            ${ RFAaffidavit.has_overflow() }
+          % endif
       - "used_weapon_yes": ${ used_weapon }
       - "used_weapon_no": ${ not used_weapon }
       - "used_weapon_how": ${ RFAaffidavit.safe_value("used_weapon_how") }
@@ -3363,7 +3370,7 @@ attachment:
 ---
 code: |
   RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
-  RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 9
+  RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
   RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1142
   RFAaffidavit.overflow_fields["recent_incident_description"].label = "Please describe the most recent incident with as much detail as possible."
   RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
