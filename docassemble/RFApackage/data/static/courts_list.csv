@@ -1,0 +1,15 @@
+﻿name,department,branch,division,session,phone,fax,email,address_address,address_unit,address_city,address_state,address_zip,address_county,address_sublocality_level_1,location_latitude,location_longitude,description,arbitrary_attribute (mailing address if different from street address)
+Vermont Superior Court,,Addison,Family Division,,802-388-7741,,JUD.AddisonUnit@vermont.gov,7 Mahady Court,,Middlebury,VT,05753,Addison,,44.01387,-73.16299,family court,
+Vermont Superior Court,,Bennington,Family Division,,802-447-2727,,JUD.BenningtonUnit@vermont.gov,200 Veterans Memorial Drive,,Bennington,VT,05201,Bennington,,42.88809,-73.19817,family court,
+Vermont Superior Court,,Caledonia,Family Division,,802-748-6600,,JUD.CaledoniaEssexUnit@vermont.gov,1126 Main Street,Suite 1,St. Johnsbury,VT,05819,Caledonia,,44.41796,-72.0203,family court,
+Vermont Superior Court,,Chittenden,Family Division,,802-651-1709,,JUD.ChittendenUnit@vermont.gov,32 Cherry Street,Suite 200,Burlington,VT,05401,Chittenden,,44.47945,-73.21733,family court,
+Vermont Superior Court,,Essex,Family Division,,802-676-3910,,JUD.CaledoniaEssexUnit@vermont.gov,75 Courthouse Drive,,Guildhall,VT,05905,Essex,,,,family court,"PO Box 75, Guildhall, VT 05905"
+Vermont Superior Court,,Franklin,Family Division,,802-524-7997,,JUD.FranklinGrandIsleunit@vermont.gov,36 Lake Street,,St. Albans,VT,05478,Franklin,,,,family court,
+Vermont Superior Court,,Grand Isle,Family Division,,802-372-8350,,JUD.FranklinGrandIsleunit@vermont.gov,3677 US Route 2,,North Hero,VT,05474,Grand Isle,,,,family court,"PO Box 7, North Hero, VT 05474"
+Vermont Superior Court,,Lamoille,Family Division,,802-888-3887,,JUD.LamoilleUnit@vermont.gov,154 Main Street,,Hyde Park,VT,05655,Lamoille,,,,family court,"PO Box 570, Hyde Park, VT 05655"
+Vermont Superior Court,,Orange,Family Division,,802-685-4610,,JUD.OrangeUnit@vermont.gov,5 Court Street,,Chelsea,VT,05038,Orange,,,,family court,
+Vermont Superior Court,,Orleans,Family Division,,802-334-3305,,JUD.OrleansUnit@vermont.gov,247 Main Street,Suite 1,Newport,VT,05855,Orleans,,,,family court,
+Vermont Superior Court,,Rutland,Family Division,,802-786-5856,,JUD.RutlandUnit@vermont.gov,9 Merchants Row,,Rutland,VT,05701,Rutland,,,,family court,
+Vermont Superior Court,,Washington,Family Division,,802-479-4205,,JUD.WashingtonUnit@vermont.gov,255 North Main Street,Suite 1,Barre,VT,05641,Washington,,,,family court,
+Vermont Superior Court,,Windham,Family Division,,802-257-2800,,JUD.WindhamUnit@vermont.gov,30 Putney Road,2nd Floor,Brattleboro,VT,05301,Windham,,,,family court,
+Vermont Superior Court,,Windsor,Family Division,,802-295-8865,,JUD.WindsorUnit@vermont.gov,82 Railroad Row,,White River Junction,VT,05001,Windsor,,,,family court,

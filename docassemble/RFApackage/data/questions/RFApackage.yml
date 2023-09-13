@@ -1,14 +1,10 @@
-#I adjusted overflow trigger numbers since I worked on the PDFs. Now overflow text reads correctly.
+#Updated Next Steps document to include some court info, which still needs work.
 
-#I updated the overflow template to say family court and increase font size.
+#Uploaded courts list csv so I can work with that later
 
 #Need to show the weapon overflow when I put in 9th through 12 weapons.
 
-#Need to make the updates to Next Step document
-
 #Need to work on css file to help with the sub-questions on the "what you want in order" screen and other screen
-
-#Reduce the size of the PDF of the complaint. 7 MB!!!
 
 #Why is this review block not showing?   - Edit:   - users1_no_shelter
 # Should it be...
@@ -24,6 +20,7 @@
 #Trying to get race etc to show on review screen
 
 #I can't figure out how to show names of kids for custody in review screen
+
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -2891,6 +2888,18 @@ attachment:
   docx template file: RFApackage_next_steps.docx
   variable name: RFApackage_Post_interview_instructions[i]
   skip undefined: True
+  fields:
+      - "address_county": ${ trial_court_name }
+      - "division": ${ trial_court_name }
+      - "name": ${ trial_court_name }
+      - "address_address": ${ trial_court_name }
+      - "address_unit": ${ trial_court_name }
+      - "address_city": ${ trial_court_name }
+      - "address_state": ${ trial_court_name }
+      - "address_zip": ${ trial_court_name }
+      - "arbitrary_attribute": ${ trial_court_name }
+      - "phone": ${ trial_court_name }
+      - "email": ${ trial_court_name }
 ---
 attachment:
   name: 1 RFA-complaint
@@ -3347,7 +3356,7 @@ code: |
   RFAaffidavit.overflow_fields["serious_incident_description"].label = "Please describe the most serious incident with as much detail as possible."
   RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 2052
   RFAaffidavit.overflow_fields["other_incident_description"].label = "Please describe the any other incident(s) with as much detail as possible."
-  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
+  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 598
   RFAaffidavit.overflow_fields["used_weapon_how"].label = "Describe in detail how they used or threatened to use weapon?"
   RFAaffidavit.overflow_fields.gathered = True
 ---
