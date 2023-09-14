@@ -1,14 +1,7 @@
-#Updated trigger number for weapons (was 9; made it 8 and it worked) for addendum. Now need to show the weapon location on the addendum. I can't figure out how to do that.
+#Added css indenting to id: What happened most recently screen
+#Put the required fields note into collapsable help text
 
-#Updated affidavit addendum template with court name and extra spaces
-
-#Worked on css file. See id: What you want to ask for in the RFA order. Also need to do the what happened screen
-
-#Updated Next Steps document to include some court info, which still needs work.
-
-#Uploaded courts list csv so I can work with that later
-
-
+#Updated Next Steps document to include some court info, which still needs work. Uploaded courts list csv so I can work more with that.
 
 #Why is this review block not showing?   - Edit:   - users1_no_shelter
 # Should it be...
@@ -334,7 +327,7 @@ subquestion: |
   
   <p>${ AL_ORGANIZATION_TITLE } can help you complete and download forms in 3 steps:</p>
   <ul><li><b>Step 1:</b> Answer questions that will fill in court forms for you.</li>
-  <li><b>Step 2:</b> Preview the completed forms.</li>
+  <li><b>Step 2:</b> Preview the completed forms and edit answers, if needed.</li>
   <li><b>Step 3:</b> Download, save, print or email the final forms.</li></ul>
   
   <p>You will need to mail, email, efile or deliver them to the court on your own. VTCourtForms will give you instructions.</p>
@@ -346,7 +339,7 @@ subquestion: |
   
   <i class="fas fa-circle-info fa-2x"></i> It is free to use this program. This site is not a lawyer. Visit our [VTLawHelp.org website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-1) for more information about Relief from Abuse orders.
   
-  VTCourtForms interviews were created by Legal Services Vermont with support from the Legal Services Corporation and assistance from the Suffolk University Legal Innovation and Technology (LIT) Lab Document Assembly Line Project. We also had help from Vermont Legal Aid, Vermont Judiciary and other Vermont organizations.
+  VTCourtForms was created by Legal Services Vermont with support from the Legal Services Corporation and assistance from the Suffolk University Legal Innovation and Technology (LIT) Lab Document Assembly Line Project. We also had help from Vermont Legal Aid, Vermont Judiciary and other Vermont organizations.
   
   [FILE big_logo, 30%, Legal Services Vermont logo]
 #  Tap the {green words} in any screen for a definition or more information.
@@ -381,12 +374,12 @@ continue button field: al_intro_screen
 id: RFApackage_intro
 continue button field: RFApackage_intro
 question: |
-  Important information before you start!
+  Important information before you start
 subquestion: |
-  If you haven't reviewed this important information already on the VTLawHelp.org website, please take time to do so:
+  <i class="fas fa-circle-exclamation fa-3x" aria-hidden="true"></i>  If you haven't reviewed this important information already on the VTLawHelp.org website, please take time to do so:
   
   * [What to know before you start](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#what-to-know)
-  * [About using this guided interview **safely**](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#about-this-interview)
+  * [Safety: About using this guided interview safely](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#about-this-interview)
   * [Information you will need at hand](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#info-you-need)
   * [After answering the questions](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#after-questions)
   
@@ -396,7 +389,7 @@ id: initial_screening_questions_1
 question: |
   See if this interview is right for your situation
 subquestion: |
-  **Note**: A red asterisk <span style="color:red;">*</span> means an answer is required before you can move on.
+  ${ collapse_template(asterisk) }
   
 fields:
   - What do you want to do?: what_want_to_do
@@ -404,6 +397,12 @@ fields:
     choices:
       - "Ask the court for a new Relief from Abuse order": new_order
       - "Extend or change an existing RFA order": extend_or_change
+---
+template: asterisk
+subject: |
+  Required fields <span style="color:red;">*</span><br/>
+content: |
+  A red star / asterisk <span style="color:red;">*</span> means you need to answer this question before you can move on.
 ---
 id: initial_screening_questions_1_exit
 question: |
@@ -929,15 +928,18 @@ fields:
     datatype: object_checkboxes
     required: False
     none of the above: False
+    css class: indent-me
     choices:
       - children 
     show if: recent_incident_children    
   - Other children that were not mentioned?: has_recent_incident_other_children
     datatype: yesnoradio
     required: False
+    css class: indent-me
     show if: recent_incident_children
   - List their names with commas in between: recent_incident_other_children
     datatype: area
+    css class: indent-me
     show if: has_recent_incident_other_children
   - note: |
       ---
@@ -955,18 +957,23 @@ fields:
     datatype: yesno
   - note: |
       Stalking is very complicated. Ask a lawyer about this.
+    css class: indent-me
     show if: recent_incident_stalked
   - "The defendant stalked you": recent_incident_stalked_users1
     datatype: yesnoradio
+    css class: indent-me
     show if: recent_incident_stalked
   - "The defendant stalked the child/children": recent_incident_stalked_children
     datatype: yesnoradio
+    css class: indent-me
     show if: recent_incident_stalked
   - "Vermont law says it is stalking if it has happened two times or more. When did they first stalk you?": recent_incident_stalked_date1
     maxlength: 10
+    css class: indent-me
     show if: recent_incident_stalked
   - "What was the second time that they stalked you?": recent_incident_stalked_date2
     maxlength: 10
+    css class: indent-me
     show if: recent_incident_stalked
   - note: |
       ---
@@ -975,9 +982,11 @@ fields:
     datatype: yesno
   - "The defendant sexually assault you": recent_incident_assault_users1
     datatype: yesnoradio
+    css class: indent-me
     show if: recent_incident_assault
   - "The defendant sexually assault the child/children": recent_incident_assault_children
     datatype: yesnoradio
+    css class: indent-me
     show if: recent_incident_assault
   - note: |
       ---
@@ -2671,12 +2680,35 @@ review:
       
       % if request_temp_PRR:
       Award temporary Parental Rights and Responsibilities (custody) of your child/children to you or someone else: **${ yesno(request_temp_PRR) }** 
+
+      % if children[0].custody_wanted:
+      * **${ showifdef('children[0]') }**    
+      % endif
+      % if children[1].custody_wanted:
+      * **${ showifdef('children[1]') }**    
+      % endif
       % endif
       
       % if other_request:
       You are asking for something else: **${ showifdef('request_other_description') }**
       % endif
-  
+  - Edit:
+    - children[0].custody_wanted
+    - children[1].custody_wanted
+    button: |
+      % if request_temp_PRR:
+      You want custody of:
+      
+      % if children[0].custody_wanted:
+      * **${ showifdef('children[0]') }**
+      
+      % endif
+      % if children[1].custody_wanted:
+      * **${ showifdef('children[1]') }**
+      
+      % endif
+      % endif
+      
   - Edit: request_all_emergency
     button: |
       You request this RFA on an emergency basis: **${ yesno(request_all_emergency) }** 
