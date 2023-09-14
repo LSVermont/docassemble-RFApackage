@@ -1,15 +1,9 @@
-#I got rid of green box on intro screen by commenting out decoration: form-lineal
-
-#Got Defendant's home address -- details for law enforcement to show in review screen by commenting out an undefined variable called other_parties1_other
-
-#Got the users1_no_shelter to show in review screen by using if whose_name == "residence_of_users1":
-
-#Got the race, eye, etc to show in review screen. I fixed an undefined variable there. And I commented out race_text and needs: race_text elsewhere in interview.
-
-
-
+#Had to work more on race, eyes, etc. Left in the none of the above: False
 
 #Updated Next Steps document to include some court info, which still needs to be implemented. Uploaded courts list csv so I can work more with that.
+
+#To do: Allow user to edit whether person works or not; whether owns vehicle or not; whether other incidents or not
+
 
 ---
 include:
@@ -2207,9 +2201,11 @@ review:
       % if sex_other:      
       Sex/gender: 
       
-      - **${ other_sex_field }**
+      - **${ showifdef('other_sex_field') }**
       % endif
       
+
+
       Race:
       
       % if race["race_white"]:      
@@ -2229,7 +2225,7 @@ review:
       % endif
 
       % if race["race_other"]:      
-        - **${ other_race_field }** 
+        - **${ showifdef('other_race_field') }** 
       % endif
 
       Skin color/tone:
@@ -2249,11 +2245,11 @@ review:
       % if skin["skin_other"]:     
         - **Other** 
       % endif
-      
+
       Height: **${other_parties1_height_ft}' ${ other_parties1_height_in }"**
 
       Weight: **${other_parties1_weight_lbs} lbs** 
-       
+      
       Eye color:
       
       % if eyes["eyes_brown"]:
@@ -2286,7 +2282,10 @@ review:
       
       % if lenses_contacts:
         Contacts: **${ word(yesno(lenses_contacts)) }**
-      % endif
+      % endif     
+
+
+
 
   - Edit: hair_color
     button: |      
@@ -2335,7 +2334,7 @@ review:
       % endif
       
       % if hair_color["hair_other"]:
-        - **${ other_hair_field }**
+        - **${ showifdef('other_hair_field') }**
       % endif
       
       % if hair_beard:
