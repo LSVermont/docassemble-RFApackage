@@ -1,22 +1,15 @@
-#Added css indenting to id: What happened most recently screen
-#Put the required fields note into collapsable help text
+#I got rid of green box on intro screen by commenting out decoration: form-lineal
 
-#Updated Next Steps document to include some court info, which still needs work. Uploaded courts list csv so I can work more with that.
+#Got Defendant's home address -- details for law enforcement to show in review screen by commenting out an undefined variable called other_parties1_other
 
-#Why is this review block not showing?   - Edit:   - users1_no_shelter
-# Should it be...
-#You would like the defendant to be removed from your home in order to be safe: users1_no_shelter
-#The address of the home -- on one line:**${val('residence_shared_address')}**
-#% if rent_or_own != '':
-#The home is **${ val('rent_or_own')}** by **${val('whose_name')}**
-#% endif
+#Got the users1_no_shelter to show in review screen by using if whose_name == "residence_of_users1":
 
-# or if variable: rent_or_own 
-#    is: rent
+#Got the race, eye, etc to show in review screen. I fixed an undefined variable there. And I commented out race_text and needs: race_text elsewhere in interview.
 
-#Trying to get race etc to show on review screen
 
-#I can't figure out how to show names of kids for custody in review screen
+
+
+#Updated Next Steps document to include some court info, which still needs to be implemented. Uploaded courts list csv so I can work more with that.
 
 ---
 include:
@@ -317,7 +310,7 @@ code: |
   RFApackage_download
 ---
 id: basic questions intro screen
-decoration: form-lineal
+#decoration: form-lineal
 question: |
   **${interview_short_title} in Vermont**
 subquestion: |  
@@ -1366,30 +1359,30 @@ fields:
     js show if: |
       val("existing_order['existing_order_divorce']") || val("existing_order['dissolution']") || val("existing_order['existing_order_RFA']") || val("existing_order['criminal_proceeding']") || val("existing_order['parentage_order']") || val("existing_order['guardianship_order']") || val("existing_order['juvenile_order']") || val("existing_order['child_support_order']") 
 ---
-variable name: existing_order_text
-use objects: True
-data:
-  existing_order_divorce:
-    question: For divorce or separation?
-    document: For divorce or separation?
-  existing_order_RFA:
-    question: For a civil union dissolution?
-    document: For a civil union dissolution?       
-  criminal_proceeding:
-    question: For a criminal matter?  
-    document: For a criminal matter?
-  parentage_order:
-    question: For parentage?  
-    document: For parentage?
-  guardianship_order:
-    question: For guardianship?  
-    document: For guardianship?
-  juvenile_order:
-    question: For a juvenile (DCF) matter?
-    document: For a juvenile (DCF) matter?
-  child_support_order: 
-    question: For child support?
-    document: For child support?
+#variable name: existing_order_text
+#use objects: True
+#data:
+#  existing_order_divorce:
+#    question: For divorce or separation?
+#    document: For divorce or separation?
+#  existing_order_RFA:
+#    question: For a civil union dissolution?
+#    document: For a civil union dissolution?       
+#  criminal_proceeding:
+#    question: For a criminal matter?  
+#    document: For a criminal matter?
+#  parentage_order:
+#    question: For parentage?  
+#    document: For parentage?
+#  guardianship_order:
+#    question: For guardianship?  
+#    document: For guardianship?
+#  juvenile_order:
+#    question: For a juvenile (DCF) matter?
+#    document: For a juvenile (DCF) matter?
+#  child_support_order: 
+#    question: For child support?
+#    document: For child support?
 ---
 id: About your home
 question: |
@@ -1432,7 +1425,7 @@ fields:
       - It is rented or owned by ${ users[0] }: residence_of_users1
       - It is rented or owned by ${ other_parties[0] }: residence_of_OP
       - It is rented or owned by someone else: residence_of_other
-      - I don't know: I_dont_know
+      - I don't know: i_donnot_know
 ---
 id: Details for law enforcement
 question: |
@@ -1476,9 +1469,9 @@ fields:
     input type: area
     maxlength: 220
     required: False
-validation code: |
-  if (other_parties1_state == "") and (other_parties1_other == ""):
-    validation_error("Please enter a state in the United States, or an area outside of the United States")
+#validation code: |
+#  if (other_parties1_state == "") and (other_parties1_other == ""):
+#    validation_error("Please enter a state in the United States, or an area outside of the United States")
 ---
 id: About the defendant's vehicle
 question: |
@@ -1672,12 +1665,14 @@ fields:
       <h2 class="h4">Skin color/tone:</h2>
   - "Select one.": skin
     datatype: checkboxes
+    none of the above: False
     minlength: 1
     maxlength: 1
     choices:              
       - "Light": skin_light
       - "Medium": skin_medium
       - "Dark": skin_dark
+      - "Other": skin_other
   - note: |
       <h2 class="h4">Height:</h2>
   - "Feet": other_parties1_height_ft
@@ -1709,24 +1704,24 @@ fields:
   - "Contacts": lenses_contacts
     datatype: yesno
 ---
-variable name: race_text
-use objects: True
-data:
-  race_white:
-    question: White
-    document: White
-  race_black:
-    question: Black
-    document: Black     
-  race_native:
-    question: Native American 
-    document: Native American
-  race_asian:
-    question: Asian  
-    document: Asian
-  race_other:
-    question: Other 
-    document: Other
+#variable name: race_text
+#use objects: True
+#data:
+#  race_white:
+#    question: White
+#    document: White
+#  race_black:
+#    question: Black
+#    document: Black     
+#  race_native:
+#    question: Native American 
+#    document: Native American
+#  race_asian:
+#    question: Asian  
+#    document: Asian
+#  race_other:
+#    question: Other 
+#    document: Other
 ---
 id: More about what the defendant looks like
 question: |
@@ -1865,9 +1860,9 @@ code: |
   [user.address.address for user in users.complete_elements()]
   addresses_to_search = [user.address for user in users.complete_elements()]
 ---
-needs:
-  - existing_order_text
-  - race_text
+#needs:
+#  - existing_order_text
+#  - race_text
 #####################################################################
 ######################### REVIEW SCREEN ######################
 id: RFApackage review screen
@@ -1900,8 +1895,10 @@ review:
       % if users[0].mailing_address != '':
         - Mailing: **${ users[0].mailing_address.on_one_line() }**
       % endif
-      - Your signature: ${ users[0].signature }
-
+  - Edit: 
+    - users[0].signature
+    button: |
+      Your signature: ${ users[0].signature }
   - Edit: 
     - users[0].phone_number
     button: |
@@ -1934,55 +1931,56 @@ review:
       - **${ item }**
       % endfor
       
-  - Edit: users1_no_shelter
+  - Edit: 
+    - users1_no_shelter
+    - rent_or_own
     button: |
       **Your safe shelter**
       
-      You have been or will be forced from your home — and be without shelter — unless the defendant is ordered to leave your home: **${ yesno(users1_no_shelter) }**
-      
-      % if residence_shared_address or A_new_residence_shared_address:
-      The shared home: 
+      You have been or will be forced from your home — and be without shelter — unless the defendant is ordered to leave your home: **${ word(yesno(users1_no_shelter)) }**
+
+      % if users1_no_shelter:
+      **Details about your shared home**
       % endif
       
-      % if residence_shared_address:
-      - Address: **${ residence_shared_address }**
-      % endif
-      
-      % if A_new_residence_shared_address != "":
-      - Address: **${ A_new_residence_shared_address }**
+      % if defined('residence_shared_address'):
+      ${ residence_shared_address }
+      % elif defined('A_new_residence_shared_address'):
+      ${ A_new_residence_shared_address }
       % endif
 
-      % if rent_or_own["residence_owned"]:
-      - **The home is owned** 
+      % if rent_or_own == "residence_rented":
+      - **The home is rented**
       % endif
       
-      % if rent_or_own["residence_rented"]:
-      - **The home is rented** 
-      % endif
+      % if rent_or_own == "residence_owned":
+      - **The home is owned**
+      % endif    
       
-      % if rent_or_own["i_dont_know"]:
-      - **You don't know if the home is rented or owned** 
-      % endif
+      % if rent_or_own == "i_dont_know":
+      - **You don't know if the home is owned or rented**
+      % endif    
       
-      % if whose_name["residence_of_both"]:
-         - **The home is rented or owned by ${ users[0] } and ${ other_parties[0] }** 
-      % endif
+      % if whose_name == "residence_of_both":
+      - **The home is rented or owned by ${ users[0] } and ${ other_parties[0] }** 
+      % endif    
       
-      % if whose_name["residence_of_users1"]:
-         - **The home is rented or owned by ${ users[0] }** 
-      % endif
+      % if whose_name == "residence_of_users1":
+      - **The home is rented or owned by ${ users[0] }** 
+      % endif   
       
-      % if whose_name["residence_of_OP"]:
-        - **The home is rented or owned by ${ other_parties[0] }**
-      % endif
+      % if whose_name == "residence_of_OP":
+      - **The home is rented or owned by ${ other_parties[0] }** 
+      % endif  
+
+      % if whose_name == "residence_of_other":
+      - **The home is rented or owned by someone else** 
+      % endif  
       
-      % if whose_name["residence_of_other"]:
-        - **The home is rented or owned by someone else** 
-      % endif
+      % if whose_name == "i_donnot_know":
+      - **You don't know who rentd or owns the home** 
+      % endif        
       
-      % if whose_name["I_dont_know"]:
-        - **You don't know who rents or owns the home** 
-      % endif
   - note: | 
       ##Information about the defendant##
   - Edit: 
@@ -2055,16 +2053,6 @@ review:
       - Other phone: **${ showifdef('other_parties1_other_phone_number') }**  
       % endif
 
-  - Edit: house
-    button: |
-      % if house:
-      Details about where the defendant lives -- formatted for law enforcement form. Including:
-      
-      - House number: **${ house }**
-
-      - Name of the street: **${ other_parties1_street_only }**
-      % endif
-
   - Edit: 
     - house
     - best_contact_time
@@ -2080,10 +2068,6 @@ review:
       
       % if other_parties1_state:
       - State: **${ showifdef('other_parties1_state') }**
-      % endif
-      
-      % if other_parties1_other:
-      - The defendant lives outside of the U.S. in the state/province of: **${ other_parties1_other }**
       % endif
       
       % if location_of_home:
@@ -2208,8 +2192,7 @@ review:
       Phone number at that location: **${ showifdef('other_location2_phone') }**
       % endif
 
-  - Edit: 
-    - lenses_glasses
+  - Edit: race
     button: |
       **What the defendant looks like**
 
@@ -2222,7 +2205,9 @@ review:
       % endif
       
       % if sex_other:      
-      Sex/gender: **${ other_sex_field }**
+      Sex/gender: 
+      
+      - **${ other_sex_field }**
       % endif
       
       Race:
@@ -2242,11 +2227,11 @@ review:
       % if race["race_asian"]:      
         - **Asian**
       % endif
-      
+
       % if race["race_other"]:      
-        - **${ other_race_field }**
+        - **${ other_race_field }** 
       % endif
-      
+
       Skin color/tone:
 
       % if skin["skin_light"]:      
@@ -2260,15 +2245,15 @@ review:
       % if skin["skin_dark"]:      
         - **Dark** 
       % endif
-      
+
       % if skin["skin_other"]:     
         - **Other** 
       % endif
-       
+      
       Height: **${other_parties1_height_ft}' ${ other_parties1_height_in }"**
 
       Weight: **${other_parties1_weight_lbs} lbs** 
-      
+       
       Eye color:
       
       % if eyes["eyes_brown"]:
@@ -2296,11 +2281,11 @@ review:
       % endif
       
       % if lenses_glasses: 
-        Glasses: **Yes**
+        Glasses: **${ word(yesno(lenses_glasses)) }**
       % endif
       
       % if lenses_contacts:
-        Contacts: **Yes**
+        Contacts: **${ word(yesno(lenses_contacts)) }**
       % endif
 
   - Edit: hair_color
@@ -2678,37 +2663,48 @@ review:
       % endif
       % endif
       
-      % if request_temp_PRR:
-      Award temporary Parental Rights and Responsibilities (custody) of your child/children to you or someone else: **${ yesno(request_temp_PRR) }** 
-
-      % if children[0].custody_wanted:
-      * **${ showifdef('children[0]') }**    
-      % endif
-      % if children[1].custody_wanted:
-      * **${ showifdef('children[1]') }**    
-      % endif
-      % endif
-      
       % if other_request:
       You are asking for something else: **${ showifdef('request_other_description') }**
       % endif
+      
+      % if request_temp_PRR:
+      Award temporary Parental Rights and Responsibilities (custody) of your child/children to you or someone else: **${ yesno(request_temp_PRR) }** 
+      % endif
   - Edit:
     - children[0].custody_wanted
+    button: |
+      % if request_temp_PRR:  
+      **Custody**
+      % if children[0].custody_wanted:
+      You want custody of:
+      
+      * **${ showifdef('children[0]') }**
+      % endif
+      % endif
+  - Edit:
     - children[1].custody_wanted
     button: |
       % if request_temp_PRR:
+      **Custody**
+      % if children[1].custody_wanted:
       You want custody of:
       
-      % if children[0].custody_wanted:
-      * **${ showifdef('children[0]') }**
-      
-      % endif
-      % if children[1].custody_wanted:
       * **${ showifdef('children[1]') }**
       
       % endif
-      % endif
+      % endif   
+  - Edit:
+    - children[2].custody_wanted
+    button: |
+      % if request_temp_PRR:
+      **Custody**
+      % if children[2].custody_wanted:
+      You want custody of:
       
+      * **${ showifdef('children[2]') }**
+      
+      % endif
+      % endif  
   - Edit: request_all_emergency
     button: |
       You request this RFA on an emergency basis: **${ yesno(request_all_emergency) }** 
@@ -2816,14 +2812,11 @@ columns:
       row_item.address.block() if defined("row_item.address.zip") else ""
   - Mailing: |
       row_item.mailing_address if defined("row_item.mailing_address") else ""
-  - Signature: |
-      row_item.signature if defined("row_item.signature") else ""
 edit:
   - name.middle
   - birthdate
   - address.zip
   - mailing_address
-  - signature
 confirm: True
 ---
 continue button field: other_parties.revisit
