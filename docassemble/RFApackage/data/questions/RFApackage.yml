@@ -1,3 +1,5 @@
+#Changed a heading on review screen; added "Not seeing the email?" and "Logging out" info to download screen.
+
 #Had to work more on race, eyes, etc. Left in the none of the above: False
 
 #Updated Next Steps document to include some court info, which still needs to be implemented. Uploaded courts list csv so I can work more with that.
@@ -1929,7 +1931,7 @@ review:
     - users1_no_shelter
     - rent_or_own
     button: |
-      **Your safe shelter**
+      **Do you need the defendant removed from your home in order to be safe?**
       
       You have been or will be forced from your home — and be without shelter — unless the defendant is ordered to leave your home: **${ word(yesno(users1_no_shelter)) }**
 
@@ -2887,11 +2889,13 @@ subquestion: |
   
   Select the "Edit your answers" button to fix any mistakes. Then, download your forms and the instructions sheet for the next steps to take. You can email the filled-in PDF forms to yourself or someone else, too.
   
-  Consider creating a free account so you can save your progress. At any time choose "sign up" in the menu above, or "register" below.
+  Consider:
   
-  You can also use the Share feature to share a link to your interview with a trusted person. Important: If you use the Share feature, that person will be able to see AND change your answers.
+  * creating a free account so you can save your progress. At any time choose "sign up" in the menu above, or "register" below.
   
-  Consider working with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get support during the RFA process.
+  * using the Share feature to share a link to your interview with a trusted person. Important: If you use the Share feature, that person will be able to see AND change your answers.
+  
+  * working with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get support during the RFA process.
   
   ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
   
@@ -2899,8 +2903,27 @@ subquestion: |
   ${ al_user_bundle.download_list_html() }
   
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+  ${ collapse_template(not_seeing_email) }
+  ${ collapse_template(log_out_when_done) }
 progress: 100
 ---
+template: not_seeing_email
+subject: |
+  Not seeing the email?<br/>
+content: |
+  Check your junk folder and consider marking the email as "not spam" when you find it.
+---  
+template: log_out_when_done
+subject: |
+  Logging out when you are done<br/>
+content: |
+  * If you have an account, choose "Sign out" from the menu and then close your browser. 
+  
+  * Or choose "Exit and delete my answers" from the menu to erase your answers and not save them. 
+  
+  * You might also consider clearing your browsing history. [Learn more.](https://vtlawhelp.org/vtcourtforms#safety)
+---
+
 # ALDocument objects specify the metadata for each template
 objects:
   - RFAcomplaint: ALDocument.using(title="RFA Complaint", filename="1_RFA-complaint", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
