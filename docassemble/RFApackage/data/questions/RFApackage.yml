@@ -1,10 +1,13 @@
-#Changed a heading on review screen; added "Not seeing the email?" and "Logging out" info to download screen.
+#Got Users mailing address to show in Review screen
+#Need to test if User info will show even if there's no mailing address.
+#Got vehicle yes/no and employed yes/no and other incident yes/no to show on Review screen
+#Got def. name and address to show on Review screen if user doesn't know def. address
+#Now show Unknown in fields that are big enough when user doesn't know def. address 
 
-#Had to work more on race, eyes, etc. Left in the none of the above: False
+
 
 #Updated Next Steps document to include some court info, which still needs to be implemented. Uploaded courts list csv so I can work more with that.
 
-#To do: Allow user to edit whether person works or not; whether owns vehicle or not; whether other incidents or not
 
 
 ---
@@ -368,7 +371,7 @@ subquestion: |
   <i class="fas fa-circle-exclamation fa-3x" aria-hidden="true"></i>  If you haven't reviewed this important information already on the VTLawHelp.org website, please take time to do so:
   
   * [What to know before you start](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#what-to-know)
-  * [Safety: About using this guided interview safely](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#about-this-interview)
+  * [**Safety**: About using this guided interview safely](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#about-this-interview)
   * [Information you will need at hand](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#info-you-need)
   * [After answering the questions](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#after-questions)
   
@@ -1436,7 +1439,7 @@ id: About the home
 question: |
   The defendant's home address at this time
 subquestion: |
-  Tell law enforcement where the defendant lives at this time. If they live with you, provide that address and information. If you don't know an answer, say I don't know.  
+  Tell law enforcement where the defendant lives at this time. If they live with you, provide that address and information. If you don't know an answer, say "Unknown".  
 fields:
   - "The house or building number on the street (Example: **Only** enter '10' if it's 10 Main Street.)": house
     maxlength: 10
@@ -1884,13 +1887,15 @@ review:
         - Birthday: **${ format_date(users[0].birthdate, format='M/d/yyyy') }**
         
         - Address: **${ item.address.on_one_line() }**
-      
-      % endfor
+        
+      % if users_mailing_address_different:
+        - Mailing: **${ item.mailing_address.on_one_line() }**
       % endif
-      
-      % if users[0].mailing_address != '':
-        - Mailing: **${ users[0].mailing_address.on_one_line() }**
+        
+      % endfor      
+
       % endif
+
   - Edit: 
     - users[0].signature
     button: |
@@ -1988,23 +1993,27 @@ review:
       - **${ item }**
       
       % endfor
-      
+  - Edit: other_parties1_aliases
+    button: |      
+
       % if other_parties1_aliases != '':
       - Other names the defendant uses (aliases): **${ showifdef('other_parties1_aliases') }**
+      % else:
+      - **No other names used**
       % endif
       
-      
-      % for item in other_parties:
+  - Edit: other_parties[0].address.address
+    button: |    
       % if defendant_address_unknown:
       
       - Address: **Unknown**
       
       % else:
       
-      - Address: **${ item.address.on_one_line() }**
+      - Address: **${ other_parties[0].address.on_one_line() }**
       
       % endif
-      % endfor
+
       
   - Edit: other_parties_estimated_age
     button: |
@@ -2078,10 +2087,10 @@ review:
       - Best days and times to contact the defendant at home: **${ showifdef('best_contact_time') }**
       % endif
       
-  - Edit: vehicle_make
+  - Edit: vehicle
     button: |
+      - Defendant has a car or truck: **${ word(yesno(vehicle)) }**
       % if vehicle:
-      **Defendant's vehicle (their car or truck)**
       
       % if vehicle_make != '':
       - Brand car or truck they drive: **${ showifdef('vehicle_make') }**
@@ -2102,14 +2111,16 @@ review:
       % if vehicle_year != '':
       - Vehicle year: **${ showifdef('vehicle_year') }**
       % endif
-      
       % endif
+      
+
   - Edit: employed
     button: |
       **Defendant's work information**
       
-      Does the defendant work?: **${ word(yesno(employed)) }**
+      - The defendant works: **${ word(yesno(employed)) }**
 
+      % if employed:
       % if employer != '':
       Defendant's employer: **${ showifdef('employer') }**
       % endif
@@ -2148,6 +2159,8 @@ review:
       
       % if work_sun != '':
       Work hours on Sundays: **${ showifdef('work_sun') }**
+      % endif
+      
       % endif
       
   - Edit: other_location_state
@@ -2527,9 +2540,11 @@ review:
   - Edit:
     - other_incident
     button: |
-      % if other_incident:
-      **Other incident(s)**
+      **Other incidents**
       
+      - There were other incidents: **${ yesno(other_incident) }**
+      
+      % if other_incident:     
       - Other incident(s) description: **${ showifdef('other_incident_description') }**
       % endif
   - note: | 
@@ -2785,7 +2800,7 @@ review:
       - The officer who serves this order will be in any danger: **${ yesno(danger_for_officer) }**
       
       % if danger_for_officer_why != '':
-      Why the officer will be in danger: **${ showifdef('danger_for_officer_why') }**
+      - Why the officer will be in danger: **${ showifdef('danger_for_officer_why') }**
       % endif
     
 
@@ -2831,12 +2846,12 @@ rows: other_parties
 columns:
   - Name: |
       row_item.name.full() if defined("row_item.name.last") else ""
-  - Address: |
-      row_item.address.block() if defined("row_item.address.zip") else ""
+  #- Address: |
+      #row_item.address.block() if defined("row_item.address.zip") else ""
   
 edit:
   - name.last
-  - address.zip
+  #- address.zip
 
 confirm: True
 ---
@@ -2917,11 +2932,11 @@ template: log_out_when_done
 subject: |
   Logging out when you are done<br/>
 content: |
-  * If you have an account, choose "Sign out" from the menu and then close your browser. 
+  * If you have an account, choose "Sign out" from the menu and then close your web browser. 
   
-  * Or choose "Exit and delete my answers" from the menu to erase your answers and not save them. 
+  * Or choose "Exit and delete my answers" from the menu to erase your answers completely. Then close your web browser. 
   
-  * You might also consider clearing your browsing history. [Learn more.](https://vtlawhelp.org/vtcourtforms#safety)
+  * You might also consider clearing your browsing history. [Learn more about online safety.](https://vtlawhelp.org/vtcourtforms#safety)
 ---
 
 # ALDocument objects specify the metadata for each template
@@ -3001,13 +3016,13 @@ attachment:
           % endif 
       - "other_parties1_address_state": |
           % if defendant_address_unknown: 
-          Unknown
+           
           % else: 
           ${ other_parties[0].address.state }
           % endif 
       - "other_parties1_address_zip": |
           % if defendant_address_unknown: 
-          Unknown
+           
           % else: 
           ${ other_parties[0].address.zip }
           % endif 
