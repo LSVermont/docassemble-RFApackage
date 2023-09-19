@@ -1,8 +1,14 @@
-#Had to work more on race, eyes, etc. Left in the none of the above: False
+#Got Users mailing address to show in Review screen
+#Need to test if User info will show even if there's no mailing address.
+#Got vehicle yes/no and employed yes/no and other incident yes/no to show on Review screen
+#Got def. name and address to show on Review screen if user doesn't know def. address
+#Now show Unknown in fields that are big enough when user doesn't know def. address
+#Updated other incident trigger number
+
+
 
 #Updated Next Steps document to include some court info, which still needs to be implemented. Uploaded courts list csv so I can work more with that.
 
-#To do: Allow user to edit whether person works or not; whether owns vehicle or not; whether other incidents or not
 
 
 ---
@@ -75,7 +81,7 @@ question: |
 subquestion: |
   ${ action_button_html(url_action('review_RFApackage'), label='Edit answers', color='info') }
   
-  Remember to come back to this window to continue.
+  Remember to come back to this screen to continue.
 continue button field: RFApackage_preview_question
 ---
 mandatory: True
@@ -366,7 +372,7 @@ subquestion: |
   <i class="fas fa-circle-exclamation fa-3x" aria-hidden="true"></i>  If you haven't reviewed this important information already on the VTLawHelp.org website, please take time to do so:
   
   * [What to know before you start](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#what-to-know)
-  * [Safety: About using this guided interview safely](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#about-this-interview)
+  * [**Safety**: About using this guided interview safely](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#about-this-interview)
   * [Information you will need at hand](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#info-you-need)
   * [After answering the questions](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#after-questions)
   
@@ -1434,7 +1440,7 @@ id: About the home
 question: |
   The defendant's home address at this time
 subquestion: |
-  Tell law enforcement where the defendant lives at this time. If they live with you, provide that address and information. If you don't know an answer, say I don't know.  
+  Tell law enforcement where the defendant lives at this time. If they live with you, provide that address and information. If you don't know an answer, say "Unknown".  
 fields:
   - "The house or building number on the street (Example: **Only** enter '10' if it's 10 Main Street.)": house
     maxlength: 10
@@ -1841,7 +1847,7 @@ subquestion: |
 
   ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
   
-  Remember to come back to this window to continue and sign your form.
+  Remember to come back to this screen to tap Next and sign your form.
 continue button field: RFApackage_preview_question    
 ---
 code: |
@@ -1882,13 +1888,15 @@ review:
         - Birthday: **${ format_date(users[0].birthdate, format='M/d/yyyy') }**
         
         - Address: **${ item.address.on_one_line() }**
-      
-      % endfor
+        
+      % if users_mailing_address_different:
+        - Mailing: **${ item.mailing_address.on_one_line() }**
       % endif
-      
-      % if users[0].mailing_address != '':
-        - Mailing: **${ users[0].mailing_address.on_one_line() }**
+        
+      % endfor      
+
       % endif
+
   - Edit: 
     - users[0].signature
     button: |
@@ -1929,7 +1937,7 @@ review:
     - users1_no_shelter
     - rent_or_own
     button: |
-      **Your safe shelter**
+      **Do you need the defendant removed from your home in order to be safe?**
       
       You have been or will be forced from your home — and be without shelter — unless the defendant is ordered to leave your home: **${ word(yesno(users1_no_shelter)) }**
 
@@ -1972,7 +1980,7 @@ review:
       % endif  
       
       % if whose_name == "i_donnot_know":
-      - **You don't know who rentd or owns the home** 
+      - **You don't know who rents or owns the home** 
       % endif        
       
   - note: | 
@@ -1986,23 +1994,27 @@ review:
       - **${ item }**
       
       % endfor
-      
+  - Edit: other_parties1_aliases
+    button: |      
+
       % if other_parties1_aliases != '':
       - Other names the defendant uses (aliases): **${ showifdef('other_parties1_aliases') }**
+      % else:
+      - **No other names used**
       % endif
       
-      
-      % for item in other_parties:
+  - Edit: other_parties[0].address.address
+    button: |    
       % if defendant_address_unknown:
       
       - Address: **Unknown**
       
       % else:
       
-      - Address: **${ item.address.on_one_line() }**
+      - Address: **${ other_parties[0].address.on_one_line() }**
       
       % endif
-      % endfor
+
       
   - Edit: other_parties_estimated_age
     button: |
@@ -2076,10 +2088,12 @@ review:
       - Best days and times to contact the defendant at home: **${ showifdef('best_contact_time') }**
       % endif
       
-  - Edit: vehicle_make
+  - Edit: vehicle
     button: |
+      **Defendant's vehicle**
+      
+      - Defendant has a car or truck: **${ word(yesno(vehicle)) }**
       % if vehicle:
-      **Defendant's vehicle (their car or truck)**
       
       % if vehicle_make != '':
       - Brand car or truck they drive: **${ showifdef('vehicle_make') }**
@@ -2100,24 +2114,26 @@ review:
       % if vehicle_year != '':
       - Vehicle year: **${ showifdef('vehicle_year') }**
       % endif
-      
       % endif
+      
+
   - Edit: employed
     button: |
       **Defendant's work information**
       
-      Does the defendant work?: **${ word(yesno(employed)) }**
+      - The defendant works: **${ word(yesno(employed)) }**
 
+      % if employed:
       % if employer != '':
       Defendant's employer: **${ showifdef('employer') }**
       % endif
       
       % if employers_street_address != '':
-      Their employers street address: **${ showifdef('employers_street_address') }**
+      Their employer's street address: **${ showifdef('employers_street_address') }**
       % endif
       
       % if employers_city_state != '':
-      Employers city and state: **${ showifdef('employers_city_state') }**
+      Employer's city and state: **${ showifdef('employers_city_state') }**
       % endif
       
       % if work_mondays != '':
@@ -2146,6 +2162,8 @@ review:
       
       % if work_sun != '':
       Work hours on Sundays: **${ showifdef('work_sun') }**
+      % endif
+      
       % endif
       
   - Edit: other_location_state
@@ -2525,9 +2543,11 @@ review:
   - Edit:
     - other_incident
     button: |
-      % if other_incident:
-      **Other incident(s)**
+      **Other incidents**
       
+      - There were other incidents: **${ yesno(other_incident) }**
+      
+      % if other_incident:     
       - Other incident(s) description: **${ showifdef('other_incident_description') }**
       % endif
   - note: | 
@@ -2535,10 +2555,8 @@ review:
   - Edit: 
     - danger_more_abuse
     - danger_more_abuse_why
-    - weapons.revisit
     - weapons.there_are_any
-    - used_firearm
-    - used_weapon
+    - weapons.revisit
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse) }**
       
@@ -2783,11 +2801,12 @@ review:
       - The officer who serves this order will be in any danger: **${ yesno(danger_for_officer) }**
       
       % if danger_for_officer_why != '':
-      Why the officer will be in danger: **${ showifdef('danger_for_officer_why') }**
+      - Why the officer will be in danger: **${ showifdef('danger_for_officer_why') }**
       % endif
     
 
-  - Edit: signature_date
+  - Edit: 
+    - signature_date
     button: |
       Signature date to put on forms: **${ (format_date(signature_date, format='M/d/yyyy')) }**
   - note: |       
@@ -2829,12 +2848,12 @@ rows: other_parties
 columns:
   - Name: |
       row_item.name.full() if defined("row_item.name.last") else ""
-  - Address: |
-      row_item.address.block() if defined("row_item.address.zip") else ""
+  #- Address: |
+      #row_item.address.block() if defined("row_item.address.zip") else ""
   
 edit:
   - name.last
-  - address.zip
+  #- address.zip
 
 confirm: True
 ---
@@ -2887,11 +2906,13 @@ subquestion: |
   
   Select the "Edit your answers" button to fix any mistakes. Then, download your forms and the instructions sheet for the next steps to take. You can email the filled-in PDF forms to yourself or someone else, too.
   
-  Consider creating a free account so you can save your progress. At any time choose "sign up" in the menu above, or "register" below.
+  Consider:
   
-  You can also use the Share feature to share a link to your interview with a trusted person. Important: If you use the Share feature, that person will be able to see AND change your answers.
+  * creating a free account so you can save your progress. At any time choose "sign up" in the menu above, or "register" below.
   
-  Consider working with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get support during the RFA process.
+  * using the Share feature to share a link to your interview with a trusted person. Important: If you use the Share feature, that person will be able to see AND change your answers.
+  
+  * working with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get support during the RFA process.
   
   ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
   
@@ -2899,8 +2920,27 @@ subquestion: |
   ${ al_user_bundle.download_list_html() }
   
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+  ${ collapse_template(not_seeing_email) }
+  ${ collapse_template(log_out_when_done) }
 progress: 100
 ---
+template: not_seeing_email
+subject: |
+  Not seeing the email?<br/>
+content: |
+  Check your junk folder and consider marking the email as "not spam" when you find it.
+---  
+template: log_out_when_done
+subject: |
+  Logging out when you are done<br/>
+content: |
+  * If you have an account, choose "Sign out" from the menu and then close your web browser. 
+  
+  * Or choose "Exit and delete my answers" from the menu to erase your answers completely. Then close your web browser. 
+  
+  * You might also consider clearing your browsing history. [Learn more about online safety.](https://vtlawhelp.org/vtcourtforms#safety)
+---
+
 # ALDocument objects specify the metadata for each template
 objects:
   - RFAcomplaint: ALDocument.using(title="RFA Complaint", filename="1_RFA-complaint", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
@@ -2978,13 +3018,13 @@ attachment:
           % endif 
       - "other_parties1_address_state": |
           % if defendant_address_unknown: 
-          Unknown
+           
           % else: 
           ${ other_parties[0].address.state }
           % endif 
       - "other_parties1_address_zip": |
           % if defendant_address_unknown: 
-          Unknown
+           
           % else: 
           ${ other_parties[0].address.zip }
           % endif 
@@ -3157,13 +3197,13 @@ attachment:
           % endif
       - "other_parties1_address_state": |
           % if defendant_address_unknown: 
-          Unknown
+           
           % else: 
           ${ other_parties[0].address.state }
           % endif
       - "other_parties1_address_zip": |
           % if defendant_address_unknown: 
-          Unknown
+           
           % else: 
           ${ other_parties[0].address.zip }
           % endif 
@@ -3398,8 +3438,8 @@ code: |
   RFAaffidavit.overflow_fields["recent_incident_description"].label = "Please describe the most recent incident with as much detail as possible."
   RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
   RFAaffidavit.overflow_fields["serious_incident_description"].label = "Please describe the most serious incident with as much detail as possible."
-  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 2052
-  RFAaffidavit.overflow_fields["other_incident_description"].label = "Please describe the any other incident(s) with as much detail as possible."
+  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1950
+  RFAaffidavit.overflow_fields["other_incident_description"].label = "Please describe any other incident(s) with as much detail as possible."
   RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 598
   RFAaffidavit.overflow_fields["used_weapon_how"].label = "Describe in detail how they used or threatened to use weapon?"
   RFAaffidavit.overflow_fields.gathered = True
