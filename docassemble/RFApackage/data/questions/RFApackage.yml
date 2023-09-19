@@ -2,7 +2,8 @@
 #Need to test if User info will show even if there's no mailing address.
 #Got vehicle yes/no and employed yes/no and other incident yes/no to show on Review screen
 #Got def. name and address to show on Review screen if user doesn't know def. address
-#Now show Unknown in fields that are big enough when user doesn't know def. address 
+#Now show Unknown in fields that are big enough when user doesn't know def. address
+#Updated other incident trigger number
 
 
 
@@ -80,7 +81,7 @@ question: |
 subquestion: |
   ${ action_button_html(url_action('review_RFApackage'), label='Edit answers', color='info') }
   
-  Remember to come back to this window to continue.
+  Remember to come back to this screen to continue.
 continue button field: RFApackage_preview_question
 ---
 mandatory: True
@@ -1846,7 +1847,7 @@ subquestion: |
 
   ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
   
-  Remember to come back to this window to continue and sign your form.
+  Remember to come back to this screen to tap Next and sign your form.
 continue button field: RFApackage_preview_question    
 ---
 code: |
@@ -1979,7 +1980,7 @@ review:
       % endif  
       
       % if whose_name == "i_donnot_know":
-      - **You don't know who rentd or owns the home** 
+      - **You don't know who rents or owns the home** 
       % endif        
       
   - note: | 
@@ -2089,6 +2090,8 @@ review:
       
   - Edit: vehicle
     button: |
+      **Defendant's vehicle**
+      
       - Defendant has a car or truck: **${ word(yesno(vehicle)) }**
       % if vehicle:
       
@@ -2126,11 +2129,11 @@ review:
       % endif
       
       % if employers_street_address != '':
-      Their employers street address: **${ showifdef('employers_street_address') }**
+      Their employer's street address: **${ showifdef('employers_street_address') }**
       % endif
       
       % if employers_city_state != '':
-      Employers city and state: **${ showifdef('employers_city_state') }**
+      Employer's city and state: **${ showifdef('employers_city_state') }**
       % endif
       
       % if work_mondays != '':
@@ -2552,10 +2555,8 @@ review:
   - Edit: 
     - danger_more_abuse
     - danger_more_abuse_why
-    - weapons.revisit
     - weapons.there_are_any
-    - used_firearm
-    - used_weapon
+    - weapons.revisit
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse) }**
       
@@ -2804,7 +2805,8 @@ review:
       % endif
     
 
-  - Edit: signature_date
+  - Edit: 
+    - signature_date
     button: |
       Signature date to put on forms: **${ (format_date(signature_date, format='M/d/yyyy')) }**
   - note: |       
@@ -3195,13 +3197,13 @@ attachment:
           % endif
       - "other_parties1_address_state": |
           % if defendant_address_unknown: 
-          Unknown
+           
           % else: 
           ${ other_parties[0].address.state }
           % endif
       - "other_parties1_address_zip": |
           % if defendant_address_unknown: 
-          Unknown
+           
           % else: 
           ${ other_parties[0].address.zip }
           % endif 
@@ -3436,8 +3438,8 @@ code: |
   RFAaffidavit.overflow_fields["recent_incident_description"].label = "Please describe the most recent incident with as much detail as possible."
   RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
   RFAaffidavit.overflow_fields["serious_incident_description"].label = "Please describe the most serious incident with as much detail as possible."
-  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 2052
-  RFAaffidavit.overflow_fields["other_incident_description"].label = "Please describe the any other incident(s) with as much detail as possible."
+  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1950
+  RFAaffidavit.overflow_fields["other_incident_description"].label = "Please describe any other incident(s) with as much detail as possible."
   RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 598
   RFAaffidavit.overflow_fields["used_weapon_how"].label = "Describe in detail how they used or threatened to use weapon?"
   RFAaffidavit.overflow_fields.gathered = True
