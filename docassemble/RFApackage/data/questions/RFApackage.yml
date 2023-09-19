@@ -1,9 +1,5 @@
-#Got Users mailing address to show in Review screen
-#Need to test if User info will show even if there's no mailing address.
-#Got vehicle yes/no and employed yes/no and other incident yes/no to show on Review screen
-#Got def. name and address to show on Review screen if user doesn't know def. address
-#Now show Unknown in fields that are big enough when user doesn't know def. address
-#Updated other incident trigger number
+#Hiding more Unknown fields on PDF when user doesn't know def. address
+#Updated two trigger numbers
 
 
 
@@ -3012,7 +3008,7 @@ attachment:
           % endif 
       - "other_parties1_address_city": |
           % if defendant_address_unknown: 
-          Unknown
+           
           % else: 
           ${ other_parties[0].address.city }
           % endif 
@@ -3434,13 +3430,13 @@ attachment:
 code: |
   RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
   RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1142
+  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1164
   RFAaffidavit.overflow_fields["recent_incident_description"].label = "Please describe the most recent incident with as much detail as possible."
   RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
   RFAaffidavit.overflow_fields["serious_incident_description"].label = "Please describe the most serious incident with as much detail as possible."
-  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1950
+  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1960
   RFAaffidavit.overflow_fields["other_incident_description"].label = "Please describe any other incident(s) with as much detail as possible."
-  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 598
+  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 580
   RFAaffidavit.overflow_fields["used_weapon_how"].label = "Describe in detail how they used or threatened to use weapon?"
   RFAaffidavit.overflow_fields.gathered = True
 ---
