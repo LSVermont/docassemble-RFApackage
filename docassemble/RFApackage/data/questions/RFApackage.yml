@@ -1,8 +1,4 @@
-#Updated two trigger numbers -- again!
-#Defined defendant when gathering their name
-#  "Does the defendant work?": employed    datatype: yesnomaybe
-#Added option to choose users address when asked about Defendant's address
-#changed reach up variables from reach_up_OP to other_parties1_gets_reach_up and from reach_up_users1 to users1_gets_reach_up (to match divorce forms we are preparing)
+#Trying to get most serious incident to show on Review screen whether there was one or not
 
 
 #Updated Next Steps document to include some court info, which still needs to be implemented. Uploaded courts list csv already.
@@ -2564,38 +2560,40 @@ review:
       % endif
 
 
-  - Edit: 
-    - recent_incident_most_serious
-    - serious_incident_description
-    button: |
-      Was most recent also the most serious incident: **${ yesno(recent_incident_most_serious) }**
-      
+
   - Edit:
-    - serious_incident_description
+    - recent_incident_most_serious
+
     button: |
       **Most serious incident**
-          
-      % if serious_incident_date:      
-      - Date of the most serious incident: **${ serious_incident_date }**
-      % endif
       
-      % if serious_incident_time:
-      - Time of the most serious incident: **${ serious_incident_time }**
-      % endif
-
-      % if serious_incident_town:
-      - Town of the most serious incident: **${ serious_incident_town }**
-      % endif
-
-      % if serious_incident_state:
-      - State of the most serious incident: **${ serious_incident_state }**
-      % endif
+      Was most recent also the most serious incident: **${ yesno(recent_incident_most_serious) }**
+  - Edit:
+    - serious_incident_date
+    button: |
+      % if not recent_incident_most_serious:
       
-      % if other_serious_incident_state:
-      - State/province/country of the most serious incident if outside of the U.S.: **${other_serious_incident_state}**
+      % if defined(serious_incident_date):
+      - Date of the most serious incident: **${ showifdef('serious_incident_date') }** 
+      % endif
+      % if defined('serious_incident_time'):
+      - Time of the most serious incident: **${ showifdef('serious_incident_time') }**
+      % endif
+      % if defined('serious_incident_town'):
+      - Town of the most serious incident: **${ showifdef('serious_incident_town') }**
+      % endif
+      % if defined('serious_incident_state'):
+      - State of the most serious incident: **${ showifdef('serious_incident_state') }**
+      % endif
+      % if defined('other_serious_incident_state'):
+      - State/province/country of the most serious incident if outside of the U.S.: **${ showifdef('other_serious_incident_state') }**
+      % endif
+      % if defined('serious_incident_description'):
+      - Most serious incident description: **${ showifdef('serious_incident_description') }**
+      % endif
       % endif
 
-      - Most serious incident description: **${ serious_incident_description }**
+      
   - Edit:
     - other_incident
     button: |
@@ -3242,26 +3240,27 @@ attachment:
           % if other_parties[0].birth_year:
           ${ other_parties[0].birth_year }
           % endif
+
       - "other_parties1_address_address": |
-          % if defendant_address_unknown: 
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
           Unknown
           % else: 
           ${ other_parties[0].address.line_one() }
-          % endif
+          % endif 
       - "other_parties1_address_city": |
-          % if defendant_address_unknown: 
-          Unknown
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
+           
           % else: 
           ${ other_parties[0].address.city }
-          % endif
+          % endif 
       - "other_parties1_address_state": |
-          % if defendant_address_unknown: 
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
            
           % else: 
           ${ other_parties[0].address.state }
-          % endif
+          % endif 
       - "other_parties1_address_zip": |
-          % if defendant_address_unknown: 
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
            
           % else: 
           ${ other_parties[0].address.zip }
