@@ -18,6 +18,13 @@ include:
 features:
   css: style.css
 ---
+objects:
+  - all_courts: ALCourtLoader.using(file_name='courts_list.xlsx')
+---
+code: |
+  trial_court = all_courts.as_court('trial_court', trial_court_index)
+  trial_court.geolocate()  
+---
 metadata:
   title: |
     Asking for a Relief from Abuse order (RFA) in Vermont
@@ -197,7 +204,7 @@ code: |
 
   
   #main questions
-  trial_court_name
+  trial_court
   set_progress(8)
   nav.set_section("about")
   users.gather()
@@ -558,22 +565,9 @@ fields:
       * the county the other person lives in (the "defendant").
       
       Not sure what county? [Check this list of cities and towns to find the county.](https://en.m.wikipedia.org/wiki/List_of_municipalities_in_Vermont#Cities)
-  - County: trial_court_name
-    choices:
-      - Addison
-      - Bennington
-      - Caledonia
-      - Chittenden
-      - Essex
-      - Franklin
-      - Grand Isle
-      - Lamoille
-      - Orange
-      - Orleans
-      - Rutland
-      - Washington
-      - Windham
-      - Windsor
+  - County: trial_court_index
+    code: all_courts._load_courts()['address_county'].items()
+    
  #% if al_form_type == 'starts_case':
   #What court do you want to file in?
   #% elif al_form_type == 'appeal':
@@ -600,8 +594,8 @@ fields:
   #  required: False
 ---
 #I had to set this because the automated AL.court bundle wanted to define the court address and county, when I didn't need that at this time. AL.court bundle will be needed to efile. 
-code: |
-  trial_court_address.county = trial_court_name
+#code: |
+#  trial_court_address.county = trial_court_name
 ---
 id: you birthdate question
 question: |
@@ -2731,9 +2725,12 @@ review:
       You request this RFA on an emergency basis: **${ yesno(request_all_emergency) }** 
   - note: | 
       ##Filing##
-  - Edit: trial_court_name
+  - Edit: 
+    - trial_court_index
+    - recompute:
+      - trial_court
     button: |
-      Filing in the Family Court of this county: **${ trial_court_name }**
+      Filing in the Family Court of this county: **${ trial_court.address.county }**
   - Edit: 
     - existing_order
     button: |
@@ -2974,17 +2971,17 @@ attachment:
   variable name: RFApackage_Post_interview_instructions[i]
   skip undefined: True
   fields:
-      - "address_county": ${ trial_court_name }
-      - "division": ${ trial_court_name }
-      - "name": ${ trial_court_name }
-      - "address_address": ${ trial_court_name }
-      - "address_unit": ${ trial_court_name }
-      - "address_city": ${ trial_court_name }
-      - "address_state": ${ trial_court_name }
-      - "address_zip": ${ trial_court_name }
-      - "arbitrary_attribute": ${ trial_court_name }
-      - "phone": ${ trial_court_name }
-      - "email": ${ trial_court_name }
+      - "address_county": ${ trial_court.address.county }
+      - "division": ${ trial_court.division }
+      - "name": ${ trial_court }
+      - "address_address": ${ trial_court.address.address }
+      - "address_unit": ${ trial_court.address.unit }
+      - "address_city": ${ trial_court.address.city }
+      - "address_state": ${ trial_court.address.state }
+      - "address_zip": ${ trial_court.address.zip }
+      - "arbitrary_attribute": ${ trial_court.arbitrary_attribute }
+      - "phone": ${ trial_court.phone }
+      - "email": ${ trial_court.email }
 ---
 attachment:
   name: 1 RFA-complaint
@@ -2994,7 +2991,7 @@ attachment:
   pdf template file: 1_RFA-complaint.pdf
   fields:
       - "docket_number": ${ docket_number }
-      - "trial_court_county": ${ trial_court_name }
+      - "trial_court_county": ${ trial_court.address.county }
       - "users1_name": ${ users[0] }
       - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
       - "other_parties1_name": ${ other_parties[0] }
@@ -3172,7 +3169,7 @@ attachment:
   pdf template file: 3_RFA-affidavit.pdf
   fields:
       - "docket_number": ${ docket_number }
-      - "trial_court_county": ${ trial_court_name }
+      - "trial_court_county": ${ trial_court.address.county }
       - "users1_name": ${ users[0] }
       - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
       - "other_parties1_name__1": ${ other_parties[0] }
@@ -3285,7 +3282,7 @@ attachment:
       - "docket_number__1": ${ docket_number }
       - "docket_number__2": ${ docket_number }
       - "docket_number": ${ docket_number }
-      - "trial_court_county": ${ trial_court_name }
+      - "trial_court_county": ${ trial_court.address.county }
       - "users1_name": ${ users[0] }
       - "users1_address_address": ${ users[0].address.line_one() }
       - "users1_address_mailing": ${ users[0].mailing_address.on_one_line() }
