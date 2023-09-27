@@ -1,14 +1,3 @@
-#Updated id: Gather users street address    sets:   so editing of User and User address worked on Review screen
-#Added   **We're ready to generate your draft forms so you can review them!** It may take a moment after you tap the Next button. 
-#Hiding more Unknown fields on PDF when user doesn't know def. address
-#Updated two trigger numbers
-
-
-
-#Updated Next Steps document to include some court info, which still needs to be implemented. Uploaded courts list csv so I can work more with that.
-
-
-
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
