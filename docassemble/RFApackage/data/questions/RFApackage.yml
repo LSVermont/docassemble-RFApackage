@@ -1063,7 +1063,7 @@ fields:
     required: False
 ---
 objects:
-  - weapons: DAList.using(object_type=DAObject, complete_attribute="location")
+  - weapons: DAList.using(object_type=DAObject, complete_attribute="weapon_location")
 ---
 id: Gather weapons
 question: |
@@ -1084,7 +1084,7 @@ subquestion: |
 fields:
   - Describe weapon (handgun, rifle, knife, etc.). Include the make and model if you know.: weapons[i].description
     maxlength: 76
-  - Where is this weapon located? (kitchen, car, friend's house, etc.): weapons[i].location
+  - Where is this weapon located? (kitchen, car, friend's house, etc.): weapons[i].weapon_location
     maxlength: 76
 ---
 id: Another weapon
@@ -2576,7 +2576,7 @@ review:
       Weapons
       % for item in weapons:
       
-        1. **${ item.description }  --  ${ item.location }**
+        1. **${ item.description }  --  ${ item.weapon_location }**
       
       % endfor   
       
@@ -2890,10 +2890,10 @@ columns:
   - Description: |
       row_item.description if defined("row_item.description") else ""
   - Location: |
-      row_item.location if defined("row_item.location") else ""
+      row_item.weapon_location if defined("row_item.weapon_location") else ""
 edit:
   - description
-  - location
+  - weapon_location
 confirm: True
 ---
 #####################################################################
@@ -3235,21 +3235,21 @@ attachment:
       - "other_parties1_weapon_no": ${ weapons.there_are_any == False }
       - "other_parties1_weapon_DK": ${ weapons.there_are_any == None }
       - "weapon1": ${ weapons[0].description }
-      - "weapon1_location": ${ weapons[0].location }
+      - "weapon1_location": ${ weapons[0].weapon_location }
       - "weapon2": ${ weapons[1].description }
-      - "weapon2_location": ${ weapons[1].location }
-      - "weapon3_location": ${ weapons[2].location }
+      - "weapon2_location": ${ weapons[1].weapon_location }
+      - "weapon3_location": ${ weapons[2].weapon_location }
       - "weapon3": ${ weapons[2].description }
-      - "weapon4_location": ${ weapons[3].location }
+      - "weapon4_location": ${ weapons[3].weapon_location }
       - "weapon4": ${ weapons[3].description }
-      - "weapon5_location": ${ weapons[4].location }
+      - "weapon5_location": ${ weapons[4].weapon_location }
       - "weapon5": ${ weapons[4].description }
-      - "weapon6_location": ${ weapons[5].location }
+      - "weapon6_location": ${ weapons[5].weapon_location }
       - "weapon6": ${ weapons[5].description }
       - "weapon7": ${ weapons[6].description }
-      - "weapon7_location": ${ weapons[6].location }
+      - "weapon7_location": ${ weapons[6].weapon_location }
       - "weapon8": ${ weapons[7].description }
-      - "weapon8_location": ${ weapons[7].location }
+      - "weapon8_location": ${ weapons[7].weapon_location }
       - "extra_sheets_attached": |
           % if weapons.number() > 8: 
             1
