@@ -1,7 +1,8 @@
-#Trying to get most serious incident to show on Review screen whether there was one or not
+#Got most serious incident to show on Review screen whether there was one or not
+#Need to get this to show on review screen too -- Service (delivery) of the RFA order
 
 
-#Updated Next Steps document to include some court info, which still needs to be implemented. Uploaded courts list csv already.
+#Updated Next Steps document to include some court info, which still needs to be implemented.
 
 
 
@@ -2563,36 +2564,30 @@ review:
 
   - Edit:
     - recent_incident_most_serious
-
     button: |
       **Most serious incident**
       
       Was most recent also the most serious incident: **${ yesno(recent_incident_most_serious) }**
+
   - Edit:
-    - serious_incident_date
+    - serious_incident_description
     button: |
-      % if not recent_incident_most_serious:
-      
-      % if defined(serious_incident_date):
+      % if recent_incident_most_serious == False:
       - Date of the most serious incident: **${ showifdef('serious_incident_date') }** 
-      % endif
-      % if defined('serious_incident_time'):
+
       - Time of the most serious incident: **${ showifdef('serious_incident_time') }**
-      % endif
-      % if defined('serious_incident_town'):
+
       - Town of the most serious incident: **${ showifdef('serious_incident_town') }**
-      % endif
-      % if defined('serious_incident_state'):
-      - State of the most serious incident: **${ showifdef('serious_incident_state') }**
-      % endif
+      
       % if defined('other_serious_incident_state'):
       - State/province/country of the most serious incident if outside of the U.S.: **${ showifdef('other_serious_incident_state') }**
+      % else:
+      - State of the most serious incident: **${ showifdef('serious_incident_state') }**
       % endif
-      % if defined('serious_incident_description'):
+      
       - Most serious incident description: **${ showifdef('serious_incident_description') }**
-      % endif
-      % endif
 
+      % endif
       
   - Edit:
     - other_incident
