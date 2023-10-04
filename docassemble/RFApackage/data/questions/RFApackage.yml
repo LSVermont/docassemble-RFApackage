@@ -1,3 +1,4 @@
+
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -148,14 +149,15 @@ code: |
   user_role = "plaintiff"
   user_ask_role = "plaintiff"
   nav.set_section("screening")
-
+  
+  
   ##initial_screening_questions##
   what_want_to_do
   if what_want_to_do == 'extend_or_change':
     initial_screening_questions_1_exit
     
   relationship_question
-  if relationship_question == 'Family member':
+  if relationship_question == 'Family member (may include spouse, ex-spouse, parent, aunt/uncle, cousin)':
     if not sixteen_or_older:
       initial_screening_questions_2_exit
   if relationship_question == 'Current or former sexual partner':
@@ -201,7 +203,7 @@ code: |
   users[0].name.first
   users[0].birthdate
   users[0].address.address
-  reach_up_users1
+  ask_if_user_gets_reach_up
   users[0].phone_number
   users[0].email
   set_progress(16)
@@ -214,9 +216,9 @@ code: |
   other_parties.gather()
   set_progress(32)
   other_parties[0].birth_month
-  defendant_address_unknown
+  ask_defendant_address
   other_parties[0].phone_number
-  incarcerated
+  more_about_defendant
   nav.set_section('incidents')
   recent_incident_date
   set_progress(40)
@@ -410,7 +412,7 @@ fields:
   - "What is your relationship to the person who has abused you or is abusing you?": relationship_question
     input type: radio
     choices:
-      - Family member
+      - Family member (may include spouse, ex-spouse, parent, aunt/uncle, cousin)
       - Current or former sexual partner
       - Someone you date or used to date
       - Someone who lives with you or used to live with you
@@ -545,7 +547,7 @@ question: |
   Choose a Family Court
 fields:
   - note: |
-      Choose the county where you will file your forms to ask for a RFA order. 
+      Choose the county where you will file your forms to ask for an RFA order. 
       
       It can be:
       
@@ -635,10 +637,11 @@ fields:
     show if: users_mailing_address_different
 ---
 id: user reach up benefits 
+continue button field: ask_if_user_gets_reach_up
 question: |
   Do you get Reach Up benefits from the state?
 fields: 
-  - no label: reach_up_users1
+  - no label: users1_gets_reach_up
     datatype: yesnoradio
     required: False
 ---
@@ -733,6 +736,7 @@ sets:
 question: |
   Name of defendant
 fields:
+  - note: The "defendant" is the person who is abusing you.
   - First Name: other_parties[0].name.first
   - Middle Name: other_parties[0].name.middle
     required: False
@@ -750,12 +754,13 @@ fields:
     required: False
 ---
 id: About the defendant
+continue button field: more_about_defendant
 question: |
   More about the defendant
 subquestion: |
   Select all that apply.
 fields:
-  - "Defendant gets Reach Up benefits": reach_up_OP
+  - "Defendant gets Reach Up benefits from the state": other_parties1_gets_reach_up
     datatype: yesno
   - "Defendant is a current member of the military": other_parties1_military
     datatype: yesno
@@ -828,7 +833,36 @@ fields:
     code: |
       range(1,100+1)
 ---
-id: Gather defendants address
+#id: Gather defendants address
+#question: |
+#  What is the defendant's home address?
+#subquestion: |
+#  The court will need an address of some kind. Include what you can of the defendant's home address. Later in this interview you can give the address where they work or where they are staying. **You will need to provide at least one address.**
+#fields:
+#  - The same address as mine: defendant_lives_with_plaintiff
+#    datatype: yesno
+#    disable others: True
+#  - I don't know the defendant's home address: defendant_address_unknown
+#    datatype: yesno
+#    disable others: True
+#  - Street address: other_parties[0].address.address
+#    address autocomplete: True
+#    required: False
+#  - Unit: other_parties[0].address.unit
+#    required: False
+#  - City: other_parties[0].address.city
+#    required: False
+#  - State: other_parties[0].address.state
+#    code: |
+#      states_list()
+#    default: VT
+#    required: False
+#  - Zip: other_parties[0].address.zip
+#    required: False
+---
+
+id: ask defendant address
+continue button field: ask_defendant_address
 question: |
   What is the defendant's home address?
 subquestion: |
@@ -836,22 +870,36 @@ subquestion: |
 fields:
   - I don't know the defendant's home address: defendant_address_unknown
     datatype: yesno
+    css class: indent-me
     disable others: True
-  - Street address: other_parties[0].address.address
+  - Defendant's address: other_parties[0].address
+    datatype: object_radio
+    choices:
+      - users[0].address if defined("users[0].address.address") else None
+    object labeler: |
+      lambda y: y.on_one_line()
+    none of the above: |
+      Somewhere else
+    disable others: True      
+    show if:
+      code: |
+        defined("users[0].address.address")
+  - ${ users[0].address.address_label}: other_parties[0].address.address
     address autocomplete: True
+  - ${ users[0].address.unit_label}: other_parties[0].address.unit
     required: False
-  - Unit: other_parties[0].address.unit
-    required: False
-  - City: other_parties[0].address.city
-    required: False
-  - State: other_parties[0].address.state
+  - ${ users[0].address.city_label}: other_parties[0].address.city
+  - ${ users[0].address.state_label}: other_parties[0].address.state
     code: |
-      states_list()
-    default: VT
-    required: False
-  - Zip: other_parties[0].address.zip
-    required: False
+      states_list(country_code=AL_DEFAULT_COUNTRY)
+    default: ${ AL_DEFAULT_STATE }
+  - ${ users[0].address.zip_label}: other_parties[0].address.zip
+    required: False      
+  - ${ users[0].address.country_label}: other_parties[0].address.country
+    code: countries_list()
+    default: ${ AL_DEFAULT_COUNTRY }
 ---
+
 id: Gather defendants phone numbers
 question: |
   What are the defendant's phone numbers?
@@ -873,7 +921,7 @@ id: What happened most recently
 question: |
   What happened -- most recently
 subquestion: |
-  This is where you will describe the **most recent** incident of abuse. Be as detailed as possible. The judge needs to know exactly what happened. If you don't give enough details, you may not get a RFA order.
+  This is where you will describe the **most recent** incident of abuse. Be as detailed as possible. The judge needs to know exactly what happened. If you don't give enough details, you may not get an RFA order.
   
   See the [VTLawHelp.org legal help website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3#forms) for tips on what to include in your description. This information will be part of your "Affidavit". Note: The defendant will get a copy of the affidavit if the judge gives you a temporary order or if the case goes to a hearing.
 fields:
@@ -891,7 +939,7 @@ fields:
     code: states_list() 
     required: False
   - note: |
-      <span style="color:red;">*</span> Please enter either a state, above, or the area outside the U.S., below.
+      <span style="color:red;">*</span> Please enter either a state, above, **or** the area outside the U.S., below.
   - "If it happened outside of the United States, enter the province / state here and the country.": other_recent_incident_state
     required: False
     maxlength: 12
@@ -1516,7 +1564,7 @@ subquestion: |
   However, if you did not enter their home address, it's important to enter a work address or another address so law enforcement can find the defendant.
 fields:
   - "Does the defendant work?": employed
-    datatype: yesnoradio
+    datatype: yesnomaybe
   - "Defendant's employer": employer
     maxlength: 36
     show if: employed
@@ -1775,7 +1823,7 @@ id: When law enforcement serves the order to the defendant
 question: |
   When law enforcement serves (delivers) the order to the defendant
 fields:
-  - "If you get a RFA order, do you wish to be notified after the order is served?": notify_served
+  - "If you get an RFA order, do you wish to be notified after the order is served?": notify_served
     datatype: yesnoradio
   - "What phone number should law enforcement call to notify you?": users1_notify_phone_number
     datatype: al_international_phone
@@ -1794,7 +1842,7 @@ fields:
     show if: danger_for_officer
     maxlength: 220
   - note: |
-      **We're ready to generate your draft forms so you can review them!** It may take a moment after you tap the Next button. 
+      **We're ready to generate your draft forms so you can review them!** It will take a moment after you tap the Next button. 
 ---
 id: Signing your forms
 question: |
@@ -1904,12 +1952,14 @@ review:
       % endif
   - Edit: 
     - share_contact
-    - reach_up_users1
+    - users1_gets_reach_up
     button: |
       - You consent to the release of your address and contact information: **${ yesno(share_contact) }**
 
-      % if reach_up_users1 != '':
-      - You get Reach Up benefits: **${ showifdef(yesno('reach_up_users1')) }**
+      % if defined('users1_gets_reach_up'):
+      - You get Reach Up benefits: **${ yesno(users1_gets_reach_up) }**
+      % else:
+      - You get Reach Up benefits: **You chose not to answer**
       % endif
       
   - Edit: children.revisit
@@ -1924,9 +1974,7 @@ review:
     - users1_no_shelter
     - rent_or_own
     button: |
-      **Do you need the defendant removed from your home in order to be safe?**
-      
-      You have been or will be forced from your home — and be without shelter — unless the defendant is ordered to leave your home: **${ word(yesno(users1_no_shelter)) }**
+      **Do you need the defendant removed from your home in order to be safe?:** **${ word(yesno(users1_no_shelter)) }**
 
       % if users1_no_shelter:
       **Details about your shared home**
@@ -1992,7 +2040,7 @@ review:
       
   - Edit: other_parties[0].address.address
     button: |    
-      % if defendant_address_unknown:
+      % if defined('defendant_address_unknown') and defendant_address_unknown:
       
       - Address: **Unknown**
       
@@ -2018,11 +2066,9 @@ review:
       - Defendant is about this old: **${ showifdef('other_parties_estimated_age') }**
 
   - Edit: 
-    - reach_up_OP
-    - other_parties1_military
     - incarcerated
     button: |
-      - Reach Up benefits: **${ yesno(reach_up_OP) }**
+      - Reach Up benefits: **${ yesno(other_parties1_gets_reach_up) }**
       
       - Current member of the military: **${ yesno(other_parties1_military) }**
       
@@ -2106,9 +2152,16 @@ review:
 
   - Edit: employed
     button: |
-      **Defendant's work information**
+      **Defendant's work**
       
-      - The defendant works: **${ word(yesno(employed)) }**
+      - The defendant works:
+      % if employed:
+      **Yes**
+      % elif employed is None:
+      **Unknown**
+      % else:
+      **No**
+      % endif
 
       % if employed:
       % if employer != '':
@@ -2495,38 +2548,34 @@ review:
       % endif
 
 
-  - Edit: 
+
+  - Edit:
     - recent_incident_most_serious
-    - serious_incident_description
     button: |
-      Was most recent also the most serious incident: **${ yesno(recent_incident_most_serious) }**
+      **Most serious incident**
       
+      Was most recent also the most serious incident: **${ yesno(recent_incident_most_serious) }**
+
   - Edit:
     - serious_incident_description
     button: |
-      **Most serious incident**
-          
-      % if serious_incident_date:      
-      - Date of the most serious incident: **${ serious_incident_date }**
+      % if recent_incident_most_serious == False:
+      - Date of the most serious incident: **${ showifdef('serious_incident_date') }** 
+
+      - Time of the most serious incident: **${ showifdef('serious_incident_time') }**
+
+      - Town of the most serious incident: **${ showifdef('serious_incident_town') }**
+      
+      % if defined('other_serious_incident_state'):
+      - State/province/country of the most serious incident if outside of the U.S.: **${ showifdef('other_serious_incident_state') }**
+      % else:
+      - State of the most serious incident: **${ showifdef('serious_incident_state') }**
       % endif
       
-      % if serious_incident_time:
-      - Time of the most serious incident: **${ serious_incident_time }**
-      % endif
+      - Most serious incident description: **${ showifdef('serious_incident_description') }**
 
-      % if serious_incident_town:
-      - Town of the most serious incident: **${ serious_incident_town }**
-      % endif
-
-      % if serious_incident_state:
-      - State of the most serious incident: **${ serious_incident_state }**
       % endif
       
-      % if other_serious_incident_state:
-      - State/province/country of the most serious incident if outside of the U.S.: **${other_serious_incident_state}**
-      % endif
-
-      - Most serious incident description: **${ serious_incident_description }**
   - Edit:
     - other_incident
     button: |
@@ -2568,7 +2617,8 @@ review:
         1. **${ item.description }  --  ${ item.weapon_location }**
       
       % endfor   
-      
+      % else:
+      - The defendant has access to weapons: No
       % endif
   - note: | 
       ##What you want in the RFA order##
@@ -2678,7 +2728,7 @@ review:
     - children[0].custody_wanted
     button: |
       % if request_temp_PRR:  
-      **Custody**
+      **Custody of a child**
       % if children[0].custody_wanted:
       You want custody of:
       
@@ -2689,7 +2739,7 @@ review:
     - children[1].custody_wanted
     button: |
       % if request_temp_PRR:
-      **Custody**
+      **Custody of another child**
       % if children[1].custody_wanted:
       You want custody of:
       
@@ -2719,7 +2769,8 @@ review:
     - recompute:
       - trial_court
     button: |
-      Filing in the Family Court of this county: **${ trial_court.address.county }**
+      Filing for an RFA order in the Family Court of this county in Vermont: **${ trial_court.address.county }**
+
   - Edit: 
     - existing_order
     button: |
@@ -2995,25 +3046,25 @@ attachment:
           ${ other_parties[0].birth_year }
           % endif
       - "other_parties1_address_address": |
-          % if defendant_address_unknown: 
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
           Unknown
           % else: 
           ${ other_parties[0].address.line_one() }
           % endif 
       - "other_parties1_address_city": |
-          % if defendant_address_unknown: 
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
            
           % else: 
           ${ other_parties[0].address.city }
           % endif 
       - "other_parties1_address_state": |
-          % if defendant_address_unknown: 
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
            
           % else: 
           ${ other_parties[0].address.state }
           % endif 
       - "other_parties1_address_zip": |
-          % if defendant_address_unknown: 
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
            
           % else: 
           ${ other_parties[0].address.zip }
@@ -3086,8 +3137,11 @@ attachment:
       - "residence_of_OP": ${ whose_name == "residence_of_OP" }
       - "residence_of_other": ${ whose_name == "residence_of_other" }
       - "residence_of_both": ${ whose_name == "residence_of_both" }
-      - "reach_up_users1": ${ reach_up_users1 }
-      - "reach_up_OP": ${ reach_up_OP }
+      - "reach_up_users1": |
+          % if defined('users1_gets_reach_up'):
+          ${ users1_gets_reach_up }
+          % endif
+      - "reach_up_OP": ${ other_parties1_gets_reach_up }
       - "request_not_abuse_children": ${ request_not_abuse_children }
       - "request_not_abuse_users1": ${ request_not_abuse_users1 }
       - "request_not_abuse": ${ request_not_abuse }
@@ -3173,26 +3227,27 @@ attachment:
           % if other_parties[0].birth_year:
           ${ other_parties[0].birth_year }
           % endif
+
       - "other_parties1_address_address": |
-          % if defendant_address_unknown: 
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
           Unknown
           % else: 
           ${ other_parties[0].address.line_one() }
-          % endif
+          % endif 
       - "other_parties1_address_city": |
-          % if defendant_address_unknown: 
-          Unknown
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
+           
           % else: 
           ${ other_parties[0].address.city }
-          % endif
+          % endif 
       - "other_parties1_address_state": |
-          % if defendant_address_unknown: 
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
            
           % else: 
           ${ other_parties[0].address.state }
-          % endif
+          % endif 
       - "other_parties1_address_zip": |
-          % if defendant_address_unknown: 
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
            
           % else: 
           ${ other_parties[0].address.zip }
@@ -3424,11 +3479,11 @@ attachment:
 code: |
   RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
   RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1164
+  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1220
   RFAaffidavit.overflow_fields["recent_incident_description"].label = "Please describe the most recent incident with as much detail as possible."
   RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
   RFAaffidavit.overflow_fields["serious_incident_description"].label = "Please describe the most serious incident with as much detail as possible."
-  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1960
+  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 2020
   RFAaffidavit.overflow_fields["other_incident_description"].label = "Please describe any other incident(s) with as much detail as possible."
   RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 580
   RFAaffidavit.overflow_fields["used_weapon_how"].label = "Describe in detail how they used or threatened to use weapon?"
