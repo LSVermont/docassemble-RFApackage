@@ -1968,6 +1968,8 @@ review:
 
       % if defined('users1_gets_reach_up'):
       - You get Reach Up benefits: **${ yesno(users1_gets_reach_up) }**
+      % else:
+      - You get Reach Up benefits: **You chose not to answer**
       % endif
       
   - Edit: children.revisit
