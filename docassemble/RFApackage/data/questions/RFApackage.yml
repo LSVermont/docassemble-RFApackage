@@ -1,8 +1,5 @@
-#Got most serious incident to show on Review screen whether there was one or not
-#Need to get this to show on review screen too -- Service (delivery) of the RFA order
-
-
-#Updated Next Steps document to include some court info, which still needs to be implemented.
+#Got whether they have weapons yes/no to show on Review screen
+#Some wording changes on Review screen
 
 
 
@@ -547,7 +544,7 @@ question: |
   Choose a Family Court
 fields:
   - note: |
-      Choose the county where you will file your forms to ask for a RFA order. 
+      Choose the county where you will file your forms to ask for an RFA order. 
       
       It can be:
       
@@ -934,7 +931,7 @@ id: What happened most recently
 question: |
   What happened -- most recently
 subquestion: |
-  This is where you will describe the **most recent** incident of abuse. Be as detailed as possible. The judge needs to know exactly what happened. If you don't give enough details, you may not get a RFA order.
+  This is where you will describe the **most recent** incident of abuse. Be as detailed as possible. The judge needs to know exactly what happened. If you don't give enough details, you may not get an RFA order.
   
   See the [VTLawHelp.org legal help website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3#forms) for tips on what to include in your description. This information will be part of your "Affidavit". Note: The defendant will get a copy of the affidavit if the judge gives you a temporary order or if the case goes to a hearing.
 fields:
@@ -952,7 +949,7 @@ fields:
     code: states_list() 
     required: False
   - note: |
-      <span style="color:red;">*</span> Please enter either a state, above, or the area outside the U.S., below.
+      <span style="color:red;">*</span> Please enter either a state, above, **or** the area outside the U.S., below.
   - "If it happened outside of the United States, enter the province / state here and the country.": other_recent_incident_state
     required: False
     maxlength: 12
@@ -1836,7 +1833,7 @@ id: When law enforcement serves the order to the defendant
 question: |
   When law enforcement serves (delivers) the order to the defendant
 fields:
-  - "If you get a RFA order, do you wish to be notified after the order is served?": notify_served
+  - "If you get an RFA order, do you wish to be notified after the order is served?": notify_served
     datatype: yesnoradio
   - "What phone number should law enforcement call to notify you?": users1_notify_phone_number
     datatype: al_international_phone
@@ -1985,9 +1982,7 @@ review:
     - users1_no_shelter
     - rent_or_own
     button: |
-      **Do you need the defendant removed from your home in order to be safe?**
-      
-      You have been or will be forced from your home — and be without shelter — unless the defendant is ordered to leave your home: **${ word(yesno(users1_no_shelter)) }**
+      **Do you need the defendant removed from your home in order to be safe?:** **${ word(yesno(users1_no_shelter)) }**
 
       % if users1_no_shelter:
       **Details about your shared home**
@@ -2630,7 +2625,8 @@ review:
         1. **${ item.description }  --  ${ item.location }**
       
       % endfor   
-      
+      % else:
+      - The defendant has access to weapons: No
       % endif
   - note: | 
       ##What you want in the RFA order##
@@ -2740,7 +2736,7 @@ review:
     - children[0].custody_wanted
     button: |
       % if request_temp_PRR:  
-      **Custody**
+      **Custody of a child**
       % if children[0].custody_wanted:
       You want custody of:
       
@@ -2751,7 +2747,7 @@ review:
     - children[1].custody_wanted
     button: |
       % if request_temp_PRR:
-      **Custody**
+      **Custody of another child**
       % if children[1].custody_wanted:
       You want custody of:
       
@@ -2778,7 +2774,7 @@ review:
       ##Filing##
   - Edit: trial_court_name
     button: |
-      Filing in the Family Court of this county: **${ trial_court_name }**
+      Filing for an RFA order in the Family Court of this county in Vermont: **${ trial_court_name }**
   - Edit: 
     - existing_order
     button: |
