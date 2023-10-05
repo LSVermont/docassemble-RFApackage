@@ -1,6 +1,7 @@
-#Added to Children on review screen   % else:   - No children involved
-#Fixed Please enter either a state, above, OR
-#Couple of small edits in review screen
+#Improved kids custody on review screen and to print on PDF
+#Added Select Resume, below, when you are done. It will take a moment to generate your forms again.
+#Updated 2 overflow text trigger #s and updated danger_more_abuse_why to max of 310 
+
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -1098,7 +1099,7 @@ fields:
   - "Include any information not already described before. Be as specific as possible.": danger_more_abuse_why
     input type: area
     show if: danger_more_abuse
-    maxlength: 315
+    maxlength: 310
     required: False
 ---
 objects:
@@ -1966,7 +1967,7 @@ review:
       
   - Edit: children.revisit
     button: |
-      **Children**
+      **Children involved**
       
       % if children.there_are_any:
       % for item in children:
@@ -2628,7 +2629,7 @@ review:
       
       % endfor   
       % else:
-      - The defendant has access to weapons: No
+      - The defendant has access to weapons: **No**
       % endif
   - note: | 
       ##What you want in the RFA order##
@@ -2738,35 +2739,42 @@ review:
     - children[0].custody_wanted
     button: |
       % if request_temp_PRR:  
-      **Custody of a child**
       % if children[0].custody_wanted:
       You want custody of:
       
       * **${ showifdef('children[0]') }**
+      % else:
+      You do **not** want custody of:
+      
+      * **${ showifdef('children[0]') }**      
       % endif
       % endif
   - Edit:
     - children[1].custody_wanted
     button: |
       % if request_temp_PRR:
-      **Custody of another child**
       % if children[1].custody_wanted:
       You want custody of:
       
       * **${ showifdef('children[1]') }**
+      % else:
+      You do **not** want custody of:
       
+      * **${ showifdef('children[1]') }**   
       % endif
       % endif   
   - Edit:
     - children[2].custody_wanted
     button: |
       % if request_temp_PRR:
-      **Custody**
       % if children[2].custody_wanted:
       You want custody of:
       
       * **${ showifdef('children[2]') }**
+      % else:
+      You do **not** want custody of:
       
+      * **${ showifdef('children[2]') }**   
       % endif
       % endif  
   - Edit: request_all_emergency
@@ -2862,6 +2870,8 @@ review:
       Signature date to put on forms: **${ (format_date(signature_date, format='M/d/yyyy')) }**
   - note: |       
       Required attestation on your affidavit: "I declare that my statements are true and accurate to the best of my knowledge and belief. I understand that if my statements are false, I will be subject to the penalty of perjury or to other sanctions in the discretion of the court."
+      
+      **Select Resume, below, when you are done. It will take a moment to generate your forms again.**
      
 ---
 continue button field: users.revisit
@@ -2937,10 +2947,8 @@ subquestion: |
 table: weapons.table
 rows: weapons
 columns:
-  - Description: |
-      row_item.description if defined("row_item.description") else ""
-  - Location: |
-      row_item.weapon_location if defined("row_item.weapon_location") else ""
+  - Description: row_item.description if defined("row_item.description") else ""
+  - Location: row_item.weapon_location if defined("row_item.weapon_location") else ""
 edit:
   - description
   - weapon_location
@@ -3185,8 +3193,14 @@ attachment:
           % if children[0].custody_wanted:
           ${ format_date(children[0].birthdate, format='M/d/yyyy') }
           % endif
-      - "children1_relationship_users1": ${ children[0].relationship_users1 }
-      - "children1_relationship_OP": ${ children[0].relationship_OP }
+      - "children1_relationship_users1": |
+          % if children[0].custody_wanted:
+          ${ children[0].relationship_users1 }
+          % endif
+      - "children1_relationship_OP":  |
+          % if children[0].custody_wanted:
+          ${ children[0].relationship_OP }
+          % endif
       - "children2_name": |
           % if children[1].custody_wanted:
           ${ children[1] }
@@ -3195,8 +3209,14 @@ attachment:
           % if children[1].custody_wanted:
           ${ format_date(children[1].birthdate, format='M/d/yyyy') }
           % endif      
-      - "children2_relationship_users1": ${ children[1].relationship_users1 }
-      - "children2_relationship_OP": ${ children[1].relationship_OP }
+      - "children2_relationship_users1": |
+          % if children[1].custody_wanted:
+          ${ children[1].relationship_users1 }
+          % endif
+      - "children2_relationship_OP": |
+          % if children[1].custody_wanted:
+          ${ children[1].relationship_OP }
+          % endif
       - "children3_name": |
           % if children[2].custody_wanted:
           ${ children[2] }
@@ -3205,8 +3225,14 @@ attachment:
           % if children[2].custody_wanted:
           ${ format_date(children[2].birthdate, format='M/d/yyyy') }
           % endif      
-      - "children3_relationship_users1": ${ children[2].relationship_users1 }
-      - "children3_relationship_OP": ${ children[2].relationship_OP }
+      - "children3_relationship_users1": |
+          % if children[2].custody_wanted:
+          ${ children[2].relationship_users1 }
+          % endif
+      - "children3_relationship_OP": |
+          % if children[2].custody_wanted:
+          ${ children[2].relationship_OP }
+          % endif
       - "request_other_description": ${ request_other_description }
       - "request_other": ${ other_request }
       - "request_all_emergency": ${ request_all_emergency }
@@ -3489,13 +3515,13 @@ attachment:
 code: |
   RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
   RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1220
+  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1143
   RFAaffidavit.overflow_fields["recent_incident_description"].label = "Please describe the most recent incident with as much detail as possible."
   RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
   RFAaffidavit.overflow_fields["serious_incident_description"].label = "Please describe the most serious incident with as much detail as possible."
-  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 2020
+  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1838
   RFAaffidavit.overflow_fields["other_incident_description"].label = "Please describe any other incident(s) with as much detail as possible."
-  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 580
+  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
   RFAaffidavit.overflow_fields["used_weapon_how"].label = "Describe in detail how they used or threatened to use weapon?"
   RFAaffidavit.overflow_fields.gathered = True
 ---
