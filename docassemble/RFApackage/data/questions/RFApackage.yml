@@ -1,7 +1,4 @@
-#Improved kids custody on review screen and to print on PDF
-#Added Select Resume, below, when you are done. It will take a moment to generate your forms again.
-#Updated 2 overflow text trigger #s and updated danger_more_abuse_why to max of 310 
-
+#Edited ##Your safety## review screen to be sure it could be edited even if user did not answer danger_more_abuse_why
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -2599,7 +2596,6 @@ review:
       ##Your safety##
   - Edit: 
     - danger_more_abuse
-    - danger_more_abuse_why
     - weapons.there_are_any
     - weapons.revisit
     button: |
