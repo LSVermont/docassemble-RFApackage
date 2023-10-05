@@ -1,4 +1,6 @@
-
+#Added to Children on review screen   % else:   - No children involved
+#Fixed Please enter either a state, above, OR
+#Couple of small edits in review screen
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -939,7 +941,7 @@ fields:
     code: states_list() 
     required: False
   - note: |
-      <span style="color:red;">*</span> Please enter either a state, above, **or** the area outside the U.S., below.
+      <span style="color:red;">*</span> Please enter either a state, above, OR the area outside the U.S., below.
   - "If it happened outside of the United States, enter the province / state here and the country.": other_recent_incident_state
     required: False
     maxlength: 12
@@ -1051,7 +1053,7 @@ fields:
     code: states_list() 
     required: False
   - note: |
-      <span style="color:red;">*</span> Please enter either a state, above, or the area outside the U.S., below.
+      <span style="color:red;">*</span> Please enter either a state, above, OR the area outside the U.S., below.
   - "If it happened outside of the United States, enter the province / state here and the country.": other_serious_incident_state
     required: False
     maxlength: 12
@@ -1553,7 +1555,7 @@ fields:
       - "I am the defendant’s child or step-child, **or** I am filing on behalf of that child or step-child.": defendants_child
       - "I am the child of a person who currently or has in the past lived with the defendant while having a sexual relationship together, **or** I am filing on behalf of that child.": plaintiffs_child
 ---
-id: Defendant s work information
+id: Defendants work information
 question: |
   Defendant's work information
 subquestion: |
@@ -1966,9 +1968,13 @@ review:
     button: |
       **Children**
       
+      % if children.there_are_any:
       % for item in children:
       - **${ item }**
       % endfor
+      % else:
+      - No children involved
+      % endif
       
   - Edit: 
     - users1_no_shelter
@@ -2165,43 +2171,43 @@ review:
 
       % if employed:
       % if employer != '':
-      Defendant's employer: **${ showifdef('employer') }**
+      - Defendant's employer: **${ showifdef('employer') }**
       % endif
       
       % if employers_street_address != '':
-      Their employer's street address: **${ showifdef('employers_street_address') }**
+      - Their employer's street address: **${ showifdef('employers_street_address') }**
       % endif
       
       % if employers_city_state != '':
-      Employer's city and state: **${ showifdef('employers_city_state') }**
+      - Employer's city and state: **${ showifdef('employers_city_state') }**
       % endif
       
       % if work_mondays != '':
-      Work hours on Mondays: **${ showifdef('work_mondays') }**
+      - Work hours on Mondays: **${ showifdef('work_mondays') }**
       % endif
       
       % if work_tues != '':
-      Work hours on Tuesdays: **${ showifdef('work_tues') }**
+      - Work hours on Tuesdays: **${ showifdef('work_tues') }**
       % endif
       
       % if work_weds != '':
-      Work hours on Wednesdays: **${ showifdef('work_weds') }**
+      - Work hours on Wednesdays: **${ showifdef('work_weds') }**
       % endif
       
       % if work_thurs != '':
-      Work hours on Thursdays: **${ showifdef('work_thurs') }**
+      - Work hours on Thursdays: **${ showifdef('work_thurs') }**
       % endif
       
       % if work_fri != '':
-      Work hours on Fridays: **${ showifdef('work_fri') }**
+      - Work hours on Fridays: **${ showifdef('work_fri') }**
       % endif
       
       % if work_sat != '':
-      Work hours on Saturdays: **${ showifdef('work_sat') }**
+      - Work hours on Saturdays: **${ showifdef('work_sat') }**
       % endif
       
       % if work_sun != '':
-      Work hours on Sundays: **${ showifdef('work_sun') }**
+      - Work hours on Sundays: **${ showifdef('work_sun') }**
       % endif
       
       % endif
@@ -2241,7 +2247,9 @@ review:
       
       State: **${ showifdef('other_location2_state') }**
       
+      % if other_location2_phone != '':
       Phone number at that location: **${ showifdef('other_location2_phone') }**
+      % endif
       % endif
 
   - Edit: race
@@ -2510,7 +2518,7 @@ review:
       - Your children were the target of the recent abuse: **${ yesno(recent_incident_children) }**
       
       % if recent_incident_children:
-      - The children who were the target of the recent abuse: **${ showifdef('recent_incident_other_children') }**  **${ showifdef('recent_incident_children_names') }** 
+      - The children who were the target of the recent abuse: ${ showifdef('recent_incident_other_children') }  **${ showifdef('recent_incident_children_names') }** 
       % endif
       
       % if recent_incident_harm:
@@ -2554,7 +2562,7 @@ review:
     button: |
       **Most serious incident**
       
-      Was most recent also the most serious incident: **${ yesno(recent_incident_most_serious) }**
+      - Was most recent also the most serious incident: **${ yesno(recent_incident_most_serious) }**
 
   - Edit:
     - serious_incident_description
@@ -2597,20 +2605,22 @@ review:
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse) }**
       
       % if danger_more_abuse:
+      % if defined('danger_more_abuse_why'):
       - Information not already described before: **${ danger_more_abuse_why }**
       % endif
+      % endif
       
-      % if used_firearm:
       - The defendant has used, displayed or threatened to use a gun/firearm against you or against another family member?: **${ yesno(used_firearm) }**
-      % endif
 
-      % if used_weapon:
-      - The defendant used, displayed or threatened to use a gun/firearm or another deadly weapon against you or another family member?: **${ yesno(used_weapon) }**, **${ showifdef('used_weapon_how') }**
+      - The defendant used, displayed or threatened to use a gun/firearm or another deadly weapon against you or another family member?: **${ yesno(used_weapon) }**
+      
+      % if defined('used_weapon_how'):
+      - This is how: **${ showifdef('used_weapon_how') }**
       % endif
       
-      % if weapons.there_are_any:
       - The defendant owns or has access to guns/firearms or other deadly weapons?: **${ yesno(weapons.there_are_any) }**
       
+      % if weapons.there_are_any:
       Weapons
       % for item in weapons:
       
