@@ -1,4 +1,5 @@
-#Edited ##Your safety## review screen to be sure it could be edited even if user did not answer danger_more_abuse_why
+#Edited guns yes/no in review screen so that it wouldn't print anything if user doesn't know
+#Edited users1_gets_reach_up in review screen so it would print "You chose not to answer" if they skipped the question (which they can -- it's not required)
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -1956,9 +1957,13 @@ review:
     button: |
       - You consent to the release of your address and contact information: **${ yesno(share_contact) }**
 
-      % if defined('users1_gets_reach_up'):
+      % if users1_gets_reach_up == True:
       - You get Reach Up benefits: **${ yesno(users1_gets_reach_up) }**
-      % else:
+      % endif
+      % if users1_gets_reach_up == False:
+      - You get Reach Up benefits: **${ yesno(users1_gets_reach_up) }**
+      % endif
+      % if users1_gets_reach_up == None:
       - You get Reach Up benefits: **You chose not to answer**
       % endif
       
@@ -2615,7 +2620,12 @@ review:
       - This is how: **${ showifdef('used_weapon_how') }**
       % endif
       
+      % if weapons.there_are_any == True:
       - The defendant owns or has access to guns/firearms or other deadly weapons?: **${ yesno(weapons.there_are_any) }**
+      % endif
+      % if weapons.there_are_any == False:
+       - The defendant owns or has access to guns/firearms or other deadly weapons?: **${ yesno(weapons.there_are_any) }**  
+      % endif
       
       % if weapons.there_are_any:
       Weapons
@@ -2624,9 +2634,8 @@ review:
         1. **${ item.description }  --  ${ item.weapon_location }**
       
       % endfor   
-      % else:
-      - The defendant has access to weapons: **No**
       % endif
+
   - note: | 
       ##What you want in the RFA order##
   - Edit: 
