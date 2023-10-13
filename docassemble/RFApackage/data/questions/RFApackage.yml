@@ -1,5 +1,5 @@
-#Edited guns yes/no in review screen so that it wouldn't print anything if user doesn't know
-#Edited users1_gets_reach_up in review screen so it would print "You chose not to answer" if they skipped the question (which they can -- it's not required)
+#Added code: |   feedback_form = "docassemble.VTFeedback:VTfeedback.yml"
+
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -8,6 +8,9 @@ include:
 ---
 features:
   css: style.css
+---
+code: |   
+  feedback_form = "docassemble.VTFeedback:VTfeedback.yml"
 ---
 objects:
   - all_courts: ALCourtLoader.using(file_name='courts_list.xlsx')
