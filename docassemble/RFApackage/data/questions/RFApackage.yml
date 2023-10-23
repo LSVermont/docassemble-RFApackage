@@ -129,7 +129,7 @@ code: |
   AL_DEFAULT_STATE = "VT"
 ---
 code: |
-  github_repo_name =  'VTCourtFormsIssues'
+  github_repo_name = 'VTCourtFormsIssues'
   github_user_name = 'VTCourtFormsIssues'
 ---
 code: |
