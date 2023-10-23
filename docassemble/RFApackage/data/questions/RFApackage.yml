@@ -1,4 +1,4 @@
-#Added code: |   feedback_form = "docassemble.VTFeedback:VTfeedback.yml"
+#Updated github_repo_name and username to send Feedback to VTCourtFormsIssues repository
 
 ---
 include:
@@ -129,7 +129,8 @@ code: |
   AL_DEFAULT_STATE = "VT"
 ---
 code: |
-  github_repo_name =  'docassemble-Rfapackage'
+  github_repo_name =  'VTCourtFormsIssues'
+  github_user_name = 'VTCourtFormsIssues'
 ---
 code: |
   interview_short_title = "Ask the court for a Relief from Abuse (RFA) order"
