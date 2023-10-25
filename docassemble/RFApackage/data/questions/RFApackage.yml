@@ -1,4 +1,4 @@
-#Updated github_repo_name and username to send Feedback to VTCourtFormsIssues repository
+#Added al_custom_error_options
 
 ---
 include:
@@ -137,6 +137,13 @@ code: |
 ---
 code: |
   al_form_type = "starts_case" 
+---
+code: |
+  al_custom_error_options = [
+    "Use the [original PDF versions](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3) of these forms instead.",
+    "Visit [VTLawHelp.org](https://vtlawhelp.org) to find legal help.",
+    "Get court forms and basic info about court forms and the court process. Reach out to the [Vermont Judiciary's ARC.](https://www.vermontjudiciary.org/self-help/ARC)",
+  ]
 ---
 objects:
   - users: ALPeopleList.using(ask_number=True,target_number=1)
