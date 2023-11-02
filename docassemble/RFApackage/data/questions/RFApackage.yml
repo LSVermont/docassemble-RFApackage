@@ -1,5 +1,3 @@
-
-
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -505,7 +503,13 @@ id: initial_screening_questions_5_continue
 question: |
   Continue
 subquestion: |
-  <i class="fas fa-check fa-3x" style="color: #429a3c;" aria-hidden="true"></i>  Yes, you can use this interview to fill out these forms. Let's get started.
+  <i class="fas fa-check fa-3x" style="color: #429a3c;" aria-hidden="true"></i>  Yes, you can use this interview to fill out these forms. 
+  
+  Remember, you can edit your answers after you preview the finished forms. You can also do that anytime by choosing Edit Your Answers in the Menu at the top-right of the page.
+  
+  You can also go to the Menu and quickly Exit and Delete Your Answers if you need to. And, you may choose to make a free account so you can store your answers online and come back to them later.
+  
+  Let's get started.
 continue button field: initial_screening_questions_5_continue
 buttons:
   - Start the interview: continue
@@ -566,6 +570,8 @@ fields:
       * the county you live in, or
       * the Vermont county you left when you were fleeing from abuse, or
       * the county the other person lives in (the "defendant").
+      
+      While a RFA order is in effect, it is good **anywhere** in Vermont and the United States.
       
       Not sure what county? [Check this list of cities and towns to find the county.](https://en.m.wikipedia.org/wiki/List_of_municipalities_in_Vermont#Cities)
   - County: trial_court_index
@@ -2987,11 +2993,11 @@ subquestion: |
   
   Consider:
   
-  * creating a free account so you can save your progress. At any time choose "sign up" in the menu above, or "register" below.
+  * creating a free account so you can save your answers and come back later. At any time choose "sign up" in the Menu above, or "register" below.
   
-  * using the Share feature to share a link to your interview with a trusted person. Important: If you use the Share feature, that person will be able to see AND change your answers.
+  * using the Share feature to share a link to your interview with a trusted person. **Important**: If you use the Share feature, that person will be able to see AND change your answers.
   
-  * working with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get support during the RFA process.
+  * working with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get advice and support during the RFA process.
   
   ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
   
@@ -3001,6 +3007,10 @@ subquestion: |
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
   ${ collapse_template(not_seeing_email) }
   ${ collapse_template(log_out_when_done) }
+  
+  WARNING: Now is the time to download the documents, email them or make a free account to save them. You will need to deliver the documents to the court.
+  
+  This tool **does not** send your forms to the court. Please download the instructions sheet to learn how to get them to the court.
 progress: 100
 ---
 template: not_seeing_email
@@ -3013,24 +3023,25 @@ template: log_out_when_done
 subject: |
   Logging out when you are done<br/>
 content: |
-  * If you have an account, choose "Sign out" from the menu and then close your web browser. 
+  * If you have an account, choose "Sign out" from the Menu and then close your web browser. 
   
-  * Or choose "Exit and delete my answers" from the menu to erase your answers completely. Then close your web browser. 
+  * Or choose "Exit and Delete My Answers" from the Menu to erase your answers completely. Then close your web browser. 
   
   * You might also consider clearing your browsing history. [Learn more about online safety.](https://vtlawhelp.org/vtcourtforms#safety)
 ---
 
 # ALDocument objects specify the metadata for each template
 objects:
+  - RFApackage_Post_interview_instructions: ALDocument.using(title="NEXT STEPS - Instructions for filing these forms with the court", filename="RFApackage_next_steps.docx", enabled=True, has_addendum=False)
   - RFAcomplaint: ALDocument.using(title="RFA Complaint", filename="1_RFA-complaint", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFAaffidavit: ALDocument.using(title="RFA Affidavit", filename="3_RFA-affidavit", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFAconfidentialcontactinfo: ALDocument.using(title="Confidential Contact Info", filename="4_RFA-confidential-contact-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFAserviceinfo: ALDocument.using(title="Protection Order Service Info", filename="2_RFA-service-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - RFApackage_Post_interview_instructions: ALDocument.using(title="Instructions for Next Steps to Take", filename="RFApackage_next_steps.docx", enabled=True, has_addendum=False)
+
 ---
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[RFAcomplaint, RFAaffidavit, RFAconfidentialcontactinfo, RFAserviceinfo, RFApackage_Post_interview_instructions], filename="RFApackage", title="Download all forms", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[RFApackage_Post_interview_instructions, RFAcomplaint, RFAaffidavit, RFAconfidentialcontactinfo, RFAserviceinfo], filename="RFApackage", title="Download all forms", enabled=True)
   #- al_court_bundle: ALDocumentBundle.using(elements=[RFAaffidavit, RFAconfidentialcontactinfo, RFAcomplaint, RFAserviceinfo],  filename="RFApackage", title="All forms to deliver to court", enabled=True)
 ---
 attachment:
