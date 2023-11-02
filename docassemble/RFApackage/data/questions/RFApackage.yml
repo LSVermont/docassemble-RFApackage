@@ -1,5 +1,4 @@
-#Added al_custom_error_options
-
+#Text edits after user testing
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -505,7 +504,13 @@ id: initial_screening_questions_5_continue
 question: |
   Continue
 subquestion: |
-  <i class="fas fa-check fa-3x" style="color: #429a3c;" aria-hidden="true"></i>  Yes, you can use this interview to fill out these forms. Let's get started.
+  <i class="fas fa-check fa-3x" style="color: #429a3c;" aria-hidden="true"></i>  Yes, you can use this interview to fill out these forms. 
+  
+  Remember, you can edit your answers after you preview the finished forms. You can also do that anytime by choosing Edit Your Answers in the Menu at the top-right of the page.
+  
+  You can also go to the Menu and quickly Exit and Delete Your Answers if you need to. And, you may choose to make a free account so you can store your answers online and come back to them later.
+  
+  Let's get started.
 continue button field: initial_screening_questions_5_continue
 buttons:
   - Start the interview: continue
@@ -566,6 +571,8 @@ fields:
       * the county you live in, or
       * the Vermont county you left when you were fleeing from abuse, or
       * the county the other person lives in (the "defendant").
+      
+      While a RFA order is in effect, it is good **anywhere** in Vermont and the United States.
       
       Not sure what county? [Check this list of cities and towns to find the county.](https://en.m.wikipedia.org/wiki/List_of_municipalities_in_Vermont#Cities)
   - County: trial_court_index
@@ -661,7 +668,7 @@ id: Gather users contact information
 question: |
   What is your contact information?
 subquestion: |
-  Include at least **one safe way** to reach you other than by mail. You can use a friend's phone number, if that is the safest way to reach you.
+  Include at least **one safe way**<span style="color:red;">*</span> to reach you other than by mail. You can use a friend's phone number, if that is the safest way to reach you.
 #  ${ collapse_template(why_contact_info_needed_template) }
 fields:  
   - Phone number: users[0].phone_number
@@ -915,6 +922,8 @@ fields:
 id: Gather defendants phone numbers
 question: |
   What are the defendant's phone numbers?
+subquestion: |
+  If you don't know you can leave these blank.
 fields:  
   - Home phone: other_parties[0].phone_number
     datatype: al_international_phone
@@ -935,7 +944,9 @@ question: |
 subquestion: |
   This is where you will describe the **most recent** incident of abuse. Be as detailed as possible. The judge needs to know exactly what happened. If you don't give enough details, you may not get an RFA order.
   
-  See the [VTLawHelp.org legal help website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3#forms) for tips on what to include in your description. This information will be part of your "Affidavit". Note: The defendant will get a copy of the affidavit if the judge gives you a temporary order or if the case goes to a hearing.
+  See the [VTLawHelp.org legal help website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3#forms) for tips on what to include in your description. This information will be part of your "Affidavit". 
+  
+  Note: **The defendant will get a copy of the affidavit** if the judge gives you a temporary order or if the case goes to a hearing.
 fields:
   - "When was the most recent incident?": recent_incident_date
     maxlength: 14
@@ -948,11 +959,13 @@ fields:
     maxlength: 26
     required: False
   - "In what state was the most recent incident?": recent_incident_state
-    code: states_list() 
+    code: |
+      states_list()
+    default: VT
     required: False
   - note: |
       <span style="color:red;">*</span> Please enter either a state, above, OR the area outside the U.S., below.
-  - "If it happened outside of the United States, enter the province / state here and the country.": other_recent_incident_state
+  - "If it happened outside of the United States, enter the province here and the country.": other_recent_incident_state
     required: False
     maxlength: 12
   - "Describe the most recent incident with as much detail as possible.": recent_incident_description
@@ -1060,11 +1073,13 @@ fields:
     maxlength: 26
     required: False
   - "In what state was the most serious incident?": serious_incident_state
-    code: states_list() 
+    code: |
+      states_list()
+    default: VT
     required: False
   - note: |
       <span style="color:red;">*</span> Please enter either a state, above, OR the area outside the U.S., below.
-  - "If it happened outside of the United States, enter the province / state here and the country.": other_serious_incident_state
+  - "If it happened outside of the United States, enter the province here and the country.": other_serious_incident_state
     required: False
     maxlength: 12
   - "Describe the most serious incident with as much detail as possible.": serious_incident_description
@@ -1184,7 +1199,7 @@ id: What you want to ask for in the RFA order
 question: |
   What you want to ask for in the RFA order
 subquestion: |
-  This is a list of things that you can ask the court for. If approved, they will be part of the Relief from Abuse order. 
+  This is a list of things that you can ask the court for. If approved, they will be part of the Relief from Abuse order.
   
   **Choose all that apply to you.** 
 
@@ -1498,7 +1513,6 @@ fields:
     required: False
   - "State": other_parties1_state
     maxlength: 5
-    default: VT
     code: |
       states_list()
     required: False
@@ -1878,7 +1892,7 @@ fields:
   -  note: |
        You can change this date later if you want.
        
-       On the next screen, you can choose how to sign your documents.
+       **Tap Next to choose how to sign your documents.**
      show if: attestation
 ---
 id: preview RFApackage
@@ -1894,7 +1908,7 @@ subquestion: |
 
   ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
   
-  Remember to come back to this screen to tap Next and sign your form.
+  **Remember to come back to this screen to tap Next and sign your form.**
 continue button field: RFApackage_preview_question    
 ---
 code: |
@@ -1917,7 +1931,7 @@ event: review_RFApackage
 question: |
   Review your answers
 subquestion: |
-  Edit your answers here. When you are done, scroll to the bottom and select "Resume."
+  Edit your answers here. Choose the section(s) that you want to edit. When you are done, scroll to the bottom and select "Resume."
 review:
   - note: | 
       ##Information about you##
@@ -1994,7 +2008,7 @@ review:
     - users1_no_shelter
     - rent_or_own
     button: |
-      **Do you need the defendant removed from your home in order to be safe?:** **${ word(yesno(users1_no_shelter)) }**
+      Do you need the defendant removed from your home in order to be safe?: **${ word(yesno(users1_no_shelter)) }**
 
       % if users1_no_shelter:
       **Details about your shared home**
@@ -2522,7 +2536,7 @@ review:
       % endif
       
       % if other_recent_incident_state:
-      - State/province/country of the most recent incident if outside of the U.S.: **${other_recent_incident_state}**
+      - Province/state/country of the most recent incident if outside of the U.S.: **${other_recent_incident_state}**
       % endif
       
       - Most recent incident description: **${ recent_incident_description }**
@@ -2589,7 +2603,7 @@ review:
       - Town of the most serious incident: **${ showifdef('serious_incident_town') }**
       
       % if defined('other_serious_incident_state'):
-      - State/province/country of the most serious incident if outside of the U.S.: **${ showifdef('other_serious_incident_state') }**
+      - Province/state/country of the most serious incident if outside of the U.S.: **${ showifdef('other_serious_incident_state') }**
       % else:
       - State of the most serious incident: **${ showifdef('serious_incident_state') }**
       % endif
@@ -2979,15 +2993,15 @@ question: |
 subquestion: |
   The interview is done. Your forms are ready to view.
   
-  Select the "Edit your answers" button to fix any mistakes. Then, download your forms and the instructions sheet for the next steps to take. You can email the filled-in PDF forms to yourself or someone else, too.
+  Select the "Edit your answers" button to fix any mistakes. Then, **download your forms and the instructions sheet** for the next steps to take. You can also **print them** or **email them** to yourself or someone else, too.
   
   Consider:
   
-  * creating a free account so you can save your progress. At any time choose "sign up" in the menu above, or "register" below.
+  * creating a free account so you can save your answers and come back later. At any time choose "sign up" in the Menu above, or "register" below.
   
-  * using the Share feature to share a link to your interview with a trusted person. Important: If you use the Share feature, that person will be able to see AND change your answers.
+  * using the Share feature to share a link to your interview with a trusted person. **Important**: If you use the Share feature, that person will be able to see AND change your answers.
   
-  * working with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get support during the RFA process.
+  * working with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get advice and support during the RFA process.
   
   ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
   
@@ -2995,6 +3009,9 @@ subquestion: |
   ${ al_user_bundle.download_list_html() }
   
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+  
+  IMPORTANT: Now is the time to download the documents, email or print them, or make a free account to save them. **This tool does not send your forms to the court.** Please download the instructions sheet to learn how to get them to the court at any time of the day or night.
+  
   ${ collapse_template(not_seeing_email) }
   ${ collapse_template(log_out_when_done) }
 progress: 100
@@ -3009,24 +3026,25 @@ template: log_out_when_done
 subject: |
   Logging out when you are done<br/>
 content: |
-  * If you have an account, choose "Sign out" from the menu and then close your web browser. 
+  * If you have an account, choose "Sign out" from the Menu and then close your web browser. 
   
-  * Or choose "Exit and delete my answers" from the menu to erase your answers completely. Then close your web browser. 
+  * Or choose "Exit and Delete My Answers" from the Menu to erase your answers completely. Then close your web browser. 
   
   * You might also consider clearing your browsing history. [Learn more about online safety.](https://vtlawhelp.org/vtcourtforms#safety)
 ---
 
 # ALDocument objects specify the metadata for each template
 objects:
+  - RFApackage_Post_interview_instructions: ALDocument.using(title="NEXT STEPS - Instructions for filing these forms with the court", filename="RFApackage_next_steps.docx", enabled=True, has_addendum=False)
   - RFAcomplaint: ALDocument.using(title="RFA Complaint", filename="1_RFA-complaint", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFAaffidavit: ALDocument.using(title="RFA Affidavit", filename="3_RFA-affidavit", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFAconfidentialcontactinfo: ALDocument.using(title="Confidential Contact Info", filename="4_RFA-confidential-contact-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFAserviceinfo: ALDocument.using(title="Protection Order Service Info", filename="2_RFA-service-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - RFApackage_Post_interview_instructions: ALDocument.using(title="Instructions for Next Steps to Take", filename="RFApackage_next_steps.docx", enabled=True, has_addendum=False)
+
 ---
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[RFAcomplaint, RFAaffidavit, RFAconfidentialcontactinfo, RFAserviceinfo, RFApackage_Post_interview_instructions], filename="RFApackage", title="Download all forms", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[RFApackage_Post_interview_instructions, RFAcomplaint, RFAaffidavit, RFAconfidentialcontactinfo, RFAserviceinfo], filename="RFApackage", title="Download all forms", enabled=True)
   #- al_court_bundle: ALDocumentBundle.using(elements=[RFAaffidavit, RFAconfidentialcontactinfo, RFAcomplaint, RFAserviceinfo],  filename="RFApackage", title="All forms to deliver to court", enabled=True)
 ---
 attachment:
@@ -3507,11 +3525,17 @@ attachment:
       - "house__2": ${ house3 }
       - "other_location_street_address": ${ other_location_street_address }
       - "other_location_city": ${ other_location_city }
-      - "other_location_state": ${ other_location_state }
+      - "other_location_state": |
+          % if other_location_street_address:
+          ${ other_location_state }
+          % endif
       - "other_location_phone": ${ other_location_phone }
       - "other_location2_street_address": ${ other_location2_street_address }
       - "other_location2_city": ${ other_location2_city }
-      - "other_location2_state": ${ other_location2_state }
+      - "other_location2_state": |
+          % if other_location2_street_address:
+          ${ other_location2_state }
+          % endif
       - "other_location2_phone": ${ other_location2_phone }
       - "vehicle_plate": ${ vehicle_plate }
       - "vehicle_year": ${ vehicle_year }
