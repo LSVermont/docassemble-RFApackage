@@ -958,11 +958,13 @@ fields:
     maxlength: 26
     required: False
   - "In what state was the most recent incident?": recent_incident_state
-    code: states_list() 
+    code: |
+      states_list()
+    default: VT
     required: False
   - note: |
       <span style="color:red;">*</span> Please enter either a state, above, OR the area outside the U.S., below.
-  - "If it happened outside of the United States, enter the province / state here and the country.": other_recent_incident_state
+  - "If it happened outside of the United States, enter the province here and the country.": other_recent_incident_state
     required: False
     maxlength: 12
   - "Describe the most recent incident with as much detail as possible.": recent_incident_description
@@ -1070,11 +1072,13 @@ fields:
     maxlength: 26
     required: False
   - "In what state was the most serious incident?": serious_incident_state
-    code: states_list() 
+    code: |
+      states_list()
+    default: VT
     required: False
   - note: |
       <span style="color:red;">*</span> Please enter either a state, above, OR the area outside the U.S., below.
-  - "If it happened outside of the United States, enter the province / state here and the country.": other_serious_incident_state
+  - "If it happened outside of the United States, enter the province here and the country.": other_serious_incident_state
     required: False
     maxlength: 12
   - "Describe the most serious incident with as much detail as possible.": serious_incident_description
@@ -1651,6 +1655,7 @@ fields:
     maxlength: 5
     code: |
       states_list()
+    default: VT
     required: False
   - "Phone number at that location": other_location_phone
     maxlength: 13
@@ -1677,6 +1682,7 @@ fields:
     required: False
     code: |
       states_list()
+    default: VT
     show if: other_location2
   - "Phone number at that location": other_location2_phone
     maxlength: 13
@@ -1904,7 +1910,7 @@ subquestion: |
 
   ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
   
-  Remember to come back to this screen to tap Next and sign your form.
+  **Remember to come back to this screen to tap Next and sign your form.**
 continue button field: RFApackage_preview_question    
 ---
 code: |
@@ -2532,7 +2538,7 @@ review:
       % endif
       
       % if other_recent_incident_state:
-      - State/province/country of the most recent incident if outside of the U.S.: **${other_recent_incident_state}**
+      - Province/state/country of the most recent incident if outside of the U.S.: **${other_recent_incident_state}**
       % endif
       
       - Most recent incident description: **${ recent_incident_description }**
@@ -2599,7 +2605,7 @@ review:
       - Town of the most serious incident: **${ showifdef('serious_incident_town') }**
       
       % if defined('other_serious_incident_state'):
-      - State/province/country of the most serious incident if outside of the U.S.: **${ showifdef('other_serious_incident_state') }**
+      - Province/state/country of the most serious incident if outside of the U.S.: **${ showifdef('other_serious_incident_state') }**
       % else:
       - State of the most serious incident: **${ showifdef('serious_incident_state') }**
       % endif
