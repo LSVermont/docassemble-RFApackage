@@ -1,4 +1,4 @@
-#Added al_custom_error_options
+
 
 ---
 include:
@@ -661,7 +661,7 @@ id: Gather users contact information
 question: |
   What is your contact information?
 subquestion: |
-  Include at least **one safe way** to reach you other than by mail. You can use a friend's phone number, if that is the safest way to reach you.
+  Include at least **one safe way**<span style="color:red;">*</span> to reach you other than by mail. You can use a friend's phone number, if that is the safest way to reach you.
 #  ${ collapse_template(why_contact_info_needed_template) }
 fields:  
   - Phone number: users[0].phone_number
@@ -915,6 +915,8 @@ fields:
 id: Gather defendants phone numbers
 question: |
   What are the defendant's phone numbers?
+subquestion: |
+  If you don't know you can leave these blank.
 fields:  
   - Home phone: other_parties[0].phone_number
     datatype: al_international_phone
@@ -935,7 +937,9 @@ question: |
 subquestion: |
   This is where you will describe the **most recent** incident of abuse. Be as detailed as possible. The judge needs to know exactly what happened. If you don't give enough details, you may not get an RFA order.
   
-  See the [VTLawHelp.org legal help website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3#forms) for tips on what to include in your description. This information will be part of your "Affidavit". Note: The defendant will get a copy of the affidavit if the judge gives you a temporary order or if the case goes to a hearing.
+  See the [VTLawHelp.org legal help website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3#forms) for tips on what to include in your description. This information will be part of your "Affidavit". 
+  
+  Note: **The defendant will get a copy of the affidavit** if the judge gives you a temporary order or if the case goes to a hearing.
 fields:
   - "When was the most recent incident?": recent_incident_date
     maxlength: 14
@@ -1184,7 +1188,7 @@ id: What you want to ask for in the RFA order
 question: |
   What you want to ask for in the RFA order
 subquestion: |
-  This is a list of things that you can ask the court for. If approved, they will be part of the Relief from Abuse order. 
+  This is a list of things that you can ask the court for. If approved, they will be part of the Relief from Abuse order.
   
   **Choose all that apply to you.** 
 
@@ -1917,7 +1921,7 @@ event: review_RFApackage
 question: |
   Review your answers
 subquestion: |
-  Edit your answers here. When you are done, scroll to the bottom and select "Resume."
+  Edit your answers here. Choose the section(s) that you want to edit. When you are done, scroll to the bottom and select "Resume."
 review:
   - note: | 
       ##Information about you##
