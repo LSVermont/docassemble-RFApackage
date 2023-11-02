@@ -1,3 +1,4 @@
+#Text edits after user testing
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -2992,7 +2993,7 @@ question: |
 subquestion: |
   The interview is done. Your forms are ready to view.
   
-  Select the "Edit your answers" button to fix any mistakes. Then, download your forms and the instructions sheet for the next steps to take. You can email the filled-in PDF forms to yourself or someone else, too.
+  Select the "Edit your answers" button to fix any mistakes. Then, **download your forms and the instructions sheet** for the next steps to take. You can also **print them** or **email them** to yourself or someone else, too.
   
   Consider:
   
@@ -3009,9 +3010,7 @@ subquestion: |
   
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
   
-  IMPORTANT: Now is the time to download the documents, email them or make a free account to save them. You will need to deliver the documents to the court.
-  
-  **This tool does not send your forms to the court.** Please download the instructions sheet to learn how to get them to the court.
+  IMPORTANT: Now is the time to download the documents, email or print them, or make a free account to save them. **This tool does not send your forms to the court.** Please download the instructions sheet to learn how to get them to the court at any time of the day or night.
   
   ${ collapse_template(not_seeing_email) }
   ${ collapse_template(log_out_when_done) }
