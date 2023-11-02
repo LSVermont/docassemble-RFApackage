@@ -1512,7 +1512,6 @@ fields:
     required: False
   - "State": other_parties1_state
     maxlength: 5
-    default: VT
     code: |
       states_list()
     required: False
@@ -1655,7 +1654,6 @@ fields:
     maxlength: 5
     code: |
       states_list()
-    default: VT
     required: False
   - "Phone number at that location": other_location_phone
     maxlength: 13
@@ -1682,7 +1680,6 @@ fields:
     required: False
     code: |
       states_list()
-    default: VT
     show if: other_location2
   - "Phone number at that location": other_location2_phone
     maxlength: 13
@@ -1894,7 +1891,7 @@ fields:
   -  note: |
        You can change this date later if you want.
        
-       On the next screen, you can choose how to sign your documents.
+       **Tap Next to choose how to sign your documents.**
      show if: attestation
 ---
 id: preview RFApackage
@@ -2010,7 +2007,7 @@ review:
     - users1_no_shelter
     - rent_or_own
     button: |
-      **Do you need the defendant removed from your home in order to be safe?:** **${ word(yesno(users1_no_shelter)) }**
+      Do you need the defendant removed from your home in order to be safe?: **${ word(yesno(users1_no_shelter)) }**
 
       % if users1_no_shelter:
       **Details about your shared home**
@@ -3011,12 +3008,13 @@ subquestion: |
   ${ al_user_bundle.download_list_html() }
   
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+  
+  IMPORTANT: Now is the time to download the documents, email them or make a free account to save them. You will need to deliver the documents to the court.
+  
+  **This tool does not send your forms to the court.** Please download the instructions sheet to learn how to get them to the court.
+  
   ${ collapse_template(not_seeing_email) }
   ${ collapse_template(log_out_when_done) }
-  
-  WARNING: Now is the time to download the documents, email them or make a free account to save them. You will need to deliver the documents to the court.
-  
-  This tool **does not** send your forms to the court. Please download the instructions sheet to learn how to get them to the court.
 progress: 100
 ---
 template: not_seeing_email
@@ -3528,11 +3526,17 @@ attachment:
       - "house__2": ${ house3 }
       - "other_location_street_address": ${ other_location_street_address }
       - "other_location_city": ${ other_location_city }
-      - "other_location_state": ${ other_location_state }
+      - "other_location_state": |
+          % if other_location_street_address:
+          ${ other_location_state }
+          % endif
       - "other_location_phone": ${ other_location_phone }
       - "other_location2_street_address": ${ other_location2_street_address }
       - "other_location2_city": ${ other_location2_city }
-      - "other_location2_state": ${ other_location2_state }
+      - "other_location2_state": |
+          % if other_location2_street_address:
+          ${ other_location2_state }
+          % endif
       - "other_location2_phone": ${ other_location2_phone }
       - "vehicle_plate": ${ vehicle_plate }
       - "vehicle_year": ${ vehicle_year }
