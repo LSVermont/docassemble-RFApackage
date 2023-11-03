@@ -1,4 +1,4 @@
-#Add custom Share screen -- so I can eliminate the text option, which we are not setting up now
+#Override Assembly Line's default email
 
 ---
 include:
@@ -129,6 +129,7 @@ code: |
   AL_DEFAULT_STATE = "VT"
 ---
 code: |
+  # This is where our feedback is sent
   github_repo_name = 'VTCourtFormsIssues'
   github_user_name = 'VTCourtFormsIssues'
 ---
@@ -3645,4 +3646,20 @@ fields:
       is: download_json
 back button label: |
   Back to your form
+---
+generic object: ALDocumentBundle
+template: x.send_email_template
+subject: |
+ % if len(x) > 1:
+ Documents from ${ al_app_name } are attached
+ % else:
+ A document from ${ al_app_name } is attached
+ % endif
+content: |
+  <p style="font-size:18px;font-family:arial,helvetica neue,helvetica,sans-serif;">Your document(s) are attached.</p>
+
+  <p style="font-size:18px;font-family:arial,helvetica neue,helvetica,sans-serif;">Visit <a href="https://vtlawhelp.org/vtcourtforms">https://vtlawhelp.org/vtcourtforms</a> to learn more about VTCourtForms.</p>
+
+  <p style="font-size:18px;font-family:arial,helvetica neue,helvetica,sans-serif;">Note: Please do not reply to this email address. It does not accept emails.</p>
+
 ---
