@@ -1,4 +1,4 @@
-#Add custom Share screen -- so I can eliminate the text option, which we are not setting up now
+#Override Assembly Line's default email
 
 ---
 include:
@@ -3645,4 +3645,20 @@ fields:
       is: download_json
 back button label: |
   Back to your form
+---
+generic object: ALDocumentBundle
+template: x.send_email_template
+subject: |
+ % if len(x) > 1:
+ Documents from ${ al_app_name } are attached
+ % else:
+ A document from ${ al_app_name } is attached
+ % endif
+content: |
+ Your ${ x.document_label } document(s) are attached.
+ 
+ Visit ${ AL_ORGANIZATION_HOMEPAGE } to learn more.
+ 
+ 
+ Note: Please do not reply to this email address. It does not accept emails.
 ---
