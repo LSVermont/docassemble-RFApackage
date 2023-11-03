@@ -3655,10 +3655,10 @@ subject: |
  A document from ${ al_app_name } is attached
  % endif
 content: |
- Your ${ x.document_label } document(s) are attached.
- 
- Visit ${ AL_ORGANIZATION_HOMEPAGE } to learn more.
- 
- 
- Note: Please do not reply to this email address. It does not accept emails.
+<p style="font-size:18px; font-family:arial,helvetica neue,helvetica,sans-serif">Your Asking for a Relief from Abuse order (RFA) in Vermont document(s) are attached.</p>
+
+<p style="font-size:18px; font-family:arial,helvetica neue,helvetica,sans-serif">Visit <a href="https://vtlawhelp.org/vtcourtforms<">https://vtlawhelp.org/vtcourtforms</a> to learn more.</p>
+
+<p style="font-size:18px; font-family:arial,helvetica neue,helvetica,sans-serif">Note: Please do not reply to this email address. It does not accept emails.</p>
+
 ---
