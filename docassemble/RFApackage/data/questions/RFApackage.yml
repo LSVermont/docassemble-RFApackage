@@ -747,7 +747,7 @@ fields:
     maxlength: 16
     show if: other_relationship
 validation code: |
-  if [is_spouse, ex_spouse, live_together, sexual_relationship, dating, family_member].count(True) == 0:
+  if [is_spouse, ex_spouse, live_together, sexual_relationship, dating, family_member, other_relationship].count(True) == 0:
     validation_error("Please select at least one option.")
 ---
 id: Gather defendant name
@@ -1854,9 +1854,17 @@ fields:
   - "If you get an RFA order, do you wish to be notified after the order is served?": notify_served
     datatype: yesnoradio
   - "What phone number should law enforcement call to notify you?": users1_notify_phone_number
+    input type: radio
+    choices:
+      - ${ users[0].phone_number }
+      - ${ users1_work_phone_number }
+      - Other: other
+    show if: notify_served
+  - Notification phone number: users1_notify_phone_number_other_input
     datatype: al_international_phone
     maxlength: 45
-    show if: notify_served
+    js show if: |
+      val("users1_notify_phone_number") == "other"
   - "Will the defendant try to avoid being served this order?": avoid_served
     datatype: yesnoradio
   - "Does the defendant have guard dogs or vicious dogs?": guard_dog
@@ -2880,7 +2888,11 @@ review:
       - You wish to be notified after the order is served: **${ yesno(notify_served) }**
       
       % if notify_served:
-      - At this phone number: **${ users1_notify_phone_number  }**
+      % if users1_notify_phone_number == "other": 
+      - At this phone number: **${ showifdef('users1_notify_phone_number_other_input') }**
+      % else: 
+      - At this phone number: **${ showifdef('users1_notify_phone_number') }**
+      % endif
       % endif
       
       - The defendant will try to avoid being served this order: **${ yesno(avoid_served) }**
@@ -3425,7 +3437,12 @@ attachment:
       - "users1_name_first": ${ users[0].name.first }
       - "users1_name_middle": ${ users[0].name.middle }
       - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
-      - "users1_notify_phone_number": ${ users1_notify_phone_number }
+      - "users1_notify_phone_number": |
+          % if users1_notify_phone_number == "other": 
+          ${ users1_notify_phone_number_other_input }
+          % else: 
+          ${ users1_notify_phone_number }
+          % endif
       - "notify_served_yes": ${ notify_served }
       - "notify_served_no": ${ not notify_served }
       - "spouse_or_ex_spouse": ${ relationship_for_LE["spouse_or_ex_spouse"] }
