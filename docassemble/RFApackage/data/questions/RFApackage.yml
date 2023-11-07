@@ -1,4 +1,4 @@
-#Override Assembly Line's default email
+# Made a few text+link edits per accessibility audit
 
 ---
 include:
@@ -343,7 +343,7 @@ subquestion: |
   
   VTCourtForms was created by Legal Services Vermont with support from the Legal Services Corporation and assistance from the Suffolk University Legal Innovation and Technology (LIT) Lab Document Assembly Line Project. We also had help from Vermont Legal Aid, Vermont Judiciary and other Vermont organizations.
   
-  [FILE big_logo, 30%, Legal Services Vermont logo]
+  [FILE big_logo, 30%, Legal Services Vermont]
 #  Tap the {green words} in any screen for a definition or more information.
   
 #  % if chat_partners_available().help:
@@ -412,10 +412,10 @@ question: |
 subquestion: |
   <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** In this situation, these are **not** the right forms to fill out. **Do not use this interview.** 
   
-  [Find the right forms to extend or change an existing RFA order on this page of the VTLawHelp.org website.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-6) You can also find out who to contact for help.
+  [Find the right forms to extend or change an existing RFA order](https://vtlawhelp.org/roadmap/relief-from-abuse/step-6) on the VTLawHelp.org website. You can also find out who to contact for help.
 continue button field: initial_screening_questions_1_exit
 buttons:
-  - Go to information: exit
+  - Exit to legal aid website: exit
     url: https://vtlawhelp.org/roadmap/relief-from-abuse/step-6
 ---
 id: initial_screening_questions_2
@@ -449,7 +449,7 @@ subquestion: |
   Instead, [learn about your options on this page of the VTLawHelp.org website.](https://vtlawhelp.org/protection-minors) You can also find out who to contact for help.
 continue button field: initial_screening_questions_2_exit
 buttons:
-  - Go to information: exit
+  - Exit to legal aid website: exit
     url: https://vtlawhelp.org/protection-minors
 ---    
 id: initial_screening_questions_2_exit_a
@@ -458,10 +458,10 @@ question: |
 subquestion: |
   <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** In this situation, these are **not** the right forms to fill out. **Do not use this interview.**
   
-  [On this page of the VTLawHelp.org website](https://vtlawhelp.org/stalking-and-sexual-assault), learn about other options that include getting an Order Against Sexual Assault or an Order Against Stalking. You can also find out who to contact for help.
+  On the VTLawHelp.org website, [learn about other options](https://vtlawhelp.org/stalking-and-sexual-assault) that include getting an Order Against Sexual Assault or an Order Against Stalking. You can also find out who to contact for help.
 continue button field: initial_screening_questions_2_exit_a
 buttons:
-  - Go to information: exit
+  - Exit to legal aid website: exit
     url: https://vtlawhelp.org/stalking-and-sexual-assault
 ---
 id: initial_screening_questions_3
@@ -481,10 +481,10 @@ question: |
 subquestion: |
   <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** In this situation, these are **not** the right forms to fill out. **Do not use this interview.**
   
-  [On this page of the VTLawHelp.org website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3), learn about the other forms to use when asking for an RFA order **only** on behalf of a child or children. You can also find out who to contact for help.
+  On the VTLawHelp.org website, learn about the [other forms to use when asking for an RFA order **only** on behalf of a child or children](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3). You can also find out who to contact for help.
 continue button field: initial_screening_questions_3_exit
 buttons:
-  - Go to information: exit
+  - Exit to legal aid website: exit
     url: https://vtlawhelp.org/roadmap/relief-from-abuse/step-3
 ---
 id: initial_screening_questions_4
@@ -528,7 +528,7 @@ subquestion: |
   Consult with a lawyer or legal aid organization in your state or the defendant’s home state.
 continue button field: initial_screening_questions_5_exit_a
 buttons:
-  - Go to legal aid website: exit
+  - Exit to legal aid website: exit
     url: https://vtlawhelp.org/how-we-can-help
 ---
 id: initial_screening_questions_5_exit_b
@@ -544,7 +544,7 @@ subquestion: |
   Ask a lawyer, like the lawyers at [Legal Services Vermont and Vermont Legal Aid](https://vtlawhelp.org/how-we-can-help). Find out whether you should use these forms or not.
 continue button field: initial_screening_questions_5_exit_b
 buttons:
-  - Go to legal aid website: exit
+  - Exit to legal aid website: exit
     url: https://vtlawhelp.org/how-we-can-help
     
 ---
