@@ -3102,7 +3102,7 @@ attachment:
       - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
       - "other_parties1_name": ${ other_parties[0] }
       - "other_parties1_birthdate": >-
-          ${ "/".join([f for f in [other_parties[0].birth_month, str(other_parties[0].birth_day), other_parties[0].birth_year] if f]) }
+          ${ "/".join([str(f) for f in [other_parties[0].birth_month, other_parties[0].birth_day, other_parties[0].birth_year] if f]) }
       - "other_parties1_address_address": |
           % if defined('defendant_address_unknown') and defendant_address_unknown: 
           Unknown
@@ -3293,7 +3293,7 @@ attachment:
       - "other_parties1_name__1": ${ other_parties[0] }
       - "other_parties1_name": ${ other_parties[0] }
       - "other_parties1_birthdate": >-
-          ${ "/".join([f for f in [other_parties[0].birth_month, str(other_parties[0].birth_day), other_parties[0].birth_year] if f]) }
+          ${ "/".join([str(f) for f in [other_parties[0].birth_month, other_parties[0].birth_day, other_parties[0].birth_year] if f]) }
       - "other_parties1_address_address": |
           % if defined('defendant_address_unknown') and defendant_address_unknown: 
           Unknown
@@ -3441,7 +3441,7 @@ attachment:
       - "other_parties1_name_first": ${ other_parties[0].name.first }
       - "other_parties1_name_middle": ${ other_parties[0].name.middle }
       - "other_parties1_birthdate": >-
-          ${ "/".join([f for f in [other_parties[0].birth_month, str(other_parties[0].birth_day), other_parties[0].birth_year] if f]) }
+          ${ "/".join([str(f) for f in [other_parties[0].birth_month, other_parties[0].birth_day, other_parties[0].birth_year] if f]) }
       - "other_parties1_age": |
           % if other_parties_estimated_age > 0:
           ${ other_parties_estimated_age }
