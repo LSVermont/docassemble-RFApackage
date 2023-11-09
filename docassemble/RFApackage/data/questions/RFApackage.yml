@@ -970,7 +970,6 @@ fields:
   - "In what state was the most recent incident?": recent_incident_state
     code: |
       states_list()
-    default: VT
     required: False
   - note: |
       <span style="color:red;">*</span> Please enter either a state, above, OR the area outside the U.S., below.
@@ -1084,7 +1083,6 @@ fields:
   - "In what state was the most serious incident?": serious_incident_state
     code: |
       states_list()
-    default: VT
     required: False
   - note: |
       <span style="color:red;">*</span> Please enter either a state, above, OR the area outside the U.S., below.
