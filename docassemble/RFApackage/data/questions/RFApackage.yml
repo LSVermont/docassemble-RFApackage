@@ -1,4 +1,4 @@
-# Made a few text+link edits per accessibility audit
+# Added post: <div data-variable for ALKiln tests -- under metadata
 
 ---
 include:
@@ -28,6 +28,9 @@ metadata:
     - FA-07-00-00-00
   authors:
     - VTCourtForms by Legal Services Vermont
+  # Added post: for ALKiln tests
+  post: |
+    <div data-variable="${ encode_name(str( user_info().variable )) }" id="trigger" aria-hidden="true" style="display: none;"></div>
 ---
 reconsider: True
 code: |
