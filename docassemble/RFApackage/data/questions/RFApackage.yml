@@ -1,5 +1,4 @@
-#updated font size on one item on Complaint PDF
-#added a couple id names and comments in the code below
+
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -29,6 +28,9 @@ metadata:
     - FA-07-00-00-00
   authors:
     - VTCourtForms by Legal Services Vermont
+  # Added post: for ALKiln tests
+  post: |
+    <div data-variable="${ encode_name(str( user_info().variable )) }" id="trigger" aria-hidden="true" style="display: none;"></div>
 ---
 reconsider: True
 code: |
