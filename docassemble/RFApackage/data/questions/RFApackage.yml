@@ -2891,12 +2891,12 @@ review:
     button: |
       - You wish to be notified after the order is served: **${ yesno(notify_served) }**
       
-      % if notify_served:
-      % if users[0].phone_number or users1_work_phone_number:
+      % if users1_notify_phone_number:
       - At this phone number: **${ showifdef('users1_notify_phone_number') }**
-      % else: 
-      - At this phone number: **${ showifdef('users1_notify_phone_number_other_input') }**
       % endif
+      
+      % if users1_notify_phone_number_other_input:
+      - At this phone number: **${ showifdef('users1_notify_phone_number_other_input') }**
       % endif
       
       - The defendant will try to avoid being served this order: **${ yesno(avoid_served) }**
@@ -3424,7 +3424,7 @@ attachment:
       - "users1_name_middle": ${ users[0].name.middle }
       - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
       - "users1_notify_phone_number": |
-          % if users[0].phone_number or users1_work_phone_number:
+          % if users1_notify_phone_number:
           ${ users1_notify_phone_number }
           % else: 
           ${ users1_notify_phone_number_other_input }
