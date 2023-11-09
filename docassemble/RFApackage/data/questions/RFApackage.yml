@@ -1,4 +1,4 @@
-# Added post: <div data-variable for ALKiln tests -- under metadata
+#For al_international_phone, Suffolk folks figured out I can add hint: " " to get rid of the weird placeholder text
 
 ---
 include:
@@ -678,9 +678,11 @@ subquestion: |
 fields:  
   - Phone number: users[0].phone_number
     datatype: al_international_phone
+    hint: " "
     required: False
   - Work number: users1_work_phone_number
     datatype: al_international_phone
+    hint: " "
     required: False
   - Email: users[0].email    
     datatype: email
@@ -932,15 +934,19 @@ subquestion: |
 fields:  
   - Home phone: other_parties[0].phone_number
     datatype: al_international_phone
+    hint: " "
     required: False
   - Cell phone: other_parties[0].mobile_number
     datatype: al_international_phone
+    hint: " "
     required: False
   - Work phone: other_parties1_work_phone_number
     datatype: al_international_phone
+    hint: " "
     required: False
   - Other phone: other_parties1_other_phone_number
     datatype: al_international_phone
+    hint: " "
     required: False    
 ---
 id: What happened most recently
@@ -1869,6 +1875,7 @@ fields:
         users[0].phone_number or users1_work_phone_number
   - Notification phone number: users1_notify_phone_number_other_input
     datatype: al_international_phone
+    hint: " "
     maxlength: 45
     required: False
     show if: notify_served
