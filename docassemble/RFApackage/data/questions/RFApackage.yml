@@ -1,4 +1,3 @@
-# Added post: <div data-variable for ALKiln tests -- under metadata
 
 ---
 include:
@@ -9,6 +8,7 @@ include:
 features:
   css: style.css
 ---
+# customized feedback form
 code: |   
   feedback_form = "docassemble.VTFeedback:VTfeedback.yml"
 ---
@@ -142,6 +142,7 @@ code: |
 code: |
   al_form_type = "starts_case" 
 ---
+# customized the error message people get when they encounter a bug in the interview
 code: |
   al_custom_error_options = [
     "Use the [original PDF versions](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3) of these forms instead.",
@@ -607,10 +608,6 @@ fields:
   #  required: False
   #- Postal code: trial_court_address.zip    
   #  required: False
----
-#I had to set this because the automated AL.court bundle wanted to define the court address and county, when I didn't need that at this time. AL.court bundle will be needed to efile. 
-#code: |
-#  trial_court_address.county = trial_court_name
 ---
 id: you birthdate question
 question: |
@@ -3576,6 +3573,7 @@ code:  |
   RFAconfidentialcontactinfo.overflow_fields.gathered = True
   RFAcomplaint.overflow_fields.gathered = True
 ---
+# customized screen for share feature
 continue button field: al_share_form_screen
 id: al share form screen
 question: |
@@ -3645,6 +3643,7 @@ fields:
 back button label: |
   Back to your form
 ---
+id: customized emails sent with attachments
 generic object: ALDocumentBundle
 template: x.send_email_template
 subject: |
