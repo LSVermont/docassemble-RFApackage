@@ -1856,9 +1856,7 @@ fields:
   - "What phone number should law enforcement call to notify you?": users1_notify_phone_number
     datatype: radio
     code: |
-      [item for item in [users[0].phone_number, users1_work_phone_number] if item]
-    disable others: 
-      - users1_notify_phone_number_other_input
+      [{item: phone_number_formatted(item) or item} for item in [users[0].phone_number, users1_work_phone_number] if item] + [{"other": "Other"}]
     show if:
       variable: notify_served
       is: True
@@ -1868,7 +1866,9 @@ fields:
     datatype: al_international_phone
     maxlength: 45
     required: False
-    show if: notify_served
+    show if:
+      variable: users1_notify_phone_number
+      is: other
   - "Will the defendant try to avoid being served this order?": avoid_served
     datatype: yesnoradio
   - "Does the defendant have guard dogs or vicious dogs?": guard_dog
@@ -2886,18 +2886,21 @@ review:
       Name of the defendant's attorney for the existing order(s) or pending court proceeding(s): **${ showifdef('existing_order_OP_attorney') }**
       % endif
   - note: | 
-      ##Service (delivery) of the RFA order##
+      ## Service (delivery) of the RFA order##
   - Edit: notify_served
     button: |
       - You wish to be notified after the order is served: **${ yesno(notify_served) }**
       
-      % if users1_notify_phone_number:
+      % if notify_served:
+      % if users1_notify_phone_number != "other":
       - At this phone number: **${ showifdef('users1_notify_phone_number') }**
       % endif
       
       % if users1_notify_phone_number_other_input:
       - At this phone number: **${ showifdef('users1_notify_phone_number_other_input') }**
       % endif
+      
+      % endif 
       
       - The defendant will try to avoid being served this order: **${ yesno(avoid_served) }**
       
@@ -2907,10 +2910,10 @@ review:
       
       - The officer who serves this order will be in any danger: **${ yesno(danger_for_officer) }**
       
-      % if danger_for_officer_why != '':
-      - Why the officer will be in danger: **${ showifdef('danger_for_officer_why') }**
+      % if showifdef("danger_for_officer_why"):
+      - Why the officer will be in danger: **${ showifdef("danger_for_officer_why") }**
       % endif
-    
+   
 
   - Edit: 
     - signature_date
@@ -3423,14 +3426,16 @@ attachment:
       - "users1_name_first": ${ users[0].name.first }
       - "users1_name_middle": ${ users[0].name.middle }
       - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
-      - "users1_notify_phone_number": |
-          % if users1_notify_phone_number:
-          ${ users1_notify_phone_number }
-          % else: 
-          ${ users1_notify_phone_number_other_input }
-          % endif
       - "notify_served_yes": ${ notify_served }
       - "notify_served_no": ${ not notify_served }
+      - "users1_notify_phone_number": |
+          % if notify_served:
+          % if users1_notify_phone_number == "other":
+          ${ phone_number_formatted(users1_notify_phone_number_other_input) or users1_notify_phone_number_other_input}
+          % else:
+          ${ phone_number_formatted(users1_notify_phone_number) or users1_notify_phone_number}
+          % endif
+          % endif
       - "spouse_or_ex_spouse": ${ relationship_for_LE["spouse_or_ex_spouse"] }
       - "lived_together": ${ relationship_for_LE["lived_together"] }
       - "had_kids_together": ${ relationship_for_LE["had_kids_together"] }
