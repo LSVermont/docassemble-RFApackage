@@ -326,7 +326,6 @@ id: basic questions intro screen
 question: |
   **${interview_short_title} in Vermont**
 subquestion: |  
-  <i>THIS TOOL IS IN DEVELOPMENT & UNDERGOING REVIEW. Thank you, reviewers!</i>
   
   <div class="border-around-text">
   
