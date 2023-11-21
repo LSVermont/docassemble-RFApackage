@@ -3609,7 +3609,7 @@ content: |
   % endif
   
   % if package_updated_on:
-  Last updated on ${ package_updated_on }. [:fab-fa-github: View code on GitHub](${ github_url }).  
+  Last updated on ${ package_updated_on }. 
   % endif
   
   
