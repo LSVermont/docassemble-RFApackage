@@ -3574,6 +3574,52 @@ code:  |
   RFAconfidentialcontactinfo.overflow_fields.gathered = True
   RFAcomplaint.overflow_fields.gathered = True
 ---
+# customized About this form screen accessed from footer
+template: about_this_interview_version_info
+content: |
+  % if all_variables(special='metadata').get('help_page_title','').rstrip() and all_variables(special='metadata').get('help_page_url','').rstrip():
+  Learn more: [${ all_variables(special='metadata').get('help_page_title','').rstrip() }](${ all_variables(special='metadata').get('help_page_url','').rstrip() }).
+  % endif
+
+  "${all_variables(special='metadata').get('title','').rstrip()}" version 
+  `${ package_version_number }`; AssemblyLine version `${ al_version }`.
+
+  % if interview_metadata.get("main_interview_key"):
+    <%
+      MAIN_METADATA = interview_metadata[interview_metadata["main_interview_key"]]
+    %>
+  % elif len(interview_metadata) > 1:    
+    <% 
+      del(interview_metadata["main_interview_key"]) # DADict creates the key on lookup above
+      MAIN_METADATA = next(iter(interview_metadata.values())) 
+    %>
+  % else:
+    <% MAIN_METADATA = all_variables(special='metadata') %>
+  % endif
+  <% ORIGINAL_FORMS = MAIN_METADATA.get("original_form", []) if isinstance(MAIN_METADATA.get("original_form"), list) else ([MAIN_METADATA.get("original_form", "")] if MAIN_METADATA.get("original_form") else []) %>
+
+  % if len(ORIGINAL_FORMS) > 1:
+  View the paper version of this form or these forms at the links below:
+
+  % for url in [url for url in ORIGINAL_FORMS if url.strip() != "None" and url.startswith("http")]:
+  * [${ url }](${ url })
+  % endfor
+  % elif len(ORIGINAL_FORMS) == 1:
+  [View the paper version of this form or these forms](${ ORIGINAL_FORMS[0] }).
+  % endif
+  
+  % if package_updated_on:
+  Last updated on ${ package_updated_on }. [:fab-fa-github: View code on GitHub](${ github_url }).  
+  % endif
+  
+  
+  This VTCourtForms guided interview was created by Legal Services Vermont, a nonprofit legal aid organization serving the state of Vermont, with support from the Legal Services Corporation and assistance from the Suffolk University Legal Innovation and Technology (LIT) Lab Document Assembly Line Project. We also had help from Vermont Legal Aid, Vermont Judiciary and other Vermont organizations. Learn more about [VTCourtForms](https://vtlawhelp.org/vtcourtforms).
+
+  
+  This guided interview was built with docassemble and includes code from the [Document Assembly Line project](https://suffolklitlab.org/docassemble-AssemblyLine-documentation/docs/).
+  
+    [:fab-fa-github: View code on GitHub](https://github.com/LSVermont).  
+---
 # customized screen for share feature
 continue button field: al_share_form_screen
 id: al share form screen
