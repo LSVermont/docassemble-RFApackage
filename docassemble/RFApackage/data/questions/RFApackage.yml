@@ -3523,17 +3523,11 @@ attachment:
       - "house__2": ${ house3 }
       - "other_location_street_address": ${ other_location_street_address }
       - "other_location_city": ${ other_location_city }
-      - "other_location_state": |
-          % if other_location_street_address:
-          ${ other_location_state }
-          % endif
+      - "other_location_state": ${ other_location_state }
       - "other_location_phone": ${ other_location_phone }
       - "other_location2_street_address": ${ other_location2_street_address }
       - "other_location2_city": ${ other_location2_city }
-      - "other_location2_state": |
-          % if other_location2_street_address:
-          ${ other_location2_state }
-          % endif
+      - "other_location2_state": ${ other_location2_state }
       - "other_location2_phone": ${ other_location2_phone }
       - "vehicle_plate": ${ vehicle_plate }
       - "vehicle_year": ${ vehicle_year }
