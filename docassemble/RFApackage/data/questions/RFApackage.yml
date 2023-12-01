@@ -135,6 +135,14 @@ code: |
   github_repo_name = 'VTCourtFormsIssues'
   github_user_name = 'VTCourtFormsIssues'
 ---
+#this will correct the last-updated date that gets shown on About This Form page
+code: |
+  res = github_modified_date(github_user, "docassemble-RFApackage")
+  if res:
+    package_updated_on = res.format('yyyy-MM-dd')
+  else:
+    package_updated_on = None  
+---
 code: |
   interview_short_title = "Ask the court for a Relief from Abuse (RFA) order"
 ---
