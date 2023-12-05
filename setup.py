@@ -54,7 +54,7 @@ setup(name='docassemble.RFApackage',
       url='https://VTLawHelp.org',
       packages=find_packages(),
       namespace_packages=['docassemble'],
-      install_requires=['docassemble.ALToolbox>=0.9.1', 'docassemble.AssemblyLine>=2.26.0', 'docassemble.GithubFeedbackForm>=0.2.1'],
+      install_requires=['docassemble.ALToolbox>=0.9.1', 'docassemble.AssemblyLine>=2.27.0', 'docassemble.GithubFeedbackForm>=0.2.1'],
       zip_safe=False,
       package_data=find_package_data(where='docassemble/RFApackage/', package='docassemble.RFApackage'),
      )
