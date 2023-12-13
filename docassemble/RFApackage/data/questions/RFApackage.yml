@@ -132,7 +132,7 @@ code: |
 ---
 code: |
   # This is where our feedback is sent
-  github_repo_name = 'VTCourtFormsIssues'
+  github_repo_name = 'RFApackage'
   github_user_name = 'VTCourtFormsIssues'
 ---
 #this will correct the last-updated date that gets shown on About This Form page
