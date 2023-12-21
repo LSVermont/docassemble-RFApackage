@@ -422,10 +422,13 @@ question: |
 subquestion: |
   <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** In this situation, these are **not** the right forms to fill out. **Do not use this interview.** 
   
-  [Find the right forms to extend or change an existing RFA order](https://vtlawhelp.org/roadmap/relief-from-abuse/step-6) on the VTLawHelp.org website. You can also find out who to contact for help.
+  Find the right [forms to extend or change an existing RFA order](https://vtlawhelp.org/roadmap/relief-from-abuse/step-6) on the VTLawHelp.org legal help website. You can also find out who to contact for help.
+  
+  [Go to the legal help website for the forms.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-6)
+  
 continue button field: initial_screening_questions_1_exit
 buttons:
-  - Exit to legal aid website: exit
+  - DELETE answers and EXIT to legal help site: exit
     url: https://vtlawhelp.org/roadmap/relief-from-abuse/step-6
 ---
 id: initial_screening_questions_2
@@ -456,10 +459,13 @@ subquestion: |
   
   You can get help, but do **not** use this interview.
   
-  Instead, [learn about your options on this page of the VTLawHelp.org website.](https://vtlawhelp.org/protection-minors) You can also find out who to contact for help.
+  Instead, [learn about your options](https://vtlawhelp.org/protection-minors) on the VTLawHelp.org legal help website. You can also find out who to contact for help.
+  
+  [Go to the legal help website for your options.](https://vtlawhelp.org/protection-minors)
+  
 continue button field: initial_screening_questions_2_exit
 buttons:
-  - Exit to legal aid website: exit
+  - DELETE answers and EXIT to legal help site: exit
     url: https://vtlawhelp.org/protection-minors
 ---    
 id: initial_screening_questions_2_exit_a
@@ -468,10 +474,13 @@ question: |
 subquestion: |
   <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** In this situation, these are **not** the right forms to fill out. **Do not use this interview.**
   
-  On the VTLawHelp.org website, [learn about other options](https://vtlawhelp.org/stalking-and-sexual-assault) that include getting an Order Against Sexual Assault or an Order Against Stalking. You can also find out who to contact for help.
+  On the VTLawHelp.org legal help website, [learn about other options](https://vtlawhelp.org/stalking-and-sexual-assault) that include getting an Order Against Sexual Assault or an Order Against Stalking. You can also find out who to contact for help.
+  
+  [Go to the legal help website for your options.](https://vtlawhelp.org/stalking-and-sexual-assault)
+  
 continue button field: initial_screening_questions_2_exit_a
 buttons:
-  - Exit to legal aid website: exit
+  - DELETE answers and EXIT to legal help site: exit
     url: https://vtlawhelp.org/stalking-and-sexual-assault
 ---
 id: initial_screening_questions_3
@@ -491,10 +500,13 @@ question: |
 subquestion: |
   <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** In this situation, these are **not** the right forms to fill out. **Do not use this interview.**
   
-  On the VTLawHelp.org website, learn about the [other forms to use when asking for an RFA order **only** on behalf of a child or children](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3). You can also find out who to contact for help.
+  On the VTLawHelp.org website, learn about the [other forms to use when asking for an RFA order **only** on behalf of a child or children.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3) You can also find out who to contact for help.
+  
+  [Go to the legal help website for the other forms.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3)
+  
 continue button field: initial_screening_questions_3_exit
 buttons:
-  - Exit to legal aid website: exit
+  - DELETE answers and EXIT to legal help site: exit
     url: https://vtlawhelp.org/roadmap/relief-from-abuse/step-3
 ---
 id: initial_screening_questions_4
@@ -536,10 +548,13 @@ subquestion: |
   In this situation, these may **not** be the right forms to fill out. 
   
   Consult with a lawyer or legal aid organization in your state or the defendant’s home state.
+
+  [Go to the national legal help website.](https://www.lawhelp.org/find-help/)
+
 continue button field: initial_screening_questions_5_exit_a
 buttons:
-  - Exit to legal aid website: exit
-    url: https://vtlawhelp.org/how-we-can-help
+  - DELETE answers and EXIT to legal help site: exit
+    url: https://www.lawhelp.org/find-help/
 ---
 id: initial_screening_questions_5_exit_b
 question: |
@@ -552,9 +567,12 @@ subquestion: |
   If the Vermont courts do not have jurisdiction, they may not have the power to issue a Relief from Abuse order that the defendant must obey.
   
   Ask a lawyer, like the lawyers at [Legal Services Vermont and Vermont Legal Aid](https://vtlawhelp.org/how-we-can-help). Find out whether you should use these forms or not.
+  
+  [Go to the legal help website.](https://vtlawhelp.org/how-we-can-help)
+  
 continue button field: initial_screening_questions_5_exit_b
 buttons:
-  - Exit to legal aid website: exit
+  - DELETE answers and EXIT to legal help site: exit
     url: https://vtlawhelp.org/how-we-can-help
     
 ---
