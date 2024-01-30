@@ -206,7 +206,7 @@ code: |
     elif defendant_lives_in_vermont is None:
       initial_screening_questions_5_important_note
     else:
-      initial_screening_questions_5_exit_b
+      initial_screening_questions_5_important_note_b
       
   if not plaintiff_lives_in_vermont:
     defendant_lives_in_vermont
@@ -556,11 +556,11 @@ buttons:
   - DELETE answers and EXIT to legal help site: exit
     url: https://www.lawhelp.org/find-help/
 ---
-id: initial_screening_questions_5_exit_b
+id: initial_screening_questions_5_important_note_b
 question: |
-  Stop
+  Ask for advice
 subquestion: |
-  <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** It’s time to stop and ask for advice!
+  <i class="fa-solid fa-circle-exclamation fa-3x"></i>  **Important.**  It’s time to ask for advice!
   
   If the defendant is not currently a Vermont resident, there may be a question as to whether Vermont courts have “jurisdiction” over the defendant.
   
@@ -568,12 +568,10 @@ subquestion: |
   
   Ask a lawyer, like the lawyers at [Legal Services Vermont and Vermont Legal Aid](https://vtlawhelp.org/how-we-can-help). Find out whether you should use these forms or not.
   
-  [Go to the legal help website.](https://vtlawhelp.org/how-we-can-help)
-  
-continue button field: initial_screening_questions_5_exit_b
-buttons:
-  - DELETE answers and EXIT to legal help site: exit
-    url: https://vtlawhelp.org/how-we-can-help
+continue button field: initial_screening_questions_5_important_note_b
+#buttons:
+  #- DELETE answers and EXIT to legal help site: exit
+  #  url: https://vtlawhelp.org/how-we-can-help
     
 ---
 id: initial_screening_questions_5_important_note
