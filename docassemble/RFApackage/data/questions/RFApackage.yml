@@ -324,7 +324,9 @@ code: |
       persistent=True,
       data={
           "zip": showifdef("users[0].address.zip"),
+          "county_where_filing": showifdef("trial_court.address.county"),          
           "reached_interview_end": True,
+          "number_of_forms": len(al_user_bundle.enabled_documents()),
       },
   )
   nav.set_section('get_docs')
