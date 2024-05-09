@@ -1,3 +1,4 @@
+# This interview does not make use of VTSharedYMLFile because that shared file was made after this interview went live.
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -67,7 +68,7 @@ code: |
   al_menu_items_tmp.append(
     {
       "url": url_action('edit_answers_screen'),
-      "label": "Edit your answers"
+      "label": "Edit my answers"
       
     }
   )
@@ -424,12 +425,12 @@ subquestion: |
   
   Find the right [forms to extend or change an existing RFA order](https://vtlawhelp.org/roadmap/relief-from-abuse/step-6) on the VTLawHelp.org legal help website. You can also find out who to contact for help.
   
-  [Go to the legal help website for the forms.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-6)
+  [**Go to the legal help website for the forms.**](https://vtlawhelp.org/roadmap/relief-from-abuse/step-6)
   
 continue button field: initial_screening_questions_1_exit
 buttons:
-  - DELETE answers and EXIT to legal help site: exit
-    url: https://vtlawhelp.org/roadmap/relief-from-abuse/step-6
+  - DELETE your answers: restart
+
 ---
 id: initial_screening_questions_2
 question: |
@@ -461,12 +462,12 @@ subquestion: |
   
   Instead, [learn about your options](https://vtlawhelp.org/protection-minors) on the VTLawHelp.org legal help website. You can also find out who to contact for help.
   
-  [Go to the legal help website for your options.](https://vtlawhelp.org/protection-minors)
+  [**Go to the legal help website for your options.**](https://vtlawhelp.org/protection-minors)
   
 continue button field: initial_screening_questions_2_exit
 buttons:
-  - DELETE answers and EXIT to legal help site: exit
-    url: https://vtlawhelp.org/protection-minors
+  - DELETE your answers: restart
+
 ---    
 id: initial_screening_questions_2_exit_a
 question: |
@@ -476,12 +477,11 @@ subquestion: |
   
   On the VTLawHelp.org legal help website, [learn about other options](https://vtlawhelp.org/stalking-and-sexual-assault) that include getting an Order Against Sexual Assault or an Order Against Stalking. You can also find out who to contact for help.
   
-  [Go to the legal help website for your options.](https://vtlawhelp.org/stalking-and-sexual-assault)
+  [**Go to the legal help website for your options.**](https://vtlawhelp.org/stalking-and-sexual-assault)
   
 continue button field: initial_screening_questions_2_exit_a
 buttons:
-  - DELETE answers and EXIT to legal help site: exit
-    url: https://vtlawhelp.org/stalking-and-sexual-assault
+  - DELETE your answers: restart
 ---
 id: initial_screening_questions_3
 question: |
@@ -502,12 +502,11 @@ subquestion: |
   
   On the VTLawHelp.org website, learn about the [other forms to use when asking for an RFA order **only** on behalf of a child or children.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3) You can also find out who to contact for help.
   
-  [Go to the legal help website for the other forms.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3)
+  [**Go to the legal help website for the other forms.**](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3)
   
 continue button field: initial_screening_questions_3_exit
 buttons:
-  - DELETE answers and EXIT to legal help site: exit
-    url: https://vtlawhelp.org/roadmap/relief-from-abuse/step-3
+  - DELETE your answers: restart
 ---
 id: initial_screening_questions_4
 question: |
@@ -530,7 +529,7 @@ question: |
 subquestion: |
   <i class="fas fa-check fa-3x" style="color: #429a3c;" aria-hidden="true"></i>  Yes, you can use this interview to fill out these forms. 
   
-  Remember, you can edit your answers after you preview the finished forms. You can also do that anytime by choosing Edit Your Answers in the Menu at the top-right of the page.
+  Remember, you can edit your answers after you preview the finished forms. You can also do that anytime by choosing Edit My Answers in the Menu at the top-right of the page.
   
   You can also go to the Menu and quickly Exit and Delete Your Answers if you need to. And, you may choose to make a free account so you can store your answers online and come back to them later.
   
@@ -545,16 +544,17 @@ question: |
 subquestion: |
   <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** **Do not use this interview.**
   
-  In this situation, these may **not** be the right forms to fill out. 
+  In this situation, these may **not** be the right forms to fill out.
+  
+  If you and the defendant are not currently Vermont residents, Vermont courts probably cannot handle your case.
   
   Consult with a lawyer or legal aid organization in your state or the defendant’s home state.
 
-  [Go to the national legal help website.](https://www.lawhelp.org/find-help/)
+  [**Go to the national legal help website.**](https://www.lawhelp.org/find-help/)
 
 continue button field: initial_screening_questions_5_exit_a
 buttons:
-  - DELETE answers and EXIT to legal help site: exit
-    url: https://www.lawhelp.org/find-help/
+  - DELETE your answers: restart
 ---
 id: initial_screening_questions_5_important_note_b
 question: |
@@ -569,9 +569,6 @@ subquestion: |
   Ask a lawyer, like the lawyers at [Legal Services Vermont and Vermont Legal Aid](https://vtlawhelp.org/how-we-can-help). Find out whether you should use these forms or not.
   
 continue button field: initial_screening_questions_5_important_note_b
-#buttons:
-  #- DELETE answers and EXIT to legal help site: exit
-  #  url: https://vtlawhelp.org/how-we-can-help
     
 ---
 id: initial_screening_questions_5_important_note
