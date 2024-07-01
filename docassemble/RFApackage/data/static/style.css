@@ -4,7 +4,13 @@
     margin-left: 3rem;
     padding-left: 4rem;
 }
-
+/* This below eliminates the dotted underline for green collapse template text  */
+.al_collapse_template a.al_toggle,
+.al_display_template a.al_toggle {
+    color: #3b842c;
+    text-decoration-style: solid; !important;
+    text-decoration-line: underline;
+}
 
 .bg-dark {
   background-color: #1f455c !important;  /* nav bar color */

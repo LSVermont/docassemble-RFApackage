@@ -1,3 +1,5 @@
+#THIS VERSION IS FOR JULY 1, 2024, WHEN COERCIVE CONTROLLING BEHAVIOR IS ADDED AS FORM OF ABUSE
+
 # This interview does not make use of VTSharedYMLFile because that shared file was made after this interview went live.
 ---
 include:
@@ -98,7 +100,7 @@ data:
   short title: >-
     RFA package
   description: |-
-    Ask the court for a Relief from Abuse (RFA) order. This one interview will help you complete four required forms.
+    Ask the court for a Relief from Abuse (RFA) order. This one interview will help you complete four required forms. Based on paper versions of forms 400-00151 (7/2024) and 400-00150C (7/2024).
   original_form: >-
     https://vtlawhelp.org/roadmap/relief-from-abuse/step-3
   allowed courts: 
@@ -327,6 +329,7 @@ code: |
           "county_where_filing": showifdef("trial_court.address.county"),          
           "reached_interview_end": True,
           "number_of_forms": len(al_user_bundle.enabled_documents()),
+          "number_of_kids_in_this_case": showifdef("children.target_number"),
       },
   )
   nav.set_section('get_docs')
@@ -809,6 +812,27 @@ fields:
   - "Defendant is incarcerated (in jail) and has been convicted of one of the crimes specified in this Vermont law: 15 V.S.A. 1103 (c)(1)(B) ${ display_template(list_of_crimes, scrollable=True, collapse=True) }": incarcerated
     datatype: yesno 
 ---
+template: coercive_control
+subject: About coercive control
+content: |
+  Vermont law now includes coercive controlling behavior as abuse. 
+
+  Coercive control is a pattern of behavior that seeks to take away your liberty or freedom and to strip away your sense of self. This ongoing pattern of abuse aims to dominate and control you. Coercive control is a form of emotional and psychological abuse. It can hurt your mental and emotional well-being.
+  
+  To prove coercive control, you must show a pattern of behavior. This means you have experienced the behavior more than once.
+  
+  [Learn more on the VTLawHelp.org website.](https://vtlawhelp.org/coercive-control)
+
+
+---
+template: stalking
+subject: About stalking
+content: |
+  Stalking is when a person follows, watches, threatens you or another person, or tampers with your property at least two times and makes you afraid. Stalking includes phone calls, mail, email, comments on social media, faxes and written notes. [Read the law here.](https://legislature.vermont.gov/statutes/section/12/178/05131)
+  
+  Stalking is very complicated. Ask a lawyer about this.
+
+---
 template: list_of_crimes
 subject: See the list of crimes
 content: |
@@ -971,55 +995,15 @@ subquestion: |
   
   Note: **The defendant will get a copy of the affidavit** if the judge gives you a temporary order or if the case goes to a hearing.
 fields:
-  - "When was the most recent incident?": recent_incident_date
-    maxlength: 14
-  - note: |
-      If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something short like “December 20XX.”
-  - "What was the time of the most recent incident? You can estimate if you don't know for sure.": recent_incident_time
-    required: False
-    maxlength: 16
-  - "In what town was the most recent incident?": recent_incident_town
-    maxlength: 26
-    required: False
-  - "In what state was the most recent incident?": recent_incident_state
-    code: |
-      states_list()
-    required: False
-  - note: |
-      <span style="color:red;">*</span> Please enter either a state, above, OR the area outside the U.S., below.
-  - "If it happened outside of the United States, enter the province here and the country.": other_recent_incident_state
-    required: False
-    maxlength: 12
-  - "Describe the most recent incident with as much detail as possible.": recent_incident_description
-    input type: area
-    rows: 20
-  - You were the target of the recent abuse: recent_incident_users1
-    datatype: yesnoradio  
-  - Your children were the target of the recent abuse: recent_incident_children
-    datatype: yesnoradio   
-  - Which of the children were the target of the recent abuse?: recent_incident_children_names 
-    datatype: object_checkboxes
-    required: False
-    none of the above: False
-    css class: indent-me
-    choices:
-      - children 
-    show if: recent_incident_children    
-  - Other children that were not mentioned?: has_recent_incident_other_children
-    datatype: yesnoradio
-    required: False
-    css class: indent-me
-    show if: recent_incident_children
-  - List their names with commas in between: recent_incident_other_children
-    datatype: area
-    css class: indent-me
-    show if: has_recent_incident_other_children
-  - note: |
-      ---
-    show if: recent_incident_children
     
   - note: |
-      Check all that apply to this incident. Select at least one statement.
+      
+      ${ collapse_template(coercive_control) }
+
+      ${ collapse_template(stalking) }
+      
+      **Check all that apply to this incident.** Select at least one statement.
+
   - "The defendant caused or attempted to cause physical harm": recent_incident_harm
     datatype: yesno
   - "The defendant placed you and/or them in fear of imminent serious physical harm": recent_incident_fear
@@ -1064,11 +1048,81 @@ fields:
   - note: |
       ---
     show if: recent_incident_assault
+
+  - "The defendant coercively controlled you and/or the child/children. Coercive control is defined in Vermont law here: [15 V.S.A. § 1101(2)](https://legislature.vermont.gov/statutes/section/15/021/01101)": recent_incident_coercive
+    datatype: yesno
+  - "The defendant coercively controlled you": recent_incident_coercive_users1
+    datatype: yesnoradio
+    css class: indent-me
+    show if: recent_incident_coercive
+  - "The defendant coercively controlled the child/children": recent_incident_coercive_children
+    datatype: yesnoradio
+    css class: indent-me
+    show if: recent_incident_coercive
+  - note: |
+      ---
+    show if: recent_incident_assault
+  - "When did this abusive behavior first start?": recent_incident_coercive_start_date
+    maxlength: 14
+    show if: recent_incident_coercive  
     
+  - "When was the most recent incident?": recent_incident_date
+    maxlength: 14
+  - note: |
+      If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something short like “December 20XX.”
+    
+  - "What was the time of the most recent incident? You can estimate if you don't know for sure.": recent_incident_time
+    required: False
+    maxlength: 16
+  - "In what town was the most recent incident?": recent_incident_town
+    maxlength: 26
+    required: False
+  - "In what state was the most recent incident?": recent_incident_state
+    code: |
+      states_list()
+    required: False
+  - note: |
+      <span style="color:red;">*</span> Please enter either a state, above, OR the area outside the U.S., below.
+  - "If it happened outside of the United States, enter the province here and the country.": other_recent_incident_state
+    required: False
+    maxlength: 12
+  - "Describe the most recent incident with as much detail as possible.": recent_incident_description
+    input type: area
+    rows: 20
+  - note: |
+      If alleging coercive control, describe the behavior of the defendant. Remember, to prove coercive control, you must show a pattern of behavior. This means you have experienced these behaviors more than once.
+    show if: recent_incident_coercive
+  - You were the target of the recent abuse: recent_incident_users1
+    datatype: yesnoradio  
+  - Your children were the target of the recent abuse: recent_incident_children
+    datatype: yesnoradio   
+  - Which of the children were the target of the recent abuse?: recent_incident_children_names 
+    datatype: object_checkboxes
+    required: False
+    none of the above: False
+    css class: indent-me
+    choices:
+      - children 
+    show if: recent_incident_children    
+  - Other children that were not mentioned?: has_recent_incident_other_children
+    datatype: yesnoradio
+    required: False
+    css class: indent-me
+    show if: recent_incident_children
+  - List their names with commas in between: recent_incident_other_children
+    datatype: area
+    css class: indent-me
+    show if: has_recent_incident_other_children
+  - note: |
+      ---
+    show if: recent_incident_children
+
+
+
 validation code: |
   if (recent_incident_state == "") and (other_recent_incident_state == ""):
     validation_error("You must enter a state in the United States, or an area outside of the United States")
-  if not recent_incident_harm and not recent_incident_fear and not recent_incident_abused and not recent_incident_stalked and not recent_incident_assault:
+  if not recent_incident_harm and not recent_incident_fear and not recent_incident_abused and not recent_incident_stalked and not recent_incident_assault and not recent_incident_coercive:
     validation_error("Select at least one incident")
 ---
 id: Was recent most serious too
@@ -1440,31 +1494,6 @@ fields:
     js show if: |
       val("existing_order['existing_order_divorce']") || val("existing_order['dissolution']") || val("existing_order['existing_order_RFA']") || val("existing_order['criminal_proceeding']") || val("existing_order['parentage_order']") || val("existing_order['guardianship_order']") || val("existing_order['juvenile_order']") || val("existing_order['child_support_order']") 
 ---
-#variable name: existing_order_text
-#use objects: True
-#data:
-#  existing_order_divorce:
-#    question: For divorce or separation?
-#    document: For divorce or separation?
-#  existing_order_RFA:
-#    question: For a civil union dissolution?
-#    document: For a civil union dissolution?       
-#  criminal_proceeding:
-#    question: For a criminal matter?  
-#    document: For a criminal matter?
-#  parentage_order:
-#    question: For parentage?  
-#    document: For parentage?
-#  guardianship_order:
-#    question: For guardianship?  
-#    document: For guardianship?
-#  juvenile_order:
-#    question: For a juvenile (DCF) matter?
-#    document: For a juvenile (DCF) matter?
-#  child_support_order: 
-#    question: For child support?
-#    document: For child support?
----
 id: About your home
 question: |
   Asking to have the defendant removed from your home  
@@ -1783,25 +1812,6 @@ fields:
     datatype: yesno
   - "Contacts": lenses_contacts
     datatype: yesno
----
-#variable name: race_text
-#use objects: True
-#data:
-#  race_white:
-#    question: White
-#    document: White
-#  race_black:
-#    question: Black
-#    document: Black     
-#  race_native:
-#    question: Native American 
-#    document: Native American
-#  race_asian:
-#    question: Asian  
-#    document: Asian
-#  race_other:
-#    question: Other 
-#    document: Other
 ---
 id: More about what the defendant looks like
 question: |
@@ -2183,6 +2193,10 @@ review:
       - Other phone: **${ showifdef('other_parties1_other_phone_number') }**  
       % endif
 
+      % if other_parties[0].phone_number == '' and other_parties[0].mobile_number == '' and other_parties1_work_phone_number == '' and other_parties1_other_phone_number == '':
+      - Phone number: **Unknown**
+      % endif
+      
   - Edit: 
     - house
     - best_contact_time
@@ -2577,6 +2591,10 @@ review:
     - recent_incident_description
     button: |
       **Most recent incident**
+     
+       % if defined("recent_incident_coercive") and recent_incident_coercive:
+      - Date when abusive behavior first started: **${ recent_incident_coercive_start_date }**
+      % endif
       
       - Date of the most recent incident: **${ recent_incident_date }**
       
@@ -2603,7 +2621,11 @@ review:
       - Your children were the target of the recent abuse: **${ yesno(recent_incident_children) }**
       
       % if recent_incident_children:
-      - The children who were the target of the recent abuse: ${ showifdef('recent_incident_other_children') }  **${ showifdef('recent_incident_children_names') }** 
+      - The children who were the target of the recent abuse: 
+      **${ showifdef('recent_incident_children_names') }** 
+      % if defined('recent_incident_other_children'):
+      **, ${ showifdef('recent_incident_other_children') }**
+      % endif
       % endif
       
       % if recent_incident_harm:
@@ -2634,13 +2656,21 @@ review:
       
       - The defendant sexually assaulted you and/or the child/children: **${ yesno(recent_incident_assault) }**
       
-      - The defendant sexually assault you: **${ yesno(recent_incident_assault_users1) }**
+      - The defendant sexually assaulted you: **${ yesno(recent_incident_assault_users1) }**
       
-      - The defendant sexually assault the child/children: **${ yesno(recent_incident_assault_children) }**
+      - The defendant sexually assaulted the child/children: **${ yesno(recent_incident_assault_children) }**
       
       % endif
 
-
+      % if defined("recent_incident_coercive") and recent_incident_coercive:
+      
+      - The defendant coercively controlled you and/or the child/children: **${ yesno(recent_incident_coercive) }**
+      
+      - The defendant coercively controlled you: **${ yesno(recent_incident_coercive_users1) }**
+      
+      - The defendant coercively controlled the child/children: **${ yesno(recent_incident_coercive_children) }**
+      
+      % endif
 
   - Edit:
     - recent_incident_most_serious
@@ -2659,10 +2689,12 @@ review:
 
       - Town of the most serious incident: **${ showifdef('serious_incident_town') }**
       
-      % if defined('other_serious_incident_state'):
-      - Province/state/country of the most serious incident if outside of the U.S.: **${ showifdef('other_serious_incident_state') }**
-      % else:
-      - State of the most serious incident: **${ showifdef('serious_incident_state') }**
+       % if serious_incident_state:
+      - State of the most recent incident: **${ serious_incident_state }**
+      % endif
+      
+       % if other_serious_incident_state:
+      - Province/state/country of the most recent incident if outside of the U.S.: **${ other_serious_incident_state }**
       % endif
       
       - Most serious incident description: **${ showifdef('serious_incident_description') }**
@@ -2689,8 +2721,10 @@ review:
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse) }**
       
       % if danger_more_abuse:
-      % if defined('danger_more_abuse_why'):
+      % if danger_more_abuse_why:
       - Information not already described before: **${ danger_more_abuse_why }**
+      % else:
+      - Information not already described before: **None**
       % endif
       % endif
       
@@ -3207,7 +3241,13 @@ attachment:
       - "existing_order_users_attorney": ${ existing_order_users_attorney }
       - "existing_order_OP_attorney": ${ existing_order_OP_attorney }
       - "recent_incident_yes": ${ True }
-      - "recent_incident_date": ${ recent_incident_date }
+      - "recent_incident_date": |
+          % if defined('recent_incident_coercive_start_date'):
+          ${ recent_incident_coercive_start_date } - ${ recent_incident_date }
+          % else:
+          ${ recent_incident_date }
+          % endif 
+      - "recent_incident_coercive_start_date": ${ recent_incident_coercive_start_date }
       - "recent_incident_users1": ${ recent_incident_users1 }
       - "recent_incident_children": ${ recent_incident_children }
       - "recent_incident_children_names": |
@@ -3227,6 +3267,9 @@ attachment:
       - "recent_incident_assault_children": ${ recent_incident_assault_children }
       - "recent_incident_assault": ${ recent_incident_assault }
       - "recent_incident_assault_users1": ${ recent_incident_assault_users1 }
+      - "recent_incident_coercive": ${ recent_incident_coercive }
+      - "recent_incident_coercive_users1": ${ recent_incident_coercive_users1 }
+      - "recent_incident_coercive_children": ${ recent_incident_coercive_children }
       - "danger_more_abuse": ${ danger_more_abuse }
       - "danger_more_abuse_children": ${ danger_more_abuse_who["children"] }
       - "danger_more_abuse_users1": ${ danger_more_abuse_who["users1"] }
@@ -3328,12 +3371,14 @@ attachment:
       - "request_all_emergency": ${ request_all_emergency }
       - "signature_date": ${ format_date(signature_date, format='M/d/yyyy') }
       - "users1_signature": ${ users[0].signature_if_final(i) }
+      - "printed_signature": ${ printed_signature }
 ---
 attachment:
   name: 3 RFA-affidavit
   filename: 3_RFA-affidavit
   variable name: RFAaffidavit[i]
   skip undefined: True
+  editable: False
   pdf template file: 3_RFA-affidavit.pdf
   fields:
       - "docket_number": ${ docket_number }
@@ -3368,7 +3413,12 @@ attachment:
           % else: 
           ${ other_parties[0].address.zip }
           % endif 
-      - "recent_incident_date": ${ recent_incident_date }
+      - "recent_incident_date": |
+          % if defined('recent_incident_coercive_start_date'):
+          ${ recent_incident_coercive_start_date } - ${ recent_incident_date }
+          % else:
+          ${ recent_incident_date }
+          % endif 
       - "recent_incident_time": ${ recent_incident_time }
       - "recent_incident_town": ${ recent_incident_town }
       - "recent_incident_state": |
