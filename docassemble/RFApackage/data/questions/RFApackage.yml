@@ -1966,12 +1966,11 @@ id: preview RFApackage
 question: |
   Preview your forms before you sign them
 subquestion: |
-  Here is a preview of the forms you will sign on the next page.   
+  Tap the button below to see a preview of your documents in a new tab.
   
-  ${ al_user_bundle.as_pdf(key='preview') }
+  ${ action_button_html(al_user_bundle.as_pdf(key='preview').url_for(), label="View the PDF", color="secondary") }
 
-  Click the image to open it in a new tab. Click the "Edit your answers" button
-  to edit your answers.
+  Tap the "Edit your answers" button to edit your answers.
 
   ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
   
@@ -3378,8 +3377,9 @@ attachment:
   filename: 3_RFA-affidavit
   variable name: RFAaffidavit[i]
   skip undefined: True
-  editable: False
   pdf template file: 3_RFA-affidavit.pdf
+  pdftk: True
+  #editable: False
   fields:
       - "docket_number": ${ docket_number }
       - "trial_court_county": ${ trial_court.address.county }
