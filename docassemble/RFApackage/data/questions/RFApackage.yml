@@ -1,5 +1,3 @@
-#THIS VERSION IS FOR JULY 1, 2024, WHEN COERCIVE CONTROLLING BEHAVIOR IS ADDED AS FORM OF ABUSE
-
 # This interview does not make use of VTSharedYMLFile because that shared file was made after this interview went live.
 ---
 include:
@@ -1049,7 +1047,7 @@ fields:
       ---
     show if: recent_incident_assault
 
-  - "The defendant coercively controlled you and/or the child/children. Coercive control is defined in Vermont law here: [15 V.S.A. § 1101(2)](https://legislature.vermont.gov/statutes/section/15/021/01101)": recent_incident_coercive
+  - "The defendant coercively controlled you and/or the child/children. Coercive control is defined in Vermont law here: [15 V.S.A. § 1101(2)](https://legislature.vermont.gov/statutes/section/15/021/01101). A summary is found [here](https://legislature.vermont.gov/Documents/2024/Docs/ACTS/ACT103/ACT103%20Act%20Summary.pdf).": recent_incident_coercive
     datatype: yesno
   - "The defendant coercively controlled you": recent_incident_coercive_users1
     datatype: yesnoradio
@@ -3645,22 +3643,22 @@ code: |
   RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
   RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
   RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1143
-  RFAaffidavit.overflow_fields["recent_incident_description"].label = "Please describe the most recent incident with as much detail as possible."
+  RFAaffidavit.overflow_fields["recent_incident_description"].label = "The most recent incident"
   RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
-  RFAaffidavit.overflow_fields["serious_incident_description"].label = "Please describe the most serious incident with as much detail as possible."
+  RFAaffidavit.overflow_fields["serious_incident_description"].label = "The most serious incident"
   RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1838
-  RFAaffidavit.overflow_fields["other_incident_description"].label = "Please describe any other incident(s) with as much detail as possible."
+  RFAaffidavit.overflow_fields["other_incident_description"].label = "Other incident(s)"
   RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
-  RFAaffidavit.overflow_fields["used_weapon_how"].label = "Describe in detail how they used or threatened to use weapon?"
+  RFAaffidavit.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
   RFAaffidavit.overflow_fields.gathered = True
 ---
 code:  |
   RFAserviceinfo.overflow_fields["location_of_home"].overflow_trigger = 850
-  RFAserviceinfo.overflow_fields["location_of_home"].label = "If you don't have a street address, describe the location of the home."
+  RFAserviceinfo.overflow_fields["location_of_home"].label = "Describe location of the home"
   RFAserviceinfo.overflow_fields["best_contact_time"].overflow_trigger = 170
-  RFAserviceinfo.overflow_fields["best_contact_time"].label = "Best days and times to contact the defendant at home."
+  RFAserviceinfo.overflow_fields["best_contact_time"].label = "Best days and times to contact the defendant at home"
   RFAserviceinfo.overflow_fields["danger_for_officer_why"].overflow_trigger = 255
-  RFAserviceinfo.overflow_fields["danger_for_officer_why"].label = "Why will the officer be in danger?"
+  RFAserviceinfo.overflow_fields["danger_for_officer_why"].label = "Why the officer will be in danger"
   RFAserviceinfo.overflow_fields.gathered = True
   RFAconfidentialcontactinfo.overflow_fields.gathered = True
   RFAcomplaint.overflow_fields.gathered = True
