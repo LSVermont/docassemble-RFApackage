@@ -1972,7 +1972,7 @@ subquestion: |
 
   ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
   
-  **Remember to come back to this screen to tap Next and sign your form.**
+  **Remember to come back to this screen to tap Next and sign your documents.**
 continue button field: RFApackage_preview_question    
 ---
 code: |
