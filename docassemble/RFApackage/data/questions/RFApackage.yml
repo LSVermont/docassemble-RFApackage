@@ -2151,8 +2151,9 @@ review:
       
   - Edit: other_parties_estimated_age
     button: |
+      - Defendant's birthday: 
       % if other_parties[0].birth_month:
-      - Defendant's birthday: **${ other_parties[0].birth_month }**/
+      **${ other_parties[0].birth_month }**/
       % endif
       % if other_parties[0].birth_day:
       **${ other_parties[0].birth_day }**/
@@ -2963,18 +2964,7 @@ review:
       ## Service (delivery) of the RFA order##
   - Edit: notify_served
     button: |
-      - You wish to be notified after the order is served: **${ yesno(notify_served) }**
-      
-      % if notify_served:
-      % if users1_notify_phone_number != "other":
-      - At this phone number: **${ showifdef('users1_notify_phone_number') }**
-      % endif
-      
-      % if users1_notify_phone_number_other_input:
-      - At this phone number: **${ showifdef('users1_notify_phone_number_other_input') }**
-      % endif
-      
-      % endif 
+      - You wish to be notified by phone after the order is served: **${ yesno(notify_served) }**
       
       - The defendant will try to avoid being served this order: **${ yesno(avoid_served) }**
       
