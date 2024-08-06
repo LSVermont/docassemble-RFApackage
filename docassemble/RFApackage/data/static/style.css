@@ -1,3 +1,36 @@
+/* This below is trying to make things more accessible on 8.6.24 */
+.dafooter a {
+    color: #0256D4;
+}
+
+.nav-link.dropdown-toggle:hover, nav-link.dropdown-toggle:visited {
+    color: #b3adad
+}
+
+.nav-link.dropdown-toggle {
+    color: #F0F0F0;
+}
+
+.da-form-group.darequired .da-form-label:after {
+    position: absolute;
+    content: '*';
+    color: #e11717;
+}
+
+.labelauty-unchecked a {
+    color: #0256D4;
+}
+
+.labelauty-checked a {
+    color: #ffffff;
+}
+
+.card.card-body.pb-1.bg-light a {
+    color: #0256D4;
+}
+
+
+
 /* This below is trying to indent "show if" subquestions on certain pages */
 .indent-me-container {
     background-color: #fff;
