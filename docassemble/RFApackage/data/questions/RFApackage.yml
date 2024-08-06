@@ -5,6 +5,7 @@ include:
   - docassemble.ALToolbox:phone-number-validation.yml
   - docassemble.ALToolbox:display_template.yml
 ---
+#This interview uses the style sheet that's included in this package
 features:
   css: style.css
 ---
@@ -416,9 +417,9 @@ fields:
 ---
 template: asterisk
 subject: |
-  Required fields <span style="color:red;">*</span><br/>
+  Required fields <span style="color:#e11717;">*</span><br/>
 content: |
-  A red star / asterisk <span style="color:red;">*</span> means you need to answer this question before you can move on.
+  A red star / asterisk <span style="color:#e11717;">*</span> means you need to answer this question before you can move on.
 ---
 id: initial_screening_questions_1_exit
 question: |
@@ -692,7 +693,7 @@ id: Gather users contact information
 question: |
   What is your contact information?
 subquestion: |
-  Include at least **one safe way**<span style="color:red;">*</span> to reach you other than by mail. You can use a friend's phone number, if that is the safest way to reach you.
+  Include at least **one safe way**<span style="color:#e11717;">*</span> to reach you other than by mail. You can use a friend's phone number, if that is the safest way to reach you.
 #  ${ collapse_template(why_contact_info_needed_template) }
 fields:  
   - Phone number: users[0].phone_number
@@ -1078,7 +1079,7 @@ fields:
       states_list()
     required: False
   - note: |
-      <span style="color:red;">*</span> Please enter either a state, above, OR the area outside the U.S., below.
+      <span style="color:#e11717;">*</span> Please enter either a state, above, OR the area outside the U.S., below.
   - "If it happened outside of the United States, enter the province here and the country.": other_recent_incident_state
     required: False
     maxlength: 12
@@ -1149,7 +1150,7 @@ fields:
       states_list()
     required: False
   - note: |
-      <span style="color:red;">*</span> Please enter either a state, above, OR the area outside the U.S., below.
+      <span style="color:#e11717;">*</span> Please enter either a state, above, OR the area outside the U.S., below.
   - "If it happened outside of the United States, enter the province here and the country.": other_serious_incident_state
     required: False
     maxlength: 12
@@ -1964,7 +1965,7 @@ question: |
 subquestion: |
   Tap the button below to see a preview of your documents in a new tab.
   
-  ${ action_button_html(al_user_bundle.as_pdf(key='preview').url_for(), label="View the PDF", color="secondary") }
+  ${ action_button_html(al_user_bundle.as_pdf(key='preview').url_for(), label="Preview the PDF", color="secondary") }
 
   Tap the "Edit your answers" button to edit your answers.
 
