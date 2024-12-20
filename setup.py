@@ -1,6 +1,6 @@
 import os
 import sys
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages
 from fnmatch import fnmatchcase
 from distutils.util import convert_path
 
@@ -44,7 +44,7 @@ def find_package_data(where='.', package='', exclude=standard_exclude, exclude_d
     return out
 
 setup(name='docassemble.RFApackage',
-      version='1.6',
+      version='1.7',
       description=('RFApackage'),
       long_description='# docassemble.Rfapackage\r\n\r\nRFApackage\r\n\r\n## Author\r\n\r\nVTCourtForms by Legal Services Vermont\r\n\r\n',
       long_description_content_type='text/markdown',
@@ -52,9 +52,8 @@ setup(name='docassemble.RFApackage',
       author_email='ksurette@legalservicesvt.org',
       license='The MIT License',
       url='https://VTLawHelp.org',
-      packages=find_packages(),
-      namespace_packages=['docassemble'],
-      install_requires=['docassemble.ALToolbox>=0.11.0', 'docassemble.AssemblyLine>=3.0.1', 'docassemble.GithubFeedbackForm>=0.4.0', 'docassemble.VTFeedback'],
+      packages=find_namespace_packages(),
+      install_requires=['docassemble.ALToolbox>=0.11.1', 'docassemble.AssemblyLine>=3.2.0', 'docassemble.GithubFeedbackForm>=0.4.1.1', 'docassemble.VTFeedback'],
       zip_safe=False,
       package_data=find_package_data(where='docassemble/RFApackage/', package='docassemble.RFApackage'),
      )
