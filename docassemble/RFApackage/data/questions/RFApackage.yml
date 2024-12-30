@@ -99,7 +99,7 @@ data:
   short title: >-
     RFA package
   description: |-
-    Ask the court for a Relief from Abuse (RFA) order. This one interview will help you complete four required forms. Based on paper versions of forms 400-00151 (7/2024) and 400-00150C (7/2024).
+    Ask the court for a Relief from Abuse (RFA) order. This tool will help you complete four required forms. Based on paper versions of forms 400-00151 (7/2024) and 400-00150C (7/2024).
   original_form: >-
     https://vtlawhelp.org/roadmap/relief-from-abuse/step-3
   allowed courts: 
@@ -290,7 +290,7 @@ code: |
 ---
 sections:
   - intro: Introduction
-  - screening: Is this interview right for you
+  - screening: Is this tool right for you
   - about: About you
   - defendant: About the defendant
   - incidents: What happened
@@ -343,50 +343,23 @@ subquestion: |
   <div class="border-around-text">
   
   <p>${ AL_ORGANIZATION_TITLE } can help you complete and download forms in 3 steps:</p>
-  <ul><li><b>Step 1:</b> Answer questions that will fill in court forms for you.</li>
-  <li><b>Step 2:</b> Preview the completed forms and edit answers, if needed.</li>
+  <ul><li><b>Step 1:</b> Answer simple questions. Your answers will be filled into the forms for you.</li>
+  <li><b>Step 2:</b> Preview the completed forms and edit your answers, if needed.</li>
   <li><b>Step 3:</b> Download, save, print or email the final forms.</li></ul>
   
   <p>You will need to mail, email, efile or deliver them to the court on your own. VTCourtForms will give you instructions.</p>
-  </div>  
+  </div>
   
-  <i class="fas fa-file-text fa-2x"></i> This guided interview will produce a complete package of 4 forms needed to ask the court for a Relief from Abuse (RFA) order in Vermont: the Complaint, Affidavit, Confidential Notification form and Protection Order Service Information form. Learn more about RFA orders and this interview on the next screen.
+  <i class="fas fa-file-text fa-2x"></i> This tool will produce a complete package of 4 forms needed to ask the court for a Relief from Abuse (RFA) order in Vermont: the Complaint, Affidavit, Confidential Notification form and Protection Order Service Information form. Learn more about RFA orders and this tool on the next screen.
   
-  <i class="fas fa-clock fa-2x"></i> It may take you over 1 hour to complete this interview. Make sure you are in a safe place.
+  <i class="fas fa-clock fa-2x"></i> It may take you over 1 hour to complete this. Make sure you are in a safe place.
   
   <i class="fas fa-circle-info fa-2x"></i> It is free to use this program. This site is not a lawyer. Visit our [VTLawHelp.org website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-1) for more information about Relief from Abuse orders.
   
   VTCourtForms was created by Legal Services Vermont with support from the Legal Services Corporation and assistance from the Suffolk University Legal Innovation and Technology (LIT) Lab Document Assembly Line Project. We also had help from Vermont Legal Aid, Vermont Judiciary and other Vermont organizations.
   
   [FILE big_logo, 30%, Legal Services Vermont]
-#  Tap the {green words} in any screen for a definition or more information.
-  
-#  % if chat_partners_available().help:
-#  Live help is currently available in this interview. Click the speech bubble
-#  (:comment-alt:) in the navigation bar to connect to a live advocate for help.
-#  % endif
-fields:
-  - To continue, please accept our [terms of use](https://vtlawhelp.org/vtcourtforms/terms-of-use).: acknowledged_information_use
-    datatype: checkboxes
-    none of the above: False    
-    minlength: 1
-    choices:
-      - I accept the terms of use.
-    validation messages:
-      minlength: |
-        You cannot continue unless you agree to the terms of use.        
-continue button field: al_intro_screen
-#terms:
-#  green words: |
-#    Green words are legal terms or a short way of referring to something that needs more explanation. #The definition or explanation pops up when you tap the green words.
-#right: |
-#  % if user_has_saved_answers:
-#  ${fa_icon("bell", color="primary", size="sm")}
-#  Saved answers available!  
-  
-#  ${action_button_html(url_action('load_answer'), icon="folder-open", label=word("View answers"), #size="sm" )}
-#  % endif    
-  
+continue button field: al_intro_screen   
 ---
 id: RFApackage_intro
 continue button field: RFApackage_intro
@@ -396,15 +369,28 @@ subquestion: |
   <i class="fas fa-circle-exclamation fa-3x" aria-hidden="true"></i>  If you haven't reviewed this important information already on the VTLawHelp.org website, please take time to do so:
   
   * [What to know before you start](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#what-to-know)
-  * [**Safety**: About using this guided interview safely](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#about-this-interview)
+  * [**Safety**: About using this tool safely](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#about-this-interview)
   * [Information you will need at hand](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#info-you-need)
   * [After answering the questions](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#after-questions)
-  
-  Next, let’s make sure this is the right interview for your situation.
+
+fields:
+  - To continue, please accept our [terms of use](https://vtlawhelp.org/vtcourtforms/terms-of-use).: acknowledged_information_use
+    datatype: checkboxes
+    none of the above: False    
+    minlength: 1
+    choices:
+      - I accept the terms of use.
+    label above field: True
+    validation messages:
+      minlength: |
+        You cannot continue unless you agree to the terms of use.   
+
+  - note: |
+      Next, let’s make sure this is the right tool for your situation.
 ---
 id: initial_screening_questions_1
 question: |
-  See if this interview is right for your situation
+  See if this tool is right for your situation
 subquestion: |
   ${ collapse_template(asterisk) }
   
@@ -425,7 +411,7 @@ id: initial_screening_questions_1_exit
 question: |
   Stop
 subquestion: |
-  <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** In this situation, these are **not** the right forms to fill out. **Do not use this interview.** 
+  <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** In this situation, these are **not** the right forms to fill out. **Do not use this tool.** 
   
   Find the right [forms to extend or change an existing RFA order](https://vtlawhelp.org/roadmap/relief-from-abuse/step-6) on the VTLawHelp.org legal help website. You can also find out who to contact for help.
   
@@ -438,7 +424,7 @@ buttons:
 ---
 id: initial_screening_questions_2
 question: |
-  See if this interview is right for your situation
+  See if this tool is right for your situation
 fields:
   - "What is your relationship to the person who has abused you or is abusing you?": relationship_question
     input type: radio
@@ -451,7 +437,7 @@ fields:
 ---
 id: initial_screening_questions_2_a
 question: |
-  See if this interview is right for your situation
+  See if this tool is right for your situation
 fields:
   - "Are you 16 or older?": sixteen_or_older
     datatype: yesnoradio
@@ -462,7 +448,7 @@ question: |
 subquestion: |
   <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** In this situation, if you are under age 16, these are **not** the right forms to fill out.
   
-  You can get help, but do **not** use this interview.
+  You can get help, but do **not** use this tool.
   
   Instead, [learn about your options](https://vtlawhelp.org/protection-minors) on the VTLawHelp.org legal help website. You can also find out who to contact for help.
   
@@ -477,7 +463,7 @@ id: initial_screening_questions_2_exit_a
 question: |
   Stop
 subquestion: |
-  <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** In this situation, these are **not** the right forms to fill out. **Do not use this interview.**
+  <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** In this situation, these are **not** the right forms to fill out. **Do not use this tool.**
   
   On the VTLawHelp.org legal help website, [learn about other options](https://vtlawhelp.org/stalking-and-sexual-assault) that include getting an Order Against Sexual Assault or an Order Against Stalking. You can also find out who to contact for help.
   
@@ -489,7 +475,7 @@ buttons:
 ---
 id: initial_screening_questions_3
 question: |
-  See if this interview is right for your situation
+  See if this tool is right for your situation
 fields:
   - "Who needs protection from abuse?": who_needs_protection
     input type: radio
@@ -502,7 +488,7 @@ id: initial_screening_questions_3_exit
 question: |
   Stop
 subquestion: |
-  <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** In this situation, these are **not** the right forms to fill out. **Do not use this interview.**
+  <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** In this situation, these are **not** the right forms to fill out. **Do not use this tool.**
   
   On the VTLawHelp.org website, learn about the [other forms to use when asking for an RFA order **only** on behalf of a child or children.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3) You can also find out who to contact for help.
   
@@ -514,14 +500,14 @@ buttons:
 ---
 id: initial_screening_questions_4
 question: |
-  See if this interview is right for your situation
+  See if this tool is right for your situation
 fields:
   - "Do you live in Vermont?": plaintiff_lives_in_vermont
     datatype: yesnoradio
 ---
 id: initial_screening_questions_5
 question: |
-  See if this interview is right for your situation
+  See if this tool is right for your situation
 fields:
   - "Does the defendant live in Vermont?": defendant_lives_in_vermont
     datatype: yesnomaybe
@@ -531,7 +517,7 @@ id: initial_screening_questions_5_continue
 question: |
   Continue
 subquestion: |
-  <i class="fas fa-check fa-3x" style="color: #429a3c;" aria-hidden="true"></i>  Yes, you can use this interview to fill out these forms. 
+  <i class="fas fa-check fa-3x" style="color: #429a3c;" aria-hidden="true"></i>  Yes, you can use this tool to fill out these forms. 
   
   Remember, you can edit your answers after you preview the finished forms. You can also do that anytime by choosing Edit My Answers in the Menu at the top-right of the page.
   
@@ -540,13 +526,13 @@ subquestion: |
   Let's get started.
 continue button field: initial_screening_questions_5_continue
 buttons:
-  - Start the interview: continue
+  - Start: continue
 ---
 id: initial_screening_questions_5_exit_a
 question: |
   Stop
 subquestion: |
-  <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** **Do not use this interview.**
+  <i class="fas fa-hand-paper fa-3x" aria-hidden="true"></i>  **Stop.** **Do not use this tool.**
   
   In this situation, these may **not** be the right forms to fill out.
   
@@ -929,7 +915,7 @@ continue button field: ask_defendant_address
 question: |
   What is the defendant's home address?
 subquestion: |
-  The court will need an address of some kind. Include what you can of the defendant's home address. Later in this interview you can give the address where they work or where they are staying. **You will need to provide at least one address.**
+  The court will need an address of some kind. Include what you can of the defendant's home address. Later in this program you can give the address where they work or where they are staying. **You will need to provide at least one address.**
 fields:
   - I don't know the defendant's home address: defendant_address_unknown
     datatype: yesno
@@ -1963,15 +1949,16 @@ id: preview RFApackage
 question: |
   Preview your forms before you sign them
 subquestion: |
-  Tap the button below to see a preview of your documents in a new tab.
+  Tap the button below to see a preview of your documents in a new tab. **Remember to come back to this screen to edit the forms and/or finish the forms.**
   
   ${ action_button_html(al_user_bundle.as_pdf(key='preview').url_for(), label="Preview the PDF", color="secondary") }
 
-  Tap the "Edit your answers" button to edit your answers.
+  Tap the "Edit your answers" button to make changes.
 
   ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
   
-  **Remember to come back to this screen to tap Next and sign your documents.**
+  **Tap Next to choose how to sign your forms.**
+  
 continue button field: RFApackage_preview_question    
 ---
 code: |
@@ -3075,7 +3062,7 @@ event: RFApackage_download
 question: |
   Review your forms and download and/or print them
 subquestion: |
-  The interview is done. Your forms are ready to view.
+  You have completed all the questions. Your forms are ready to view.
   
   Select the "Edit your answers" button to fix any mistakes. Then, **download your forms and the instructions sheet** for the next steps to take. You can also **print them** or **email them** to yourself or someone else, too.
   
@@ -3083,18 +3070,23 @@ subquestion: |
   
   * creating a free account so you can save your answers and come back later. At any time choose "sign up" in the Menu above, or "register" below.
   
-  * using the Share feature to share a link to your interview with a trusted person. **Important**: If you use the Share feature, that person will be able to see AND change your answers.
+  * using the Share feature to share a link to your answers with a trusted person. **Important**: If you use the Share feature, that person will be able to see AND change your answers.
   
   * working with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get advice and support during the RFA process.
   
   ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
+
+  <hr>
   
+  <h4 style="margin-bottom: 18px;">Documents to download</h4>
   
   ${ al_user_bundle.download_list_html() }
   
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+
+  <hr>
   
-  IMPORTANT: Now is the time to download the documents, email or print them, or make a free account to save them. **This tool does not send your forms to the court.** Please download the instructions sheet to learn how to get them to the court at any time of the day or night.
+  IMPORTANT: Now is the time to download the documents, email or print them, or make a free account to save them. **This tool does not send your forms to the court.** Please download the Next Steps document to learn how to get them to the court at any time of the day or night.
   
   ${ collapse_template(not_seeing_email) }
   ${ collapse_template(log_out_when_done) }
@@ -3691,7 +3683,7 @@ content: |
   % endif
   
   
-  This VTCourtForms guided interview was created by Legal Services Vermont, a nonprofit legal aid organization serving the state of Vermont. We had support from the Legal Services Corporation and assistance from the Suffolk University Legal Innovation and Technology (LIT) Lab Document Assembly Line Project. We also had help from Vermont Legal Aid, Vermont Judiciary and other Vermont organizations.
+  This VTCourtForms tool was created by Legal Services Vermont, a nonprofit legal aid organization serving the state of Vermont. We had support from the Legal Services Corporation and assistance from the Suffolk University Legal Innovation and Technology (LIT) Lab Document Assembly Line Project. We also had help from Vermont Legal Aid, Vermont Judiciary and other Vermont organizations.
   
   Learn more about [VTCourtForms](https://vtlawhelp.org/vtcourtforms), including the terms of use and privacy information.
   
@@ -3703,7 +3695,7 @@ content: |
   
   * You might also consider clearing your browsing history. [Learn more about online safety.](https://vtlawhelp.org/vtcourtforms#safety)
   
-  This guided interview was built with docassemble and includes code from the [Document Assembly Line project](https://suffolklitlab.org/docassemble-AssemblyLine-documentation/docs/).
+  This tool was built with docassemble and includes code from the [Document Assembly Line project](https://suffolklitlab.org/docassemble-AssemblyLine-documentation/docs/).
   
     [:fab-fa-github: View the code on GitHub](https://github.com/LSVermont).  
 ---
