@@ -1,3 +1,4 @@
+# This an updated version for July 1, 2025 due to law changes and Judiciary form changes.
 # This interview does not make use of VTSharedYMLFile because that shared file was made after this interview went live.
 ---
 include:
@@ -176,6 +177,9 @@ code: |
   user_ask_role = "plaintiff"
   nav.set_section("screening")
   
+
+  request_not_abuse
+
   
   ##initial_screening_questions##
   what_want_to_do
@@ -991,7 +995,7 @@ fields:
     datatype: yesno
   - "The defendant placed you and/or them in fear of imminent serious physical harm": recent_incident_fear
     datatype: yesno
-  - "The defendant abused the child/children -- meaning they physically injured or otherwise treated the child(ren) in a manner which placed child(ren's) life, health, development or welfare in jeopardy.": recent_incident_abused
+  - "The defendant abused the child/children -- meaning they physically injured or otherwise treated the child(ren) in a manner which placed child(ren's) life, health, development or welfare in jeopardy. See the definition of child abuse in Vermont law: [33 V.S.A. § 4912(1).](https://legislature.vermont.gov/statutes/section/33/049/04912)": recent_incident_abused
     datatype: yesno
   - "The defendant stalked you and/or the child/children. Stalking is defined in Vermont law here: [12 V.S.A 5131(6)](https://legislature.vermont.gov/statutes/section/12/178/05131)": recent_incident_stalked
     datatype: yesno
@@ -1018,7 +1022,7 @@ fields:
   - note: |
       ---
     show if: recent_incident_stalked
-  - "The defendant sexually assaulted you and/or the child/children. Sexual assault is defined in Vermont law here: [15 V.S.A 5131(5)](https://legislature.vermont.gov/statutes/section/12/178/05131)": recent_incident_assault
+  - "The defendant sexually assaulted you and/or the child/children. Sexual assault is defined in Vermont law here: [15 V.S.A 5131(5)] (https://legislature.vermont.gov/statutes/section/12/178/05131)": recent_incident_assault
     datatype: yesno
   - "The defendant sexually assault you": recent_incident_assault_users1
     datatype: yesnoradio
@@ -1305,6 +1309,46 @@ fields:
     datatype: yesno
   - "Order the defendant to surrender immediately to law enforcement all guns/firearms that they own, possess or control": request_surrender_firearms
     datatype: yesno
+
+  
+  - "Order the defendant to return any personal documents in their possession that pertain me and/or my children. (Examples: immigration documents, birth certificates and identification cards.)": surrender_plaintiffs_documents
+    datatype: yesno
+  - "I want my documents.": surrender_plaintiffs_documents_users1
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_plaintiffs_documents
+  - "I want the child's or children's documents.": surrender_plaintiffs_documents_children
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_plaintiffs_documents
+
+  
+  - "Order me to get temporary possession of a car/truck/vehicle": surrender_vehicle
+    datatype: yesno
+  - note: |
+      **At least one of the following must be true.** Check all that apply.:
+    css class: indent-me
+    show if: surrender_vehicle
+  - "I am the owner or joint owner of the vehicle.": surrender_vehicle_owner
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_vehicle
+  - "I am the primary payor on the vehicle loan.": surrender_vehicle_pays_loan
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_vehicle
+  - "I have primary possession or control of vehicle.": surrender_vehicle_has_possession
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_vehicle
+  - "I have been restricted from using the vehicle by the defendant.": surrender_vehicle_restricted_from_use
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_vehicle
+
+
+
+
   - "Order the defendant to pay my temporary living expenses": request_living_expenses
     datatype: yesno
   - note: |
@@ -1366,6 +1410,12 @@ fields:
     datatype: yesno  
   - note: If you choose custody, we will ask for the names of the children on the next screen.
     show if: request_temp_PRR
+
+
+  - "Order the defendant to complete a domestic violence accountability program approved by the Council on Domestic Violence": request_DV_program
+    datatype: yesno
+
+  
     
   - "I want to ask for something else. (You can write what you want on an upcoming screen.)": other_request
     datatype: yesno
