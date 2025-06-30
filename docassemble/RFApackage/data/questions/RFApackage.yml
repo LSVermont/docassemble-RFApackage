@@ -1321,7 +1321,9 @@ fields:
     datatype: yesno
     css class: indent-me
     show if: surrender_plaintiffs_documents
-
+  - note: |
+      ---
+    show if: surrender_plaintiffs_documents
   
   - "Order me to get temporary possession of a car/truck/vehicle": surrender_vehicle
     datatype: yesno
@@ -1345,7 +1347,9 @@ fields:
     datatype: yesno
     css class: indent-me
     show if: surrender_vehicle
-
+  - note: |
+      ---
+    show if: surrender_vehicle
 
 
 
@@ -1423,21 +1427,27 @@ fields:
 validation code: |
   
   if request_not_abuse and not (request_not_abuse_users1 or request_not_abuse_children ):
-        validation_error("Please answer at least one of the options.")
+        validation_error("Please select at least one of the options.")
         
   if request_no_stalking_assault and not (request_no_stalking or request_no_assault or request_no_assault_users1 or request_no_assault_children):
-        validation_error("Please answer at least one of the options.")
+        validation_error("Please select at least one of the options.")
+
+  if surrender_plaintiffs_documents and not (surrender_plaintiffs_documents_users1 or surrender_plaintiffs_documents_children):
+        validation_error("Please select at least one of the options.")
+
+  if surrender_vehicle and not (surrender_vehicle_owner or surrender_vehicle_pays_loan or surrender_vehicle_has_possession or surrender_vehicle_restricted_from_use):
+        validation_error("Please select at least one of the options.")
   
   if request_no_pet_harm and not (request_no_pet_users1 or request_no_pet_children or request_control_of_pet):
-        validation_error("Please answer at least one of the options.") 
+        validation_error("Please select at least one of the options.") 
         
   if request_stay_away and request_stay_away_feet and not (request_stay_away_users1 or request_stay_away_children):
-        validation_error("Please answer at least one of the options.")
+        validation_error("Please select at least one of the options.")
         
   if request_no_contact and not (request_no_contact_users1 or request_no_contact_children):
-        validation_error("Please answer at least one of the options.") 
+        validation_error("Please select at least one of the options.") 
         
-  if not (request_not_abuse or request_no_stalking_assault or request_leave or request_no_firearms or request_surrender_firearms or request_living_expenses or request_child_support or request_no_pet_harm or request_stay_away or request_no_contact or other_request or request_temp_PRR):
+  if not (request_not_abuse or request_no_stalking_assault or request_leave or request_no_firearms or request_surrender_firearms or request_living_expenses or request_child_support or surrender_plaintiffs_documents or surrender_vehicle or request_no_pet_harm or request_stay_away or request_no_contact or other_request or request_temp_PRR):
     validation_error("Please select at least one option.")
 ---
 code: |
