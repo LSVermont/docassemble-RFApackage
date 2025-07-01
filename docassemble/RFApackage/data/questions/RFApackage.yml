@@ -3441,6 +3441,15 @@ attachment:
           % if children[2].custody_wanted:
           ${ children[2].relationship_OP }
           % endif
+      - "surrender_plaintiffs_documents": ${ surrender_plaintiffs_documents }
+      - "surrender_plaintiffs_documents_users1": ${ surrender_plaintiffs_documents_users1 }
+      - "surrender_plaintiffs_documents_children": ${ surrender_plaintiffs_documents_children }
+      - "surrender_vehicle": ${ surrender_vehicle }
+      - "surrender_vehicle_owner": ${ surrender_vehicle_owner }
+      - "surrender_vehicle_pays_loan": ${ surrender_vehicle_pays_loan }
+      - "surrender_vehicle_has_possession": ${ surrender_vehicle_has_possession }
+      - "surrender_vehicle_restricted_from_use": ${ surrender_vehicle_restricted_from_use }
+      - "request_DV_program": ${ request_DV_program }
       - "request_other_description": ${ request_other_description }
       - "request_other": ${ other_request }
       - "request_all_emergency": ${ request_all_emergency }
