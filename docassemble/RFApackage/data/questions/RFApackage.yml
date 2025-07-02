@@ -179,9 +179,6 @@ code: |
   user_role = "plaintiff"
   user_ask_role = "plaintiff"
   nav.set_section("screening")
-  
-
-  request_not_abuse
 
   
   ##initial_screening_questions##
@@ -1331,7 +1328,7 @@ fields:
   - "Order me to get temporary possession of a car/truck/vehicle": surrender_vehicle
     datatype: yesno
   - note: |
-      **At least one of the following must be true.** Check all that apply.:
+      In an RFA, the judge can order that you get to keep the vehicle temporarily. This does not change who legally owns the car or who is responsible for payments. It does not stop any lender from repossessing the vehicle. Talk to a lawyer if you are worried about the ownership of the vehicle. **At least one of the following must be true.** Check all that apply.:
     css class: indent-me
     show if: surrender_vehicle
   - "I am the owner or joint owner of the vehicle.": surrender_vehicle_owner

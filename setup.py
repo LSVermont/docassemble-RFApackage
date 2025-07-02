@@ -53,7 +53,7 @@ setup(name='docassemble.RFApackage',
       license='The MIT License',
       url='https://VTLawHelp.org',
       packages=find_namespace_packages(),
-      install_requires=['docassemble.ALToolbox>=0.11.3', 'docassemble.AssemblyLine>=3.4.0', 'docassemble.GithubFeedbackForm>=0.5.1', 'docassemble.VTFeedback'],
+      install_requires=['docassemble.ALToolbox>=0.11.3', 'docassemble.AssemblyLine>=3.4.0', 'docassemble.GithubFeedbackForm>=0.5.2', 'docassemble.VTFeedback'],
       zip_safe=False,
       package_data=find_package_data(where='docassemble/RFApackage/', package='docassemble.RFApackage'),
      )
