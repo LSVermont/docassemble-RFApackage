@@ -1,3 +1,4 @@
+# This an updated version for July 1, 2025 due to law changes and Judiciary form changes.
 # This interview does not make use of VTSharedYMLFile because that shared file was made after this interview went live.
 ---
 include:
@@ -164,6 +165,9 @@ objects:
   - other_parties: ALPeopleList.using(ask_number=True,target_number=1)
   - children: ALPeopleList.using(ask_number=True,complete_attribute="complete")
 ---
+
+
+
 #####################################################################
 #################### INTERVIEW ORDER #####################
 comment: |
@@ -175,7 +179,7 @@ code: |
   user_role = "plaintiff"
   user_ask_role = "plaintiff"
   nav.set_section("screening")
-  
+
   
   ##initial_screening_questions##
   what_want_to_do
@@ -991,7 +995,7 @@ fields:
     datatype: yesno
   - "The defendant placed you and/or them in fear of imminent serious physical harm": recent_incident_fear
     datatype: yesno
-  - "The defendant abused the child/children -- meaning they physically injured or otherwise treated the child(ren) in a manner which placed child(ren's) life, health, development or welfare in jeopardy.": recent_incident_abused
+  - "The defendant abused the child/children -- meaning they physically injured or otherwise treated the child(ren) in a manner which placed child(ren's) life, health, development or welfare in jeopardy. See the definition of child abuse in Vermont law: [33 V.S.A. § 4912(1).](https://legislature.vermont.gov/statutes/section/33/049/04912)": recent_incident_abused
     datatype: yesno
   - "The defendant stalked you and/or the child/children. Stalking is defined in Vermont law here: [12 V.S.A 5131(6)](https://legislature.vermont.gov/statutes/section/12/178/05131)": recent_incident_stalked
     datatype: yesno
@@ -1018,7 +1022,7 @@ fields:
   - note: |
       ---
     show if: recent_incident_stalked
-  - "The defendant sexually assaulted you and/or the child/children. Sexual assault is defined in Vermont law here: [15 V.S.A 5131(5)](https://legislature.vermont.gov/statutes/section/12/178/05131)": recent_incident_assault
+  - "The defendant sexually assaulted you and/or the child/children. Sexual assault is defined in Vermont law here: [15 V.S.A 5131(5)] (https://legislature.vermont.gov/statutes/section/12/178/05131)": recent_incident_assault
     datatype: yesno
   - "The defendant sexually assault you": recent_incident_assault_users1
     datatype: yesnoradio
@@ -1305,6 +1309,50 @@ fields:
     datatype: yesno
   - "Order the defendant to surrender immediately to law enforcement all guns/firearms that they own, possess or control": request_surrender_firearms
     datatype: yesno
+
+  
+  - "Order the defendant to return any personal documents in their possession that pertain me and/or my children. (Examples: immigration documents, birth certificates and identification cards.)": surrender_plaintiffs_documents
+    datatype: yesno
+  - "I want my documents.": surrender_plaintiffs_documents_users1
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_plaintiffs_documents
+  - "I want the child's or children's documents.": surrender_plaintiffs_documents_children
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_plaintiffs_documents
+  - note: |
+      ---
+    show if: surrender_plaintiffs_documents
+  
+  - "Order me to get temporary possession of a car/truck/vehicle": surrender_vehicle
+    datatype: yesno
+  - note: |
+      In an RFA, the judge can order that you get to keep the vehicle temporarily. This does not change who legally owns the car or who is responsible for payments. It does not stop any lender from repossessing the vehicle. Talk to a lawyer if you are worried about the ownership of the vehicle. **At least one of the following must be true.** Check all that apply.:
+    css class: indent-me
+    show if: surrender_vehicle
+  - "I am the owner or joint owner of the vehicle.": surrender_vehicle_owner
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_vehicle
+  - "I am the primary payor on the vehicle loan.": surrender_vehicle_pays_loan
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_vehicle
+  - "I have primary possession or control of vehicle.": surrender_vehicle_has_possession
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_vehicle
+  - "I have been restricted from using the vehicle by the defendant.": surrender_vehicle_restricted_from_use
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_vehicle
+  - note: |
+      ---
+    show if: surrender_vehicle
+
+
+
   - "Order the defendant to pay my temporary living expenses": request_living_expenses
     datatype: yesno
   - note: |
@@ -1366,6 +1414,12 @@ fields:
     datatype: yesno  
   - note: If you choose custody, we will ask for the names of the children on the next screen.
     show if: request_temp_PRR
+
+
+  - "Order the defendant to complete a domestic violence accountability program approved by the Council on Domestic Violence": request_DV_program
+    datatype: yesno
+
+  
     
   - "I want to ask for something else. (You can write what you want on an upcoming screen.)": other_request
     datatype: yesno
@@ -1373,21 +1427,27 @@ fields:
 validation code: |
   
   if request_not_abuse and not (request_not_abuse_users1 or request_not_abuse_children ):
-        validation_error("Please answer at least one of the options.")
+        validation_error("Please select at least one of the options.")
         
   if request_no_stalking_assault and not (request_no_stalking or request_no_assault or request_no_assault_users1 or request_no_assault_children):
-        validation_error("Please answer at least one of the options.")
+        validation_error("Please select at least one of the options.")
+
+  if surrender_plaintiffs_documents and not (surrender_plaintiffs_documents_users1 or surrender_plaintiffs_documents_children):
+        validation_error("Please select at least one of the options.")
+
+  if surrender_vehicle and not (surrender_vehicle_owner or surrender_vehicle_pays_loan or surrender_vehicle_has_possession or surrender_vehicle_restricted_from_use):
+        validation_error("Please select at least one of the options.")
   
   if request_no_pet_harm and not (request_no_pet_users1 or request_no_pet_children or request_control_of_pet):
-        validation_error("Please answer at least one of the options.") 
+        validation_error("Please select at least one of the options.") 
         
   if request_stay_away and request_stay_away_feet and not (request_stay_away_users1 or request_stay_away_children):
-        validation_error("Please answer at least one of the options.")
+        validation_error("Please select at least one of the options.")
         
   if request_no_contact and not (request_no_contact_users1 or request_no_contact_children):
-        validation_error("Please answer at least one of the options.") 
+        validation_error("Please select at least one of the options.") 
         
-  if not (request_not_abuse or request_no_stalking_assault or request_leave or request_no_firearms or request_surrender_firearms or request_living_expenses or request_child_support or request_no_pet_harm or request_stay_away or request_no_contact or other_request or request_temp_PRR):
+  if not (request_not_abuse or request_no_stalking_assault or request_leave or request_no_firearms or request_surrender_firearms or request_living_expenses or request_child_support or surrender_plaintiffs_documents or surrender_vehicle or request_no_pet_harm or request_stay_away or request_no_contact or other_request or request_temp_PRR or request_DV_program):
     validation_error("Please select at least one option.")
 ---
 code: |
@@ -2784,6 +2844,36 @@ review:
       % if request_surrender_firearms:
       Order the defendant to surrender immediately to law enforcement all guns/firearms that they own, possess or control: **${ yesno(request_surrender_firearms) }**
       % endif
+
+      % if surrender_plaintiffs_documents:
+      Order the defendant to return any personal documents in their possession that pertain me and/or my children. (Examples: immigration documents, birth certificates and identification cards.): **${ yesno(surrender_plaintiffs_documents) }**
+      % endif
+      
+      % if surrender_plaintiffs_documents_users1:
+      - You want your documents.": **${ yesno(surrender_plaintiffs_documents_users1) }**
+      % endif
+      % if surrender_plaintiffs_documents_children:
+      - You want the child's or children's documents.": **${ yesno(surrender_plaintiffs_documents_children) }**
+      % endif
+
+      % if surrender_vehicle:
+      Order temporary possession of a car/truck/vehicle to you: **${ yesno(surrender_vehicle) }**
+      % endif
+
+      % if surrender_vehicle_owner:
+      - I am the owner or joint owner of the vehicle.: **${ yesno(surrender_vehicle_owner) }**
+      % endif
+      % if surrender_vehicle_pays_loan:
+      - I am the primary payor on the vehicle loan.: **${ yesno(surrender_vehicle_pays_loan) }**
+      % endif
+      % if surrender_vehicle_has_possession:
+      - I have primary possession or control of vehicle.": **${ yesno(surrender_vehicle_has_possession) }**
+      % endif
+      % if surrender_vehicle_restricted_from_use:
+      - I have been restricted from using the vehicle by the defendant.: **${ yesno(surrender_vehicle_restricted_from_use) }**
+      % endif
+
+  
       
       % if request_living_expenses:
       Order the defendant to pay your temporary living expenses: **${ yesno(request_living_expenses) }**
@@ -2831,6 +2921,10 @@ review:
       % if request_no_contact_children:
       - You want the order to protect your child/children from this: **${ yesno(request_no_contact_children) }**
       % endif
+      % endif
+
+      % if request_DV_program:
+      Order the defendant to complete a domestic violence accountability program approved by the Council on Domestic Violence: **${ yesno(request_DV_program) }**
       % endif
       
       % if other_request:
@@ -3344,6 +3438,15 @@ attachment:
           % if children[2].custody_wanted:
           ${ children[2].relationship_OP }
           % endif
+      - "surrender_plaintiffs_documents": ${ surrender_plaintiffs_documents }
+      - "surrender_plaintiffs_documents_users1": ${ surrender_plaintiffs_documents_users1 }
+      - "surrender_plaintiffs_documents_children": ${ surrender_plaintiffs_documents_children }
+      - "surrender_vehicle": ${ surrender_vehicle }
+      - "surrender_vehicle_owner": ${ surrender_vehicle_owner }
+      - "surrender_vehicle_pays_loan": ${ surrender_vehicle_pays_loan }
+      - "surrender_vehicle_has_possession": ${ surrender_vehicle_has_possession }
+      - "surrender_vehicle_restricted_from_use": ${ surrender_vehicle_restricted_from_use }
+      - "request_DV_program": ${ request_DV_program }
       - "request_other_description": ${ request_other_description }
       - "request_other": ${ other_request }
       - "request_all_emergency": ${ request_all_emergency }
