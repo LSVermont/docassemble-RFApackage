@@ -100,7 +100,7 @@ data:
   short title: >-
     RFA package
   description: |-
-    Ask the court for a Relief from Abuse (RFA) order. This tool will help you complete four required forms. Based on paper versions of forms 400-00151 (7/2024) and 400-00150C (7/2024).
+    Ask the court for a Relief from Abuse (RFA) order. This tool will help you complete four required forms. Based on paper versions of forms 400-00150C (7/2025) and 400-00151 (7/2024).
   original_form: >-
     https://vtlawhelp.org/roadmap/relief-from-abuse/step-3
   allowed courts: 
@@ -3208,7 +3208,7 @@ objects:
   - RFApackage_Post_interview_instructions: ALDocument.using(title="NEXT STEPS - Instructions for filing these forms with the court", filename="RFApackage_next_steps.docx", enabled=True, has_addendum=False)
   - RFAcomplaint: ALDocument.using(title="RFA Complaint", filename="1_RFA-complaint", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFAaffidavit: ALDocument.using(title="RFA Affidavit", filename="3_RFA-affidavit", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - RFAconfidentialcontactinfo: ALDocument.using(title="Confidential Contact Info", filename="4_RFA-confidential-contact-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - RFAconfidentialcontactinfo: ALDocument.using(title="Address for Notification", filename="4_RFA-confidential-contact-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFAserviceinfo: ALDocument.using(title="Protection Order Service Info", filename="2_RFA-service-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 
 ---
@@ -3571,8 +3571,6 @@ attachment:
   skip undefined: True
   pdf template file: 4_RFA-confidential-contact-info.pdf
   fields:
-      - "docket_number__1": ${ docket_number }
-      - "docket_number__2": ${ docket_number }
       - "docket_number": ${ docket_number }
       - "trial_court_county": ${ trial_court.address.county }
       - "users1_name": ${ users[0] }
@@ -3588,6 +3586,7 @@ attachment:
       - "share_contact_no": ${ not share_contact }
       - "signature_date": ${ format_date(signature_date, format='M/d/yyyy') }
       - "users1_signature": ${ users[0].signature_if_final(i) }
+      - "users1_name_printed": ${ users[0] }
 ---
 attachment:
   name: 2 RFA-service-info
