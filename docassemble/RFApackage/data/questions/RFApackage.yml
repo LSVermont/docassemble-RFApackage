@@ -45,6 +45,8 @@ metadata:
   help_page_title: Relief from Abuse (RFA) Roadmap
   LIST_topics:
     - FA-07-00-00-00
+  tags:
+    - FA-07-00-00-00
   jurisdiction: NAM-US-US+VT
   original_form: https://vtlawhelp.org/roadmap/relief-from-abuse/step-3
   original_form_published_on: 2024-07-01
