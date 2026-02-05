@@ -331,7 +331,7 @@ sections:
   - review_RFApackage: <i class="fa-solid fa-pencil"></i> <u>Edit your answers</u>
   - sign: Signature
   - get_docs: Get your documents
-#progressive: False
+progressive: False
 ##################
 ---
 code: |
