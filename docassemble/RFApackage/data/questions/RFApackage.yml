@@ -26,13 +26,58 @@ metadata:
     Asking for a Relief from Abuse order (RFA) in Vermont
   short title: |
     Relief from Abuse (RFA)
-  tags:
-    - FA-07-00-00-00
   authors:
-    - VTCourtForms by Legal Services Vermont
+    - VTCourtForms by Legal Services Vermont 
   # Added post: for ALKiln tests
   post: |
     <div data-variable="${ encode_name(str( user_info().variable )) }" id="trigger" aria-hidden="true" style="display: none;"></div>
+  description: |
+    Ask the court for a Relief from Abuse (RFA) order. This tool will help you complete four required forms. Based on paper versions of Vermont Judiciary forms 400-00150C (7/2025), 400-00151 (7/2024), 400-00156 (6/2025) and Department of Public Safety form DPS-132.
+  integrated_efiling: False
+  integrated_email_filing: False
+  landing_page_url: https://vtlawhelp.org/roadmap/relief-from-abuse/step-3
+  maturity: production
+  estimated_completion_minutes: 60
+  estimated_completion_delta: 15
+  languages:
+    - en
+  help_page_url: https://vtlawhelp.org/roadmap/relief-from-abuse/step-1
+  help_page_title: Relief from Abuse (RFA) Roadmap
+  LIST_topics:
+    - FA-07-00-00-00
+  jurisdiction: NAM-US-US+VT
+  original_form: https://vtlawhelp.org/roadmap/relief-from-abuse/step-3
+  original_form_published_on: 2024-07-01
+  review_date: 2027-01-01
+  form_titles:
+    - Relief from Abuse Complaint and Affidavit, Litigant's Address for Notification, and Protection Order Service Information
+  form_numbers:
+    - 400-00150C
+    - 400-00151
+    - 400-00156
+    - DPS-132
+  fees:
+    - Filing fee: 0.00
+---
+mandatory: True
+comment: |
+  Global interview metadata
+variable name: interview_metadata["RFApackage"]
+data:
+  al_weaver_version: "1.9.0"
+  generated on: "2023-03-22"
+  title: >-
+    Relief from Abuse order
+  short title: >-
+    RFA package
+  description: |-
+    Ask the court for a Relief from Abuse (RFA) order. This tool will help you complete four required forms. Based on paper versions of Vermont Judiciary forms 400-00150C (7/2025), 400-00151 (7/2024), 400-00156 (6/2025) and Department of Public Safety form DPS-132.
+  allowed courts: 
+    - "Family Court"
+  categories:
+    - "FA-07-00-00-00"
+  typical role: "plaintiff"
+  generate download screen: True
 ---
 reconsider: True
 code: |
@@ -88,27 +133,7 @@ subquestion: |
   Remember to come back to this screen to continue.
 continue button field: RFApackage_preview_question
 ---
-mandatory: True
-comment: |
-  Global interview metadata
-variable name: interview_metadata["RFApackage"]
-data:
-  al_weaver_version: "1.9.0"
-  generated on: "2023-03-22"
-  title: >-
-    Relief from Abuse order
-  short title: >-
-    RFA package
-  description: |-
-    Ask the court for a Relief from Abuse (RFA) order. This tool will help you complete four required forms. Based on paper versions of forms 400-00150C (7/2025) and 400-00151 (7/2024).
-  original_form: >-
-    https://vtlawhelp.org/roadmap/relief-from-abuse/step-3
-  allowed courts: 
-    - "Family Court"
-  categories:
-    - "FA-07-00-00-00"
-  typical role: "plaintiff"
-  generate download screen: True
+
 ---
 code: |
   AL_ORGANIZATION_TITLE = "VTCourtForms"
