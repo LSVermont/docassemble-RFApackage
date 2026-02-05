@@ -128,7 +128,7 @@ id: edit answers screen
 question: |
   Edit your answers
 subquestion: |
-  ${ action_button_html(url_action('review_RFApackage'), label='Edit answers', color='info') }
+  ${ action_button_html(url_action('review_RFApackage'), label='<i class="fa-solid fa-pencil"></i> Edit your answers', color='info') }
   
   Remember to come back to this screen to continue.
 continue button field: RFApackage_preview_question
@@ -326,7 +326,7 @@ sections:
   - ask_weapons: Weapons
   - order: What you want in the RFA order
   - service: Info for law enforcement to serve the order
-  - review_RFApackage: Edit your answers
+  - review_RFApackage: <i class="fa-solid fa-pencil"></i> <u>Edit your answers</u>
   - sign: Signature
   - get_docs: Get your documents
 #progressive: False
@@ -2040,7 +2040,7 @@ subquestion: |
 
   Tap the "Edit your answers" button to make changes.
 
-  ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
+  ${ action_button_html(url_action('review_RFApackage'), label='<i class="fa-solid fa-pencil"></i> Edit your answers', color='info') }
   
   **Tap Next to choose how to sign your forms.**
   
@@ -3193,8 +3193,7 @@ subquestion: |
   
   * working with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get advice and support during the RFA process.
   
-  ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='info') }
-
+  ${ action_button_html(url_action('review_RFApackage'), label='<i class="fa-solid fa-pencil"></i> Edit your answers', color='info') }
   <hr>
   
   <h4 style="margin-bottom: 18px;">Documents to download</h4>
