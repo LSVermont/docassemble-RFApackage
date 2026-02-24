@@ -1,3 +1,5 @@
+#THIS IS THE VERSION where I have pulled the current, active RFA package and I am incorporating the changes I made elsewhere to include RFA on behalf of a minor.
+
 # This an updated version for July 1, 2025 due to law changes and Judiciary form changes.
 # This interview does not make use of VTSharedYMLFile because that shared file was made after this interview went live.
 ---
@@ -205,99 +207,152 @@ code: |
   allowed_courts = interview_metadata["RFApackage"]["allowed courts"]
   user_role = "plaintiff"
   user_ask_role = "plaintiff"
-  nav.set_section("screening")
-
-  
-  ##initial_screening_questions##
-  what_want_to_do
-  if what_want_to_do == 'extend_or_change':
-    initial_screening_questions_1_exit
-    
-  relationship_question
-  if relationship_question == 'Family member (may include spouse, ex-spouse, parent, aunt/uncle, cousin)':
-    if not sixteen_or_older:
-      initial_screening_questions_2_exit
-  if relationship_question == 'Current or former sexual partner':
-    if not sixteen_or_older:
-      initial_screening_questions_2_exit
-      
-  if relationship_question == 'Someone who lives with you or used to live with you':
-    if not sixteen_or_older:
-      initial_screening_questions_2_exit
-  if relationship_question == 'None of the above':
-    initial_screening_questions_2_exit_a
-    
-  who_needs_protection  
-  if who_needs_protection == 'I’m asking for an RFA order only for a child or children':
-    initial_screening_questions_3_exit
-      
-  plaintiff_lives_in_vermont
-  if plaintiff_lives_in_vermont:
-    defendant_lives_in_vermont
-    if defendant_lives_in_vermont:
-      initial_screening_questions_5_continue
-    elif defendant_lives_in_vermont is None:
-      initial_screening_questions_5_important_note
-    else:
-      initial_screening_questions_5_important_note_b
-      
-  if not plaintiff_lives_in_vermont:
-    defendant_lives_in_vermont
-    if defendant_lives_in_vermont:
-      initial_screening_questions_5_continue
-    elif defendant_lives_in_vermont is None:
-      initial_screening_questions_5_important_note
-    else:
-      initial_screening_questions_5_exit_a
-
-  
-  #main questions
   trial_court
+  docket_number
   set_progress(8)
-  nav.set_section("about")
-  users.gather()
-  set_parts(subtitle=str(users))
-  users[0].name.first
-  users[0].birthdate
-  users[0].address.address
-  ask_if_user_gets_reach_up
-  users[0].phone_number
-  users[0].email
-  set_progress(16)
-  share_contact
-  children.gather()
-  set_progress(24)
-  #set_parts(subtitle=str(other_parties))
-  nav.set_section('defendant')
-  ex_spouse
-  other_parties.gather()
-  set_progress(32)
-  other_parties[0].birth_month
-  ask_defendant_address
-  other_parties[0].phone_number
-  more_about_defendant
-  nav.set_section('incidents')
-  recent_incident_date
-  set_progress(40)
-  if not recent_incident_most_serious:
+  
+  who_needs_protection  
+  
+  ##order on behalf of child(ren) only##
+  if who_needs_protection == 'order_obo_child':
+    nav.set_section("screening")
+    what_want_to_do
+    if what_want_to_do == 'extend_or_change':
+      initial_screening_questions_1_exit
+    plaintiff_lives_in_vermont
+    if plaintiff_lives_in_vermont:
+      defendant_lives_in_vermont
+      if defendant_lives_in_vermont:
+        initial_screening_questions_5_continue
+      elif defendant_lives_in_vermont is None:
+        initial_screening_questions_5_important_note
+      else:
+        initial_screening_questions_5_exit_b
+        
+    if not plaintiff_lives_in_vermont:
+      defendant_lives_in_vermont
+      if defendant_lives_in_vermont:
+        initial_screening_questions_5_continue
+      elif defendant_lives_in_vermont is None:
+        initial_screening_questions_5_important_note
+      else:
+        initial_screening_questions_5_exit_a
+    nav.set_section("about")
+    users.gather()
+    users[0].name.first
+    users[0].birthdate
+    users[0].address.address
+    users[0].phone_number
+    nav.set_section("kids")
+    children.gather()
+    children[0].name.first
+    children[0].birthdate
+    other_parties.gather()
+    other_parties[0].name.first
+    other_parties_estimated_age
+    other_parties[0].address.address
+    parent_guardian
+    more_about_situation
+    if children1_no_shelter:
+      rent_or_own
+    set_progress(12)
+
     serious_incident_date
-  other_incident
-  set_progress(50)
-  danger_more_abuse
-  nav.set_section('ask_weapons')
-  weapons.gather()
-  used_firearm
-  nav.set_section('order')
-  set_progress(60)
-  if users1_no_shelter: 
-    rent_or_own
-  request_not_abuse
-  if request_temp_PRR:
-    get_kids_relationships
-  if other_request:
-    request_other_description
-  request_all_emergency
-  set_progress(70)
+
+    OBO_danger_more_abuse
+    if OBO_danger_more_abuse:
+      get_kids_in_danger
+    request_not_abuse_kids
+    if request_temp_PRR:
+      get_kids_relationships
+      other_children_PRR
+
+
+
+  else:
+    ##order for self or self and kids##
+    nav.set_section("screening")
+    what_want_to_do
+    if what_want_to_do == 'extend_or_change':
+      initial_screening_questions_1_exit
+      
+    relationship_question
+    if relationship_question == 'Family member (may include spouse, ex-spouse, parent, aunt/uncle, cousin)':
+      if not sixteen_or_older:
+        initial_screening_questions_2_exit
+    if relationship_question == 'Current or former sexual partner':
+      if not sixteen_or_older:
+        initial_screening_questions_2_exit
+        
+    if relationship_question == 'Someone who lives with you or used to live with you':
+      if not sixteen_or_older:
+        initial_screening_questions_2_exit
+    if relationship_question == 'None of the above':
+      initial_screening_questions_2_exit_a
+          
+    plaintiff_lives_in_vermont
+    if plaintiff_lives_in_vermont:
+      defendant_lives_in_vermont
+      if defendant_lives_in_vermont:
+        initial_screening_questions_5_continue
+      elif defendant_lives_in_vermont is None:
+        initial_screening_questions_5_important_note
+      else:
+        initial_screening_questions_5_exit_b
+        
+    if not plaintiff_lives_in_vermont:
+      defendant_lives_in_vermont
+      if defendant_lives_in_vermont:
+        initial_screening_questions_5_continue
+      elif defendant_lives_in_vermont is None:
+        initial_screening_questions_5_important_note
+      else:
+        initial_screening_questions_5_exit_a
+    nav.set_section("about")
+    users.gather()
+    set_parts(subtitle=str(users))
+    users[0].name.first
+    users[0].birthdate
+    users[0].address.address
+    ask_if_user_gets_reach_up
+    users[0].phone_number
+    users[0].email
+    set_progress(16)
+    share_contact
+    children.gather()
+    set_progress(24)
+    nav.set_section('defendant')
+    ex_spouse
+    other_parties.gather()
+    set_progress(32)
+    other_parties_estimated_age
+    ask_defendant_address
+    other_parties[0].phone_number
+    more_about_defendant
+    nav.set_section('incidents')
+    recent_incident_date
+    set_progress(40)
+    if not recent_incident_most_serious:
+      serious_incident_date
+    other_incident
+    set_progress(50)
+    danger_more_abuse
+    nav.set_section('ask_weapons')
+    weapons.gather()
+    used_firearm
+    nav.set_section('order')
+    set_progress(60)
+    if users1_no_shelter: 
+      rent_or_own
+    request_not_abuse
+    if request_temp_PRR:
+      get_kids_relationships
+    if other_request:
+      request_other_description
+    set_progress(70)
+  
+  request_all_emergency  
+  
   existing_order
   nav.set_section('service')
   details_for_law_enforcement
@@ -323,6 +378,7 @@ sections:
   - intro: Introduction
   - screening: Is this tool right for you
   - about: About you
+  - kids: About the children
   - defendant: About the defendant
   - incidents: What happened
   - ask_weapons: Weapons
@@ -365,8 +421,114 @@ code: |
   nav.set_section('get_docs')
   RFApackage_download
 ---
+
+
+#####QUESTIONS AND CODE####  
+
+###ADDITIONS TO MERGE IN OBO CHILD COMPLAINT###
+---
+mandatory: True
+code: |
+  if who_needs_protection == 'order_obo_child':
+    RFAcomplaintonbehalfofminor_attachment.enabled = True
+    RFAcomplaint.enabled = False
+  else:
+    RFAcomplaintonbehalfofminor_attachment = False
+    RFAcomplaint.enabled = True
+---
+id: OBO CHILD how children related to you and defendant
+question: |
+  Relationship to the child or children
+fields:
+  - note: |
+      **Your relationship to them**
+  - "In a word or two, what is your relationship to the child or children?": users1_relationship_to_children1
+    maxlength: 24
+  - note: |
+      **Defendant's relationship to them**
+      
+      Now choose the best description of the defendant's relationship to the child or children. The "defendant" is the person who is abusing the child/children.
+    
+      Choose one.
+  
+  - "Parent or guardian": parent_guardian
+    datatype: yesno
+  - "Family member": family_member
+    datatype: yesno
+  - "Family member description": family_member_description
+    maxlength: 24
+    show if: family_member
+  - "Person who lives or has lived in the household with the child": live_together
+    datatype: yesno
+  - "Child and defendant have or have had a dating relationship": dating
+    datatype: yesno
+  - "Other relationship": other_relationship
+    datatype: yesno
+  - "Other relationship description": other_relationship_description
+    maxlength: 32
+    show if: other_relationship
+validation code: |
+  if [parent_guardian, family_member, live_together, dating, other_relationship].count(True) == 0:
+    validation_error("Please select one option.")
+  if [parent_guardian, family_member, live_together, dating, other_relationship].count(True) > 1:
+    validation_error("Please select one option.")
+---
+id: OBO more about the situation    
+continue button field: more_about_situation
+question: |
+  More about the situation
+fields:    
+  - note: |
+      Select all that apply to this situation.
+  - "Defendant is incarcerated and has been convicted of one of the crimes specified in 15 V.S.A. §1103(c)(1)(B) ${ display_template(list_of_crimes, scrollable=True, collapse=True) }": incarcerated
+    datatype: yesno
+  - "Defendant has used, displayed, or threatened to use a firearm against the children or against a family member.": used_firearm
+    datatype: yesno
+  - "The child or children will be forced to leave their current home and will be without shelter unless defendant is ordered to leave the residence.": children1_no_shelter
+    datatype: yesno
+  - note: |
+      We'll ask you about that home on the next screen.
+    show if: children1_no_shelter
+---
+code: |
+  for child in children: 
+    child.in_danger
+    #child.relationship_users1
+    #child.relationship_OP
+  get_kids_in_danger = True
+---
+id: OBO danger of more abuse
+question: |
+  Danger of more abuse
+subquestion: |
+  If you want to get a court order that starts right way, answer **Yes** to this question.
+fields:
+  - "Is there immediate danger of more abuse from the defendant?": OBO_danger_more_abuse
+    datatype: yesnoradio
+---
+id: OBO children in danger relationships
+generic object: Individual     
+question: |
+  About ${x.name.first}
+fields:
+  - Is ${x.name.first} in danger of more abuse?: x.in_danger
+    datatype: yesnoradio
+  - "In 1 or 2 words, what is ${x.name.first}'s relationship to you?": x.relationship_users1
+    maxlength: 22
+    show if: x.in_danger
+  - "What is ${x.name.first}'s relationship to the defendant?": x.relationship_OP
+    maxlength: 22
+    show if: x.in_danger
+---
+
+
+
+
+
+
+
+---
 id: basic questions intro screen
-#decoration: form-lineal
 question: |
   **${interview_short_title} in Vermont**
 subquestion: |  
@@ -504,16 +666,18 @@ continue button field: initial_screening_questions_2_exit_a
 buttons:
   - DELETE your answers: restart
 ---
-id: initial_screening_questions_3
+id: who needs protecton from abuse
 question: |
-  See if this tool is right for your situation
+  Who needs protection
 fields:
   - "Who needs protection from abuse?": who_needs_protection
     input type: radio
     choices:
-      - I need this order to protect me
-      - I need this order to protect me and my child or children
-      - I’m asking for an RFA order only for a child or children
+      - "I need this order to protect **me only**": order_for_me
+      - "I need this order to protect **me and my child or children**": order_for_both
+      - "I’m asking for an RFA order **only on behalf of a child or children** under the age of 18": order_obo_child
+  - note: |
+      Next we'll ask about you, the person filling out this form. You are called the "petitioner" or "plaintiff."
 ---
 id: initial_screening_questions_3_exit
 question: |
@@ -542,7 +706,7 @@ question: |
 fields:
   - "Does the defendant live in Vermont?": defendant_lives_in_vermont
     datatype: yesnomaybe
-  - note: The "defendant" is the person who is abusing you.
+  - note: The "defendant" is the person who is abusing you or the child/children.
 ---
 id: initial_screening_questions_5_continue
 question: |
@@ -615,7 +779,7 @@ fields:
       It can be:
       
       * the county you live in, or
-      * the Vermont county you left when you were fleeing from abuse, or
+      * the Vermont county you left if you were fleeing from abuse, or
       * the county the other person lives in (the "defendant").
       
       While a RFA order is in effect, it is good **anywhere** in Vermont and the United States.
@@ -739,19 +903,34 @@ fields:
   - "I consent to the release of my address and contact information.": share_contact
     datatype: yesnoradio
 ---
+
+
+---
+#code: |
+#  if who_needs_protection == 'order_obo_child':
+#    children.there_are_any == True
+#  if who_needs_protection == 'order_for_both':
+#    children.there_are_any == True
+---
+
+
 id: how many children
 question: |
-  % if al_form_type in ['starts_case','existing_case','appeal']:
-  Are any children involved in this case? 
-  % else:
-  Are any children involved in this matter?
-  % endif  
+  Children involved in this case
 fields:
   - note: |
+     % if who_needs_protection == 'order_obo_child':
+      Please confirm that children are involved.
+      % elif who_needs_protection == 'order_obo_child':
+      Please confirm that children are involved.
+      % else:
+      Are there any children involved in this case?
+      % endif
+     
       Include children under 18 who have been affected by abuse. Also include children who you would like to ask for temporary custody of.
-  - no label: children.there_are_any
+  - Are children involved in this case?: children.there_are_any
     datatype: yesnoradio
-  - How many?: children.target_number
+  - How many children are involved in this case?: children.target_number
     datatype: integer
     show if: children.there_are_any
 validation code: |
@@ -797,7 +976,12 @@ sets:
 question: |
   Name of defendant
 fields:
-  - note: The "defendant" is the person who is abusing you.
+  - note: |
+      % if who_needs_protection == 'order_obo_child':
+      The "defendant" is the person who is abusing the child or children.
+      % else:
+      The "defendant" is the person who is abusing you.
+      % endif
   - First Name: other_parties[0].name.first
   - Middle Name: other_parties[0].name.middle
     required: False
@@ -1191,6 +1375,40 @@ fields:
     rows: 20
     show if: other_incident
 ---
+
+id: danger of more abuse
+question: |
+  Danger of more abuse
+subquestion: |
+  If you want to get a court order that starts right way, answer **Yes** to this question.
+fields:
+  - "Is there immediate danger of more abuse from the defendant?": danger_more_abuse
+    datatype: yesnoradio
+    
+  - "Select all that apply": danger_more_abuse_who
+    datatype: checkboxes
+    show if: danger_more_abuse
+    none of the above: False
+    minlength: 1
+    choices:
+      - "There is danger of more abuse to you": users1
+      - "There is danger of more abuse to the child/children": children
+    
+  - "Include any information not already described before. Be as specific as possible.": danger_more_abuse_why
+    input type: area
+    show if: danger_more_abuse
+    maxlength: 310
+    required: False
+---
+
+
+
+
+
+
+
+
+---
 id: Danger of more abuse
 question: |
   Danger of more abuse
@@ -1294,49 +1512,58 @@ subquestion: |
 
   I want the court to:
 fields:
-  - "Order the defendant to not abuse me or my children, and not interfere with our personal liberty": request_not_abuse
+  - "Order the defendant to not abuse the child/children and not interfere with their personal liberty": request_not_abuse_kids
     datatype: yesno
-  - "I want the order to protect me from this.": request_not_abuse_users1
-    datatype: yesno
-    css class: indent-me
-    show if: request_not_abuse
-  - "I want the order to protect my child/children from this.": request_not_abuse_children
-    datatype: yesno
-    css class: indent-me
-    show if: request_not_abuse
-  - note: |
-      ---
-    show if: request_not_abuse
-    
-  - "Order the defendant to not stalk or sexually assault me or my child/children": request_no_stalking_assault
-    datatype: yesno
-  - "I want the order to stop stalking.": request_no_stalking
-    datatype: yesno
-    css class: indent-me    
-    show if: request_no_stalking_assault
-  - "I want the order to stop sexual assault.": request_no_assault
-    datatype: yesno
-    css class: indent-me
-    show if: request_no_stalking_assault
-  - "I want the order to protect me from this.": request_no_assault_users1
-    datatype: yesno
-    css class: indent-me
-    show if: request_no_stalking_assault
-  - "I want the order to protect my child/children from this.": request_no_assault_children
-    datatype: yesno
-    css class: indent-me
-    show if: request_no_stalking_assault
-  - note: |
-      ---
-    show if: request_no_stalking_assault
-    
-  - "Order the defendant to immediately leave the residence, and to order sole possession to me": request_leave
+  - "Order the defendant to not stalk or sexually abuse the child/children": request_no_stalking_assault
+    datatype: yesno    
+  - "Order the defendant to immediately leave the residence, and to order sole possession to me as I care for the child/children": request_leave
     datatype: yesno
   - "Order the defendant not to possess or purchase guns/firearms for the duration of the order": request_no_firearms
     datatype: yesno
   - "Order the defendant to surrender immediately to law enforcement all guns/firearms that they own, possess or control": request_surrender_firearms
     datatype: yesno
+  - "Order the defendant to stop cruelly treating a pet/pets": request_no_pet_harm
+    datatype: yesno    
+  - "Order me to get temporary possession and control of a pet/pets": request_control_of_pet
+    datatype: yesno    
+  - "Order the defendant to stay a certain distance away from the child/children": request_stay_away
+    datatype: yesno
+  - "How many feet away? (300 feet is the standard stay-away order)": request_stay_away_feet
+    maxlength: 5
+    css class: indent-me
+    show if: request_stay_away    
+  - "Order the defendant to not contact the child/children in any way": request_no_contact
+    datatype: yesno    
+  - "Award temporary Parental Rights and Responsibilities (custody) of the child/children to me or someone else. (The child(ren) of you and the defendant.)": request_temp_PRR
+    datatype: yesno  
+  - note: If you choose custody, we will ask for the names of the children on the next screen.
+    show if: request_temp_PRR   
+  - "Order the defendant to have supervised contact with the child/children": request_supervised_contact
+    datatype: yesno      
+  - "Who will supervise?": supervisor1_name
+    maxlength: 5
+    css class: indent-me
+    show if: request_supervised_contact    
+  - "In what location?": supervisor1_location
+    maxlength: 5
+    css class: indent-me
+    show if: request_supervised_contact        
+  - "Order that the child/children will be picked up or dropped off at a certain supervised location": request_supervised_exchange
+    datatype: yesno      
+  - "Who will supervise?": supervisor2_name
+    maxlength: 5
+    css class: indent-me
+    show if: request_supervised_exchange    
+  - "In what location?": supervisor2_location
+    maxlength: 5
+    css class: indent-me
+    show if: request_supervised_exchange        
 
+
+
+
+
+  
   
   - "Order the defendant to return any personal documents in their possession that pertain me and/or my children. (Examples: immigration documents, birth certificates and identification cards.)": surrender_plaintiffs_documents
     datatype: yesno
@@ -1380,67 +1607,23 @@ fields:
 
 
 
+
+  
+
   - "Order the defendant to pay my temporary living expenses": request_living_expenses
     datatype: yesno
   - note: |
       Note: It would be helpful to gather copies of your utility bills, rent payments and other bills that you’d like covered. The judge may ask to see them at a hearing.
     show if: request_living_expenses
+
+  
   - "Order the defendant to pay temporary child support": request_child_support
     datatype: yesno
   - note: |
       Note: If you need help with child support, contact the [Vermont Office of Child Support](https://dcf.vermont.gov/ocs/parents) as well.
     show if: request_child_support
-  - "Order the defendant to stop cruelly treating pets": request_no_pet_harm
-    datatype: yesno
-  - "I want the order to protect the pets owned by me or the defendant.": request_no_pet_users1
-    datatype: yesno
-    css class: indent-me
-    show if: request_no_pet_harm
-  - "I want the order to protect the pets owned by my child/children.": request_no_pet_children
-    datatype: yesno
-    css class: indent-me
-    show if: request_no_pet_harm    
-  - note: |
-      ---
-    show if: request_no_pet_harm
     
-  - "Order me to get temporary possession and control of the pet(s)": request_control_of_pet
-    datatype: yesno
-  - "Order the defendant to stay a certain distance away": request_stay_away
-    datatype: yesno
-  - "How many feet away? (300 feet is the standard stay-away order)": request_stay_away_feet
-    maxlength: 5
-    css class: indent-me
-    show if: request_stay_away
-  - "I want the order to protect me from this.": request_stay_away_users1
-    datatype: yesno
-    css class: indent-me
-    show if: request_stay_away
-  - "I want the order to protect my child/children from this.": request_stay_away_children
-    datatype: yesno
-    css class: indent-me
-    show if: request_stay_away
-  - note: |
-      ---
-    show if: request_stay_away
-    
-  - "Order the defendant to not contact me or my child/children in any way": request_no_contact
-    datatype: yesno
-  - "I want the order to protect me from this.": request_no_contact_users1
-    datatype: yesno
-    css class: indent-me
-    show if: request_no_contact
-  - "I want the order to protect my child/children from this.": request_no_contact_children
-    datatype: yesno
-    css class: indent-me
-    show if: request_no_contact
-  - note: |
-      ---
-    show if: request_no_contact
-  - "Award temporary Parental Rights and Responsibilities (custody) of our child/children to me or someone else. (The child(ren) of you and the defendant.)": request_temp_PRR
-    datatype: yesno  
-  - note: If you choose custody, we will ask for the names of the children on the next screen.
-    show if: request_temp_PRR
+
 
 
   - "Order the defendant to complete a domestic violence accountability program approved by the Council on Domestic Violence": request_DV_program
@@ -1575,7 +1758,7 @@ fields:
 ---
 id: About your home continued 
 question: |
-  Tell us about your home
+  Tell us about the home
 fields:
   - "What is the address of the home?": residence_shared_address
     datatype: object_radio
@@ -3232,16 +3415,17 @@ content: |
 # ALDocument objects specify the metadata for each template
 objects:
   - RFApackage_Post_interview_instructions: ALDocument.using(title="NEXT STEPS - Instructions for filing these forms with the court", filename="RFApackage_next_steps.docx", enabled=True, has_addendum=False)
-  - RFAcomplaint: ALDocument.using(title="RFA Complaint", filename="1_RFA-complaint", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - RFAaffidavit: ALDocument.using(title="RFA Affidavit", filename="3_RFA-affidavit", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - RFAcomplaint: ALDocument.using(title="RFA Complaint", filename="1_RFA-complaint", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - RFAcomplaintonbehalfofminor_attachment: ALDocument.using(title="RFA Complaint on behalf of a child or children", filename="5_RFA_complaint_on_behalf_of_minor", has_addendum=False, )
+  - RFAaffidavit: ALDocument.using(title="RFA Affidavit", filename="3_RFA-affidavit", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFAconfidentialcontactinfo: ALDocument.using(title="Address for Notification", filename="4_RFA-confidential-contact-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFAserviceinfo: ALDocument.using(title="Protection Order Service Info", filename="2_RFA-service-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 
 ---
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[RFApackage_Post_interview_instructions, RFAcomplaint, RFAaffidavit, RFAconfidentialcontactinfo, RFAserviceinfo], filename="RFApackage", title="Download all forms", enabled=True)
-  #- al_court_bundle: ALDocumentBundle.using(elements=[RFAaffidavit, RFAconfidentialcontactinfo, RFAcomplaint, RFAserviceinfo],  filename="RFApackage", title="All forms to deliver to court", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[RFApackage_Post_interview_instructions, RFAcomplaint, RFAcomplaintonbehalfofminor_attachment, RFAaffidavit, RFAconfidentialcontactinfo, RFAserviceinfo], filename="RFApackage", title="Download all forms", enabled=True)
+  #- al_court_bundle: ALDocumentBundle.using(elements=[RFAaffidavit, RFAconfidentialcontactinfo, RFAcomplaint, RFAcomplaintonbehalfofminor_attachment, RFAserviceinfo],  filename="RFApackage", title="All forms to deliver to court", enabled=True)
 ---
 attachment:
   variable name: RFAaffidavit.addendum
@@ -3252,6 +3436,140 @@ attachment:
 # Each attachment defines a key in an ALDocument. We use `i` as the placeholder here so the same template is 
 # used for "preview" and "final" keys, and logic in the template checks the value of 
 # `i` to show or hide the user's signature
+---
+attachment:
+  name: 5 RFA_complaint_on_behalf_of_minor
+  filename: 5_RFA_complaint_on_behalf_of_minor
+  variable name: RFAcomplaintonbehalfofminor_attachment[i]
+  skip undefined: True
+  pdf template file: 5_RFA-complaint-on-behalf-of-minor.pdf
+  fields:
+      - "trial_court_county": ${ trial_court.address.county }
+      - "docket_number": ${ docket_number }
+      - "children1_name": ${ children[0] }
+      - "children1_name": ${ children[0] }
+      - "children1_name": ${ children[0] }
+      - "children1_birthdate": ${ format_date(children[0].birthdate, format='M/d/yyyy') }
+      - "children1_birthdate": ${ format_date(children[0].birthdate, format='M/d/yyyy') }
+      - "children1_birthdate": ${ format_date(children[0].birthdate, format='M/d/yyyy') }
+      - "other_parties1_name": ${ other_parties[0] }
+      - "other_parties1_name": ${ other_parties[0] }
+      - "other_parties1_birthdate": >-
+          ${ "/".join([str(f) for f in [other_parties[0].birth_month, other_parties[0].birth_day, other_parties[0].birth_year] if f]) }
+      - "users1_name": ${ users[0] }
+      - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
+      - "users1_relationship_to_children1": ${ users1_relationship_to_children1 }
+      - "other_parties1_address_address": ${ other_parties[0].address.address }
+      - "other_parties1_address_state": ${ other_parties[0].address.state }
+      - "other_parties1_address_zip": ${ other_parties[0].address.zip }
+      - "other_parties1_address_city": ${ other_parties[0].address.city }
+      - "parent_guardian": ${ parent_guardian }
+      - "family_member_description": ${ family_member_description }
+      - "family_member": ${ family_member }
+      - "live_together": ${ live_together }
+      - "dating": ${ dating }
+      - "other_relationship_description": ${ other_relationship_description }
+      - "other_relationship": ${ other_relationship }
+      - "existing_order_divorce_yes": ${ existing_order["existing_order_divorce"] }
+      - "existing_order_divorce_no": ${ not existing_order["existing_order_divorce"] }
+      - "dissolution_yes": ${ existing_order["dissolution"] }
+      - "dissolution_no": ${ not existing_order["dissolution"] }
+      - "existing_order_RFA_yes": ${ existing_order["existing_order_RFA"] }
+      - "existing_order_RFA_no": ${ not existing_order["existing_order_RFA"] }
+      - "criminal_proceeding_yes": ${ existing_order["criminal_proceeding"] }
+      - "criminal_proceeding_no": ${ not existing_order["criminal_proceeding"] }
+      - "parentage_order_yes": ${ existing_order["parentage_order"] }
+      - "parentage_order_no": ${ not existing_order["parentage_order"] }
+      - "guardianship_order_yes": ${ existing_order["guardianship_order"] }
+      - "guardianship_order_no": ${ not existing_order["guardianship_order"] }
+      - "child_support_order_yes": ${ existing_order["child_support_order"] }
+      - "child_support_order_no": ${ not existing_order["child_support_order"] }
+      - "juvenile_order_yes": ${ existing_order["juvenile_order"] }
+      - "juvenile_order_no": ${ not existing_order["juvenile_order"] }
+      - "existing_order_state": ${ existing_order_state }
+      - "existing_order_county": ${ existing_order_county }
+      - "existing_order_users_attorney": ${ existing_order_users_attorney }
+      - "existing_order_OP_attorney": ${ existing_order_OP_attorney }
+      - "serious_incident_date": ${ serious_incident_date.format() }
+      - "serious_incident_yes": ${ True }
+      - "serious_incident_abused": ${ serious_incident_abused }
+      - "other_parties1_parent_abuse": ${ other_parties1_parent_abuse }
+      - "serious_incident_stalked_children": ${ serious_incident_stalked_children }
+      - "serious_incident_assault": ${ serious_incident_assault }
+      - "serious_incident_harm": ${ serious_incident_harm }
+      - "serious_incident_fear": ${serious_incident_fear }
+      - "danger_more_abuse": ${ OBO_danger_more_abuse }
+      - "danger_more_abuse_children": |
+          % if children[0].in_danger:
+          True
+          % else:
+          False
+          % endif
+      - "danger_more_abuse_other_children": |
+          % if children[1].in_danger or children[2].in_danger:
+          True
+          % else:
+          False
+          % endif
+      - "children1_relationship_users1": ${ children[0].relationship_users1 }
+      - "children1_relationship_users1": ${ children[0].relationship_users1 }
+      - "children1_relationship_OP": ${ children[0].relationship_OP }
+      - "children1_relationship_OP": ${ children[0].relationship_OP }
+      - "children2_name": ${ children[1] }
+      - "children2_name": ${ children[1] }
+      - "children2_birthdate": ${ format_date(children[1].birthdate, format='M/d/yyyy') }
+      - "children2_birthdate": ${ format_date(children[1].birthdate, format='M/d/yyyy') }
+      - "children2_relationship_users1": ${ children[1].relationship_users1 }
+      - "children2_relationship_users1": ${ children[1].relationship_users1 }
+      - "children2_relationship_OP": ${ children[1].relationship_OP }
+      - "children2_relationship_OP": ${ children[1].relationship_OP }
+      - "children3_name": ${ children[2] }
+      - "children3_name": ${ children[2] }
+      - "children3_birthdate": ${ format_date(children[2].birthdate, format='M/d/yyyy') }
+      - "children3_birthdate": ${ format_date(children[2].birthdate, format='M/d/yyyy') }
+      - "children3_relationship_users1": ${ children[2].relationship_users1 }
+      - "children3_relationship_users1": ${ children[2].relationship_users1 }
+      - "children3_relationship_OP": ${ children[2].relationship_OP }
+      - "children3_relationship_OP": ${ children[2].relationship_OP }
+      - "used_firearm": ${ used_firearm }
+      - "incarcerated": ${ incarcerated }
+      - "children1_no_shelter": ${ children1_no_shelter }
+      - "residence_shared_address": ${ residence_shared_address }
+      - "residence_owned": ${ residence_owned }
+      - "residence_rented": ${ residence_rented }
+      - "residence_of_users1": ${ residence_of_users1 }
+      - "residence_of_both": ${ residence_of_both }
+      - "residence_of_other": ${ residence_of_other }
+      - "residence_of_OP": ${ residence_of_OP }
+      - "request_not_abuse_children": ${ request_not_abuse_children }
+      - "request_no_stalking_assault": ${ request_no_stalking_assault }
+      - "request_leave": ${ request_leave }
+      - "request_no_firearms": ${ request_no_firearms }
+      - "request_surrender_firearms": ${ request_surrender_firearms }
+      - "request_no_pet_harm": ${ request_no_pet_harm }
+      - "request_control_of_pet": ${ request_control_of_pet }
+      - "request_stay_away_feet": ${ request_stay_away_feet }
+      - "request_stay_away": ${ request_stay_away }
+      - "request_no_contact_children": ${ request_no_contact_children }
+      - "request_temp_PRR": ${ request_temp_PRR }
+      - "other_children_PRR_names": ${ other_children_PRR_names }
+      - "other_children_PRR": ${ other_children_PRR }
+      - "request_supervised_contact": ${ request_supervised_contact }
+      - "supervisor1_name": ${ supervisor1_name }
+      - "supervisor1_location": ${ supervisor1_location }
+      - "request_children_exchange": ${ request_children_exchange }
+      - "supervisor2_location": ${ supervisor2_location }
+      - "supervisor2_name": ${ supervisor2_name }
+      - "request_no_drug_or_alcohol": ${ request_no_drug_or_alcohol }
+      - "request_no_punish": ${ request_no_punish }
+      - "request_child_support": ${ request_child_support }
+      - "request_other_description": ${ request_other_description }
+      - "request_other": ${ request_other }
+      - "request_all_emergency": ${ request_all_emergency }
+      - "signature_date": ${ signature_date }
+      - "users1_signature": ${ users[0].signature_if_final(i) }
+
+---
 attachment:
   name: Post-interview-Instructions
   filename: RFApackage_next_steps
