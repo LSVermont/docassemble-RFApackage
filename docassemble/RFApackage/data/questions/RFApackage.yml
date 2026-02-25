@@ -1,6 +1,5 @@
 #THIS IS THE VERSION where I have pulled the current, active RFA package and I am incorporating the changes I made elsewhere to include RFA on behalf of a minor.
-
-# This an updated version for July 1, 2025 due to law changes and Judiciary form changes.
+# This version reflects July 1, 2025, law changes and Judiciary form changes.
 # This interview does not make use of VTSharedYMLFile because that shared file was made after this interview went live.
 ---
 include:
