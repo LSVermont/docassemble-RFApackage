@@ -266,19 +266,21 @@ code: |
     else:
       serious_incident_date == recent_incident_date
       serious_incident_checkboxes_OBO
+    other_incident
     set_progress(60)
     if danger_more_abuse_OBO:
       get_kids_in_danger
     nav.set_section('ask_weapons')
     if used_firearm:
       weapons.gather()
+      weapons_info
     nav.set_section('order')
     set_progress(60)
     request_not_abuse_OBO
     if request_temp_PRR_OBO:
       get_kids_relationships
     if other_request_OBO:
-      request_other_description_OBO
+      request_other_description
     set_progress(70)
 
 
@@ -351,8 +353,9 @@ code: |
     set_progress(50)
     danger_more_abuse
     nav.set_section('ask_weapons')
-    weapons.gather()
-    used_firearm
+    if used_firearm:
+      weapons.gather()
+      weapons_info
     nav.set_section('order')
     set_progress(60)
     if users1_no_shelter: 
@@ -1040,9 +1043,7 @@ fields:
 template: coercive_control
 subject: About coercive control
 content: |
-  Vermont recently changed how domestic violence is defined within the civil courts. Starting July 1, 2024, the term “coercive control” is now included in the definition of abuse in Vermont.
-  
-  Coercive control is a pattern of behavior that seeks to control what you do or do not do. Coercive control is a form of emotional and psychological abuse. It can hurt your mental and emotional well-being.
+  Since July 1, 2024, the term “coercive control” is included in the definition of abuse in Vermont. Coercive control is a pattern of behavior that seeks to control what you do or do not do. Coercive control is a form of emotional and psychological abuse. It can hurt your mental and emotional well-being.
   
   [Learn more on the VTLawHelp.org website.](https://vtlawhelp.org/coercive-control)
 
@@ -1472,7 +1473,7 @@ fields:
     datatype: yesno
   - "The defendant coercively controlled the child/children. Coercive control is defined in Vermont law here: [15 V.S.A. § 1101(2)](https://legislature.vermont.gov/statutes/section/15/021/01101). A summary is found [here](https://legislature.vermont.gov/Documents/2024/Docs/ACTS/ACT103/ACT103%20Act%20Summary.pdf).": serious_incident_coercive_OBO
     datatype: yesno
-  - "The defendant stalked the child/children. Stalking is defined in Vermont law here: [12 V.S.A 5131(6)](https://legislature.vermont.gov/statutes/section/12/178/05131).${ collapse_template(stalking) }": serious_incident_stalked_OBO
+  - "The defendant stalked the child/children. Stalking is defined in Vermont law here: [12 V.S.A 5131(6)](https://legislature.vermont.gov/statutes/section/12/178/05131).": serious_incident_stalked_OBO
     datatype: yesno
   - "The defendant sexually assaulted the child/children. Sexual assault is defined in Vermont law here: [15 V.S.A 5131(5)](https://legislature.vermont.gov/statutes/section/12/178/05131).": serious_incident_assault_OBO
     datatype: yesno
@@ -1601,11 +1602,13 @@ fields:
     datatype: yesnoradio
   - "Has the defendant used, displayed or threatened to use a **gun/firearm** against the child/children or against another family member?": used_firearm
     datatype: yesnoradio
-    show if: |
+    hide if: |
       val("who_needs_protection") == "order_obo_child"
   - note: The question above asks specifically about fireams (guns). This next question is found on a different form and it asks about **any** deadly weapons.
   - "Has the defendant used, displayed or threatened to use a **gun/firearm or another deadly weapon** against you or another family member?": used_weapon
     datatype: yesnoradio
+    show if: |
+      val("who_needs_protection") == "order_obo_child"
     
   - "Describe in detail how they used or threatened to use the weapon(s).": used_weapon_how
     input type: area
@@ -1636,7 +1639,7 @@ fields:
     datatype: yesno
   - "Order the defendant to not stalk or sexually abuse the child/children": request_no_stalking_assault_OBO
     datatype: yesno    
-  - "Order the defendant to immediately leave the residence, and to order sole possession to me as I care for the child/children": request_leave_OBO
+  - "Order the defendant to immediately leave the residence (home), and order sole possession of the residence to me as I care for the child/children": request_leave_OBO
     datatype: yesno
   - "Order the defendant not to possess or purchase guns/firearms for the duration of the order": request_no_firearms_OBO
     datatype: yesno
@@ -3834,7 +3837,7 @@ attachment:
       - "residence_of_OP": ${ whose_name == "residence_of_OP" }
       - "residence_of_other": ${ whose_name == "residence_of_other" }
       - "residence_of_both": ${ whose_name == "residence_of_both" }
-      - "request_not_abuse_children": ${ request_not_abuse_kids_OBO }
+      - "request_not_abuse_children": ${ request_not_abuse_OBO }
       - "request_no_stalking_assault": ${ request_no_stalking_assault_OBO }
       - "request_leave": ${ request_leave_OBO }
       - "request_no_firearms": ${ request_no_firearms_OBO }
@@ -3856,9 +3859,9 @@ attachment:
       - "request_no_drug_or_alcohol": ${ request_no_drugs_alcohol_OBO }
       - "request_no_punish": ${ request_no_punishment_OBO }
       - "request_child_support": ${ request_child_support_OBO }
-      - "request_other_description": ${ request_other_description_OBO }
+      - "request_other_description": ${ request_other_description }
       - "request_other": ${ other_request_OBO }
-      - "request_all_emergency": ${ request_all_emergency_OBO }
+      - "request_all_emergency": ${ request_all_emergency }
       - "signature_date": ${ signature_date }
       - "users1_signature": ${ users[0].signature_if_final(i) }
 ---
@@ -3901,6 +3904,8 @@ attachment:
           % else: 
           ${ other_parties[0].address.zip }
           % endif 
+      - "users1_name": ${ users[0] }
+      - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
       - "recent_incident_date": ${ recent_incident_date }
       - "recent_incident_time": ${ recent_incident_time }
       - "recent_incident_town": ${ recent_incident_town }
@@ -3910,7 +3915,7 @@ attachment:
           % elif other_recent_incident_state:
           ${ other_recent_incident_state }
           % endif 
-      - "recent_incident_description": ${ RFAaffidavit.safe_value("recent_incident_description") }
+      - "recent_incident_description": ${ RFAaffidavitonbehalfofminor.safe_value("recent_incident_description") }
       - "recent_incident_most_serious_yes": ${ recent_incident_most_serious }
       - "recent_incident_most_serious_no": ${ not recent_incident_most_serious }
       - "serious_incident_date": ${ serious_incident_date }
@@ -3922,8 +3927,8 @@ attachment:
           % elif other_serious_incident_state:
           ${ other_serious_incident_state }
           % endif
-      - "serious_incident_description": ${ RFAaffidavit.safe_value("serious_incident_description") }
-      - "other_incident_description": ${ RFAaffidavit.safe_value("other_incident_description") }
+      - "serious_incident_description": ${ RFAaffidavitonbehalfofminor.safe_value("serious_incident_description") }
+      - "other_incident_description": ${ RFAaffidavitonbehalfofminor.safe_value("other_incident_description") }
       - "other_parties1_weapon_yes": ${ weapons.there_are_any == True}
       - "other_parties1_weapon_no": ${ weapons.there_are_any == False }
       - "other_parties1_weapon_DK": ${ weapons.there_are_any == None }
@@ -3955,7 +3960,7 @@ attachment:
           % endif
       - "used_weapon_yes": ${ used_weapon }
       - "used_weapon_no": ${ not used_weapon }
-      - "used_weapon_how": ${ RFAaffidavit.safe_value("used_weapon_how") }
+      - "used_weapon_how": ${ RFAaffidavitonbehalfofminor.safe_value("used_weapon_how") }
       - "danger_more_abuse_yes": ${ danger_more_abuse }
       - "danger_more_abuse_no": ${ not danger_more_abuse }
       - "danger_more_abuse_why": ${ danger_more_abuse_why }
