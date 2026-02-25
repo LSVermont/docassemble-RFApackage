@@ -33,7 +33,7 @@ metadata:
   post: |
     <div data-variable="${ encode_name(str( user_info().variable )) }" id="trigger" aria-hidden="true" style="display: none;"></div>
   description: |
-    Ask the court for a Relief from Abuse (RFA) order. This tool will help you complete four required forms. Based on paper versions of Vermont Judiciary forms 400-00150C (7/2025), 400-00151 (7/2024), 400-00156 (6/2025) and Department of Public Safety form DPS-132.
+    Ask the court for a Relief from Abuse (RFA) order. This tool will help you complete four required forms. Based on paper versions of Vermont Judiciary forms 400-00150C (7/2025), 400-00151 (7/2024), 400-00150CC (7/2025), 400-00151M (6/2025), 400-00156 (6/2025) and Department of Public Safety form DPS-132.
   integrated_efiling: False
   integrated_email_filing: False
   landing_page_url: https://vtlawhelp.org/roadmap/relief-from-abuse/step-3
@@ -212,7 +212,7 @@ code: |
   
   who_needs_protection  
   
-  ##order on behalf of child(ren) only##
+  ##################order on behalf of child(ren) only##
   if who_needs_protection == 'order_obo_child':
     nav.set_section("screening")
     what_want_to_do
@@ -262,7 +262,10 @@ code: |
     set_progress(40)
     if not recent_incident_most_serious:
       serious_incident_date
-    serious_incident_checkboxes_OBO
+      serious_incident_checkboxes_OBO
+    else:
+      serious_incident_date == recent_incident_date
+      serious_incident_checkboxes_OBO
     set_progress(60)
     if danger_more_abuse_OBO:
       get_kids_in_danger
@@ -271,16 +274,16 @@ code: |
       weapons.gather()
     nav.set_section('order')
     set_progress(60)
-    request_not_abuse_kids
-    if request_temp_PRR:
+    request_not_abuse_OBO
+    if request_temp_PRR_OBO:
       get_kids_relationships
-    if other_request:
-      request_other_description
+    if other_request_OBO:
+      request_other_description_OBO
     set_progress(70)
 
 
   else:
-    ##order for self or self and kids##
+    ################order for self or self and kids##
     nav.set_section("screening")
     what_want_to_do
     if what_want_to_do == 'extend_or_change':
@@ -690,8 +693,6 @@ fields:
       - "I need this order to protect **me only**": order_for_me
       - "I need this order to protect **me and my child or children**": order_for_both
       - "I’m asking for an RFA order **only on behalf of a child or children** under the age of 18": order_obo_child
-  - note: |
-      Next we'll ask about you, the person filling out this form. You are called the "petitioner" or "plaintiff."
 ---
 id: initial_screening_questions_3_exit
 question: |
@@ -835,11 +836,23 @@ fields:
     required: True
     datatype: BirthDate
 ---
-id: About you
+sets:
+  - users[i].name.first
+  - users[i].name.last
+  - users[i].name.middle
+  - users[i].name.suffix    
+id: other users names
 question: |
-  About you
+  What is your name?
 subquestion: |
+  % if who_needs_protection == 'order_obo_child':
+  As the person filling out these forms on behalf of a child or children, you are called the "petitioner." We'll start with some questions about you.
+  % else:
   As the person filling out these forms, you are called the "plaintiff." We'll start with some questions about you.
+  % endif
+fields:
+  - code: |
+      users[i].name_fields()
 ---
 id: Gather users street address
 sets:
@@ -933,9 +946,7 @@ question: |
   Children involved in this case
 fields:
   - note: |
-     % if who_needs_protection == 'order_obo_child':
-      Please confirm that children are involved.
-      % elif who_needs_protection == 'order_obo_child':
+      % if who_needs_protection == 'order_obo_child':
       Please confirm that children are involved.
       % else:
       Are there any children involved in this case?
@@ -1448,27 +1459,31 @@ continue button field: serious_incident_checkboxes_OBO
 question: |
   During the most serious incident
 subquestion: |
-  Check all that apply to the most serious incident. Select at least one statement.
+  ${ collapse_template(coercive_control) }
+
+  ${ collapse_template(stalking) }
+      
+  **Check all that apply to the most serious incident.** Select at least one statement.
 
 fields:
   - "The defendant abused the child/children -- meaning they physically injured or otherwise treated them in a manner which placed thier life, health, development or welfare in jeopardy.": serious_incident_abused_OBO
     datatype: yesno
   - "The defendant is a parent/legal guardian for the child/children and either (1) inflicted physical punishment out of anger, or (2) physically punished them in an excessive, unreasonable, or cruel manner.": serious_incident_parent_abuse_OBO
     datatype: yesno
-  - "The defendant sexually assaulted the child/children. Sexual assault is defined in Vermont law here: [15 V.S.A 5131(5)](https://legislature.vermont.gov/statutes/section/12/178/05131)": serious_incident_assault_OBO
+  - "The defendant coercively controlled the child/children. Coercive control is defined in Vermont law here: [15 V.S.A. § 1101(2)](https://legislature.vermont.gov/statutes/section/15/021/01101). A summary is found [here](https://legislature.vermont.gov/Documents/2024/Docs/ACTS/ACT103/ACT103%20Act%20Summary.pdf).": serious_incident_coercive_OBO
     datatype: yesno
-  - "The defendant caused or attempted to cause physical harm to the child/children": recent_incident_harm_OBO
+  - "The defendant stalked the child/children. Stalking is defined in Vermont law here: [12 V.S.A 5131(6)](https://legislature.vermont.gov/statutes/section/12/178/05131).${ collapse_template(stalking) }": serious_incident_stalked_OBO
     datatype: yesno
-  - "The defendant placed the child/children in fear of imminent serious physical harm": serious_incident_fear_OBO
+  - "The defendant sexually assaulted the child/children. Sexual assault is defined in Vermont law here: [15 V.S.A 5131(5)](https://legislature.vermont.gov/statutes/section/12/178/05131).": serious_incident_assault_OBO
     datatype: yesno
-  - "The defendant stalked the child/children. Stalking is defined in Vermont law here: [12 V.S.A 5131(6)](https://legislature.vermont.gov/statutes/section/12/178/05131). ${ collapse_template(stalking) }": serious_incident_stalked_OBO
+  - "The defendant caused or attempted to cause physical harm to the child/children.": recent_incident_harm_OBO
+    datatype: yesno
+  - "The defendant placed the child/children in fear of imminent serious physical harm.": serious_incident_fear_OBO
     datatype: yesno
       
-#validation code: |
-#  if (recent_incident_state == "") and (other_recent_incident_state == ""):
-#    validation_error("You must enter a state in the United States, or an area outside of the United States")
-#  if not recent_incident_harm and not recent_incident_fear and not recent_incident_abused and not recent_incident_stalked and not recent_incident_assault:
-#    validation_error("Select at least one incident")
+validation code: |
+  if not serious_incident_abused_OBO and not serious_incident_parent_abuse_OBO and not serious_incident_coercive_OBO and not serious_incident_stalked_OBO and not serious_incident_assault_OBO and not recent_incident_harm_OBO and not serious_incident_fear_OBO:
+    validation_error("Select at least one statement.")
 
 ---
 id: what happened other incidents
@@ -1484,7 +1499,6 @@ fields:
     rows: 20
     show if: other_incident
 ---
-
 id: danger of more abuse
 question: |
   Danger of more abuse
@@ -1510,37 +1524,30 @@ fields:
     required: False
 ---
 
-
-
-
-
-
-
-
 ---
-id: Danger of more abuse
-question: |
-  Danger of more abuse
-subquestion: |
-  If you want to get a court order that starts right way, answer **Yes** to this question.
-fields:
-  - "Is there immediate danger of more abuse from the defendant?": danger_more_abuse
-    datatype: yesnoradio
-    
-  - "Select all that apply": danger_more_abuse_who
-    datatype: checkboxes
-    show if: danger_more_abuse
-    none of the above: False
-    minlength: 1
-    choices:
-      - "There is danger of more abuse to you": users1
-      - "There is danger of more abuse to the child/children": children
-    
-  - "Include any information not already described before. Be as specific as possible.": danger_more_abuse_why
-    input type: area
-    show if: danger_more_abuse
-    maxlength: 310
-    required: False
+#id: Danger of more abuse
+#question: |
+#  Danger of more abuse
+#subquestion: |
+#  If you want to get a court order that starts right way, answer **Yes** to this question.
+#fields:
+#  - "Is there immediate danger of more abuse from the defendant?": danger_more_abuse
+#    datatype: yesnoradio
+#    
+#  - "Select all that apply": danger_more_abuse_who
+#    datatype: checkboxes
+#    show if: danger_more_abuse
+#    none of the above: False
+#    minlength: 1
+#    choices:
+#      - "There is danger of more abuse to you": users1
+#      - "There is danger of more abuse to the child/children": children
+#    
+#  - "Include any information not already described before. Be as specific as possible.": danger_more_abuse_why
+#    input type: area
+#    show if: danger_more_abuse
+#    maxlength: 310
+#    required: False
 ---
 objects:
   - weapons: DAList.using(object_type=DAObject, complete_attribute="weapon_location")
@@ -1615,6 +1622,140 @@ fields:
     
 continue button field: weapons_info
 ---
+id: What you want to ask for in the RFA order -- OBO minor
+question: |
+  What you want to ask for in the RFA order
+subquestion: |
+  This is a list of things that you can ask the court for. If approved, they will be part of the Relief from Abuse order.
+  
+  **Choose all that apply to you.** 
+
+  I want the court to:
+fields:
+  - "Order the defendant to not abuse the child/children and not interfere with their personal liberty": request_not_abuse_OBO
+    datatype: yesno
+  - "Order the defendant to not stalk or sexually abuse the child/children": request_no_stalking_assault_OBO
+    datatype: yesno    
+  - "Order the defendant to immediately leave the residence, and to order sole possession to me as I care for the child/children": request_leave_OBO
+    datatype: yesno
+  - "Order the defendant not to possess or purchase guns/firearms for the duration of the order": request_no_firearms_OBO
+    datatype: yesno
+  - "Order the defendant to surrender immediately to law enforcement all guns/firearms that they own, possess or control": request_surrender_firearms_OBO
+    datatype: yesno
+  - "Order the defendant to stop cruelly treating a pet/pets": request_no_pet_harm_OBO
+    datatype: yesno    
+  - "Order me to get temporary possession and control of a pet/pets": request_control_of_pet_OBO
+    datatype: yesno    
+  - "Order the defendant to return any personal documents in their possession that pertain me and/or my children. (Examples: immigration documents, birth certificates and identification cards.)": surrender_plaintiffs_documents_OBO
+    datatype: yesno
+  - "I want my documents.": surrender_plaintiffs_documents_users1_OBO
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_plaintiffs_documents_OBO
+  - "I want the child's or children's documents.": surrender_plaintiffs_documents_children_OBO
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_plaintiffs_documents_OBO
+  - note: |
+      ---
+    show if: surrender_plaintiffs_documents_OBO
+  - "Order me to get temporary possession of a car/truck/vehicle": surrender_vehicle_OBO
+    datatype: yesno
+  - note: |
+      In an RFA, the judge can order that you get to keep the vehicle temporarily. This does not change who legally owns the car or who is responsible for payments. It does not stop any lender from repossessing the vehicle. Talk to a lawyer if you are worried about the ownership of the vehicle. **At least one of the following must be true.** Check all that apply.:
+    css class: indent-me
+    show if: surrender_vehicle_OBO
+  - "I am the owner or joint owner of the vehicle.": surrender_vehicle_owner_OBO
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_vehicle_OBO
+  - "I am the primary payor on the vehicle loan.": surrender_vehicle_pays_loan_OBO
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_vehicle_OBO
+  - "I have primary possession or control of vehicle.": surrender_vehicle_has_possession_OBO
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_vehicle_OBO
+  - "I have been restricted from using the vehicle by the defendant.": surrender_vehicle_restricted_from_use_OBO
+    datatype: yesno
+    css class: indent-me
+    show if: surrender_vehicle_OBO
+  - note: |
+      ---
+    show if: surrender_vehicle_OBO
+  - "Order the defendant to complete a domestic violence accountability program approved by the Council on Domestic Violence": request_DV_program_OBO
+    datatype: yesno
+  - "Order the defendant to stay a certain distance away from the child/children": request_stay_away_OBO
+    datatype: yesno
+  - "How many feet away? (300 feet is the standard stay-away order)": request_stay_away_feet_OBO
+    maxlength: 5
+    css class: indent-me
+    show if: request_stay_away_OBO
+  - "Order the defendant to not contact the child/children in any way": request_no_contact_OBO
+    datatype: yesno    
+  - "Award temporary Parental Rights and Responsibilities (custody) of our child/children to me. (For child/children of you and the defendant.)": request_temp_PRR_OBO
+    datatype: yesno  
+  - note: If you choose custody, we will ask for the names of the children on the next screen.
+    show if: request_temp_PRR_OBO
+  - "Order the defendant to have supervised contact with the child/children": request_supervised_contact_OBO
+    datatype: yesno      
+  - "Who would you like to supervise the visits?": supervisor1_name_OBO
+    maxlength: 20
+    css class: indent-me
+    show if: request_supervised_contact_OBO
+  - "In what location?": supervisor1_location_OBO
+    maxlength: 30
+    css class: indent-me
+    show if: request_supervised_contact_OBO
+  - "Order that the child/children will be picked up and dropped off at a certain supervised location": request_supervised_exchange_OBO
+    datatype: yesno      
+  - "Who would you like to supervise the pick-up and drop-offs?": supervisor2_name_OBO
+    maxlength: 20
+    css class: indent-me
+    show if: request_supervised_exchange_OBO
+  - "In what location?": supervisor2_location_OBO
+    maxlength: 30
+    css class: indent-me
+    show if: request_supervised_exchange_OBO     
+  - "Order defendant not to take any regulated drug unless it is prescribed by a physician, or drink alcohol, for at least 8 hours prior to a scheduled contact with the child/children, or during contact with the child/children). And if defendant appears to be under the influence of drugs or alcohol, allow me to cancel the scheduled visit with the child/children.": request_no_drugs_alcohol_OBO
+    datatype: yesno
+  - "Order the defendant to not physically punish the child/children named above in any way": request_no_punishment_OBO
+    datatype: yesno   
+  - "Order the defendant to pay temporary child support for the child/children": request_child_support_OBO
+    datatype: yesno
+  - note: |
+      Note: If you need help with child support, contact the [Vermont Office of Child Support](https://dcf.vermont.gov/ocs/parents) as well.
+    show if: request_child_support_OBO
+  - "I want to ask for something else. (You can write what you want on an upcoming screen.)": other_request_OBO
+    datatype: yesno
+    
+#validation code: |
+#  
+#  if request_not_abuse_OBO and not (request_not_abuse_users1 or request_not_abuse_children ):
+#        validation_error("Please select at least one of the options.")
+#        
+#  if request_no_stalking_assault and not (request_no_stalking or request_no_assault or request_no_assault_users1 or request_no_assault_children):
+#        validation_error("Please select at least one of the options.")
+#
+#  if surrender_plaintiffs_documents and not (surrender_plaintiffs_documents_users1 or surrender_plaintiffs_documents_children):
+#        validation_error("Please select at least one of the options.")
+#
+#  if surrender_vehicle and not (surrender_vehicle_owner or surrender_vehicle_pays_loan or surrender_vehicle_has_possession or surrender_vehicle_restricted_from_use):
+#        validation_error("Please select at least one of the options.")
+#  
+#  if request_no_pet_harm and not (request_no_pet_users1 or request_no_pet_children or request_control_of_pet):
+#        validation_error("Please select at least one of the options.") 
+#        
+#  if request_stay_away and request_stay_away_feet and not (request_stay_away_users1 or request_stay_away_children):
+#        validation_error("Please select at least one of the options.")
+#        
+#  if request_no_contact and not (request_no_contact_users1 or request_no_contact_children):
+#        validation_error("Please select at least one of the options.") 
+#        
+#  if not (request_not_abuse or request_no_stalking_assault or request_leave or request_no_firearms or request_surrender_firearms or request_living_expenses or request_child_support or surrender_plaintiffs_documents or surrender_vehicle or request_no_pet_harm or request_stay_away or request_no_contact or other_request or request_temp_PRR or request_DV_program):
+#    validation_error("Please select at least one option.")
+---
 id: What you want to ask for in the RFA order
 question: |
   What you want to ask for in the RFA order
@@ -1625,63 +1766,49 @@ subquestion: |
 
   I want the court to:
 fields:
-  - "Order the defendant to not abuse the child/children and not interfere with their personal liberty": request_not_abuse_kids
+  - "Order the defendant to not abuse me or my children, and not interfere with our personal liberty": request_not_abuse
     datatype: yesno
-  - "Order the defendant to not stalk or sexually abuse the child/children": request_no_stalking_assault
-    datatype: yesno    
-  - "Order the defendant to immediately leave the residence, and to order sole possession to me as I care for the child/children": request_leave
+  - "I want the order to protect me from this.": request_not_abuse_users1
+    datatype: yesno
+    css class: indent-me
+    show if: request_not_abuse
+  - "I want the order to protect my child/children from this.": request_not_abuse_children
+    datatype: yesno
+    css class: indent-me
+    show if: request_not_abuse
+  - note: |
+      ---
+    show if: request_not_abuse
+    
+  - "Order the defendant to not stalk or sexually assault me or my child/children": request_no_stalking_assault
+    datatype: yesno
+  - "I want the order to stop stalking.": request_no_stalking
+    datatype: yesno
+    css class: indent-me    
+    show if: request_no_stalking_assault
+  - "I want the order to stop sexual assault.": request_no_assault
+    datatype: yesno
+    css class: indent-me
+    show if: request_no_stalking_assault
+  - "I want the order to protect me from this.": request_no_assault_users1
+    datatype: yesno
+    css class: indent-me
+    show if: request_no_stalking_assault
+  - "I want the order to protect my child/children from this.": request_no_assault_children
+    datatype: yesno
+    css class: indent-me
+    show if: request_no_stalking_assault
+  - note: |
+      ---
+    show if: request_no_stalking_assault
+    
+  - "Order the defendant to immediately leave the residence, and to order sole possession to me": request_leave
     datatype: yesno
   - "Order the defendant not to possess or purchase guns/firearms for the duration of the order": request_no_firearms
     datatype: yesno
   - "Order the defendant to surrender immediately to law enforcement all guns/firearms that they own, possess or control": request_surrender_firearms
     datatype: yesno
-  - "Order the defendant to stop cruelly treating a pet/pets": request_no_pet_harm
-    datatype: yesno    
-  - "Order me to get temporary possession and control of a pet/pets": request_control_of_pet
-    datatype: yesno    
-  - "Order the defendant to stay a certain distance away from the child/children": request_stay_away
-    datatype: yesno
-  - "How many feet away? (300 feet is the standard stay-away order)": request_stay_away_feet
-    maxlength: 5
-    css class: indent-me
-    show if: request_stay_away    
-  - "Order the defendant to not contact the child/children in any way": request_no_contact
-    datatype: yesno    
-  - "Award temporary Parental Rights and Responsibilities (custody) of our child/children to me or someone else. (The child/children of you and the defendant.)": request_temp_PRR
-    datatype: yesno  
-  - note: If you choose custody, we will ask for the names of the children on the next screen.
-    show if: request_temp_PRR   
-  - "Order the defendant to have supervised contact with the child/children": request_supervised_contact
-    datatype: yesno      
-  - "Who would you like to supervise the visits?": supervisor1_name
-    maxlength: 20
-    css class: indent-me
-    show if: request_supervised_contact    
-  - "In what location?": supervisor1_location
-    maxlength: 30
-    css class: indent-me
-    show if: request_supervised_contact        
-  - "Order that the child/children will be picked up and dropped off at a certain supervised location": request_supervised_exchange
-    datatype: yesno      
-  - "Who would you like to supervise the pick-up and drop-offs?": supervisor2_name
-    maxlength: 20
-    css class: indent-me
-    show if: request_supervised_exchange    
-  - "In what location?": supervisor2_location
-    maxlength: 30
-    css class: indent-me
-    show if: request_supervised_exchange        
 
-  - "Order defendant not to take any regulated drug unless it is prescribed by a physician, or drink alcohol, for at least 8 hours prior to a scheduled contact with the child/children, or during contact with the child/children). And if defendant appears to be under the influence of drugs or alcohol, allow me to cancel the scheduled visit with the child/children.": request_no_drugs_alcohol
-    datatype: yesno
-
-  - "Order the defendant to not physically punish the child/children named above in any way": request_no_punishment
-    datatype: yesno   
-  - "Order the defendant to pay temporary child support for the child/children": request_child_support
-    datatype: yesno
-  - note: |
-      Note: If you need help with child support, contact the [Vermont Office of Child Support](https://dcf.vermont.gov/ocs/parents) as well.
-    show if: request_child_support
   
   - "Order the defendant to return any personal documents in their possession that pertain me and/or my children. (Examples: immigration documents, birth certificates and identification cards.)": surrender_plaintiffs_documents
     datatype: yesno
@@ -1725,17 +1852,67 @@ fields:
 
 
 
-
-  
-
   - "Order the defendant to pay my temporary living expenses": request_living_expenses
     datatype: yesno
   - note: |
       Note: It would be helpful to gather copies of your utility bills, rent payments and other bills that you’d like covered. The judge may ask to see them at a hearing.
     show if: request_living_expenses
-
+  - "Order the defendant to pay temporary child support": request_child_support
+    datatype: yesno
+  - note: |
+      Note: If you need help with child support, contact the [Vermont Office of Child Support](https://dcf.vermont.gov/ocs/parents) as well.
+    show if: request_child_support
+  - "Order the defendant to stop cruelly treating pets": request_no_pet_harm
+    datatype: yesno
+  - "I want the order to protect the pets owned by me or the defendant.": request_no_pet_users1
+    datatype: yesno
+    css class: indent-me
+    show if: request_no_pet_harm
+  - "I want the order to protect the pets owned by my child/children.": request_no_pet_children
+    datatype: yesno
+    css class: indent-me
+    show if: request_no_pet_harm    
+  - note: |
+      ---
+    show if: request_no_pet_harm
     
-
+  - "Order me to get temporary possession and control of the pet(s)": request_control_of_pet
+    datatype: yesno
+  - "Order the defendant to stay a certain distance away": request_stay_away
+    datatype: yesno
+  - "How many feet away? (300 feet is the standard stay-away order)": request_stay_away_feet
+    maxlength: 5
+    css class: indent-me
+    show if: request_stay_away
+  - "I want the order to protect me from this.": request_stay_away_users1
+    datatype: yesno
+    css class: indent-me
+    show if: request_stay_away
+  - "I want the order to protect my child/children from this.": request_stay_away_children
+    datatype: yesno
+    css class: indent-me
+    show if: request_stay_away
+  - note: |
+      ---
+    show if: request_stay_away
+    
+  - "Order the defendant to not contact me or my child/children in any way": request_no_contact
+    datatype: yesno
+  - "I want the order to protect me from this.": request_no_contact_users1
+    datatype: yesno
+    css class: indent-me
+    show if: request_no_contact
+  - "I want the order to protect my child/children from this.": request_no_contact_children
+    datatype: yesno
+    css class: indent-me
+    show if: request_no_contact
+  - note: |
+      ---
+    show if: request_no_contact
+  - "Award temporary Parental Rights and Responsibilities (custody) of our child/children to me or someone else. (The child(ren) of you and the defendant.)": request_temp_PRR
+    datatype: yesno  
+  - note: If you choose custody, we will ask for the names of the children on the next screen.
+    show if: request_temp_PRR
 
 
   - "Order the defendant to complete a domestic violence accountability program approved by the Council on Domestic Violence": request_DV_program
@@ -1746,31 +1923,34 @@ fields:
   - "I want to ask for something else. (You can write what you want on an upcoming screen.)": other_request
     datatype: yesno
     
-#validation code: |
-#  
-#  if request_not_abuse and not (request_not_abuse_users1 or request_not_abuse_children ):
-#        validation_error("Please select at least one of the options.")
-#        
-#  if request_no_stalking_assault and not (request_no_stalking or request_no_assault or request_no_assault_users1 or request_no_assault_children):
-#        validation_error("Please select at least one of the options.")
-#
-#  if surrender_plaintiffs_documents and not (surrender_plaintiffs_documents_users1 or surrender_plaintiffs_documents_children):
-#        validation_error("Please select at least one of the options.")
-#
-#  if surrender_vehicle and not (surrender_vehicle_owner or surrender_vehicle_pays_loan or surrender_vehicle_has_possession or surrender_vehicle_restricted_from_use):
-#        validation_error("Please select at least one of the options.")
-#  
-#  if request_no_pet_harm and not (request_no_pet_users1 or request_no_pet_children or request_control_of_pet):
-#        validation_error("Please select at least one of the options.") 
-#        
-#  if request_stay_away and request_stay_away_feet and not (request_stay_away_users1 or request_stay_away_children):
-#        validation_error("Please select at least one of the options.")
-#        
-#  if request_no_contact and not (request_no_contact_users1 or request_no_contact_children):
-#        validation_error("Please select at least one of the options.") 
-#        
-#  if not (request_not_abuse or request_no_stalking_assault or request_leave or request_no_firearms or request_surrender_firearms or request_living_expenses or request_child_support or surrender_plaintiffs_documents or surrender_vehicle or request_no_pet_harm or request_stay_away or request_no_contact or other_request or request_temp_PRR or request_DV_program):
-#    validation_error("Please select at least one option.")
+validation code: |
+  
+  if request_not_abuse and not (request_not_abuse_users1 or request_not_abuse_children ):
+        validation_error("Please select at least one of the options.")
+        
+  if request_no_stalking_assault and not (request_no_stalking or request_no_assault or request_no_assault_users1 or request_no_assault_children):
+        validation_error("Please select at least one of the options.")
+
+  if surrender_plaintiffs_documents and not (surrender_plaintiffs_documents_users1 or surrender_plaintiffs_documents_children):
+        validation_error("Please select at least one of the options.")
+
+  if surrender_vehicle and not (surrender_vehicle_owner or surrender_vehicle_pays_loan or surrender_vehicle_has_possession or surrender_vehicle_restricted_from_use):
+        validation_error("Please select at least one of the options.")
+  
+  if request_no_pet_harm and not (request_no_pet_users1 or request_no_pet_children or request_control_of_pet):
+        validation_error("Please select at least one of the options.") 
+        
+  if request_stay_away and request_stay_away_feet and not (request_stay_away_users1 or request_stay_away_children):
+        validation_error("Please select at least one of the options.")
+        
+  if request_no_contact and not (request_no_contact_users1 or request_no_contact_children):
+        validation_error("Please select at least one of the options.") 
+        
+  if not (request_not_abuse or request_no_stalking_assault or request_leave or request_no_firearms or request_surrender_firearms or request_living_expenses or request_child_support or surrender_plaintiffs_documents or surrender_vehicle or request_no_pet_harm or request_stay_away or request_no_contact or other_request or request_temp_PRR or request_DV_program):
+    validation_error("Please select at least one option.")
+
+
+
 ---
 code: |
   for child in children: 
@@ -3124,7 +3304,7 @@ review:
     - request_not_abuse
     button: |      
       % if request_not_abuse:
-      Order the defendant to not abuse your or your children, and not interfere with your personal liberty: **${ yesno(request_not_abuse) }**
+      Order the defendant to not abuse you or your children, and not interfere with your personal liberty: **${ yesno(request_not_abuse) }**
       
       % if request_not_abuse_users1:
       - You want the order to protect you from this: **${ yesno(request_not_abuse_users1) }**
@@ -3654,31 +3834,31 @@ attachment:
       - "residence_of_OP": ${ whose_name == "residence_of_OP" }
       - "residence_of_other": ${ whose_name == "residence_of_other" }
       - "residence_of_both": ${ whose_name == "residence_of_both" }
-      - "request_not_abuse_children": ${ request_not_abuse_kids }
-      - "request_no_stalking_assault": ${ request_no_stalking_assault }
-      - "request_leave": ${ request_leave }
-      - "request_no_firearms": ${ request_no_firearms }
-      - "request_surrender_firearms": ${ request_surrender_firearms }
-      - "request_no_pet_harm": ${ request_no_pet_harm }
-      - "request_control_of_pet": ${ request_control_of_pet }
-      - "request_stay_away_feet": ${ request_stay_away_feet }
-      - "request_stay_away": ${ request_stay_away }
-      - "request_no_contact_children": ${ request_no_contact }
-      - "request_temp_PRR": ${ request_temp_PRR }
-      - "other_children_PRR_names": ${ other_children_PRR_names }
-      - "other_children_PRR": ${ other_children_PRR }
-      - "request_supervised_contact": ${ request_supervised_contact }
-      - "supervisor1_name": ${ supervisor1_name }
-      - "supervisor1_location": ${ supervisor1_location }
-      - "request_children_exchange": ${ request_supervised_exchange }
-      - "supervisor2_location": ${ supervisor2_location }
-      - "supervisor2_name": ${ supervisor2_name }
-      - "request_no_drug_or_alcohol": ${ request_no_drugs_alcohol }
-      - "request_no_punish": ${ request_no_punishment }
-      - "request_child_support": ${ request_child_support }
-      - "request_other_description": ${ request_other_description }
-      - "request_other": ${ other_request }
-      - "request_all_emergency": ${ request_all_emergency }
+      - "request_not_abuse_children": ${ request_not_abuse_kids_OBO }
+      - "request_no_stalking_assault": ${ request_no_stalking_assault_OBO }
+      - "request_leave": ${ request_leave_OBO }
+      - "request_no_firearms": ${ request_no_firearms_OBO }
+      - "request_surrender_firearms": ${ request_surrender_firearms_OBO }
+      - "request_no_pet_harm": ${ request_no_pet_harm_OBO }
+      - "request_control_of_pet": ${ request_control_of_pet_OBO }
+      - "request_stay_away_feet": ${ request_stay_away_feet_OBO }
+      - "request_stay_away": ${ request_stay_away_OBO }
+      - "request_no_contact_children": ${ request_no_contact_OBO }
+      - "request_temp_PRR": ${ request_temp_PRR_OBO }
+      - "other_children_PRR": ${ other_children_PRR_OBO }
+      - "other_children_PRR_names": ${ other_children_PRR_names_OBO }
+      - "request_supervised_contact": ${ request_supervised_contact_OBO }
+      - "supervisor1_name": ${ supervisor1_name_OBO }
+      - "supervisor1_location": ${ supervisor1_location_OBO }
+      - "request_children_exchange": ${ request_supervised_exchange_OBO }
+      - "supervisor2_location": ${ supervisor2_location_OBO }
+      - "supervisor2_name": ${ supervisor2_name_OBO }
+      - "request_no_drug_or_alcohol": ${ request_no_drugs_alcohol_OBO }
+      - "request_no_punish": ${ request_no_punishment_OBO }
+      - "request_child_support": ${ request_child_support_OBO }
+      - "request_other_description": ${ request_other_description_OBO }
+      - "request_other": ${ other_request_OBO }
+      - "request_all_emergency": ${ request_all_emergency_OBO }
       - "signature_date": ${ signature_date }
       - "users1_signature": ${ users[0].signature_if_final(i) }
 ---
@@ -3691,8 +3871,8 @@ attachment:
   fields:
       - "docket_number": ${ docket_number }
       - "trial_court_county": ${ trial_court.address.county }
-      - "users1_name": ${ users[0] }
-      - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
+      - "children1_name": ${ children[0] }
+      - "children1_birthdate": ${ format_date(children[0].birthdate, format='M/d/yyyy') }
       - "other_parties1_name__1": ${ other_parties[0] }
       - "other_parties1_name": ${ other_parties[0] }
       - "other_parties1_birthdate": >-
