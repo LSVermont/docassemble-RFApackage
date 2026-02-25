@@ -441,13 +441,15 @@ code: |
 mandatory: True
 code: |
   if who_needs_protection == 'order_obo_child':
-    RFAcomplaintonbehalfofminor_attachment.enabled = True
-    RFAaffidavit.enabled = True
+    RFAcomplaintonbehalfofminor.enabled = True
+    RFAaffidavitonbehalfofminor.enabled = True
     RFAcomplaint.enabled = False
+    RFAaffidavit.enabled = False
   else:
-    RFAcomplaintonbehalfofminor_attachment = False
-    RFAaffidavit.enabled = True
+    RFAcomplaintonbehalfofminor.enabled = False
+    RFAaffidavitonbehalfofminor.enabled = False
     RFAcomplaint.enabled = True
+    RFAaffidavit.enabled = True
 ---
 id: OBO CHILD how children related to you and defendant
 question: |
@@ -3527,16 +3529,17 @@ content: |
 objects:
   - RFApackage_Post_interview_instructions: ALDocument.using(title="NEXT STEPS - Instructions for filing these forms with the court", filename="RFApackage_next_steps.docx", enabled=True, has_addendum=False)
   - RFAcomplaint: ALDocument.using(title="RFA Complaint", filename="1_RFA-complaint", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - RFAcomplaintonbehalfofminor_attachment: ALDocument.using(title="RFA Complaint on behalf of a child or children", filename="5_RFA_complaint_on_behalf_of_minor", has_addendum=False, )
+  - RFAcomplaintonbehalfofminor: ALDocument.using(title="RFA Complaint on behalf of a child or children", filename="5_RFA_complaint_on_behalf_of_minor", has_addendum=False, )
   - RFAaffidavit: ALDocument.using(title="RFA Affidavit", filename="3_RFA-affidavit", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - RFAaffidavitonbehalfofminor: ALDocument.using(title="RFA Affidavit on behalf of a child or children", filename="6_RFA-affidavit-on-behalf-of-minor", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)    
   - RFAconfidentialcontactinfo: ALDocument.using(title="Address for Notification", filename="4_RFA-confidential-contact-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFAserviceinfo: ALDocument.using(title="Protection Order Service Info", filename="2_RFA-service-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 
 ---
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[RFApackage_Post_interview_instructions, RFAcomplaint, RFAcomplaintonbehalfofminor_attachment, RFAaffidavit, RFAconfidentialcontactinfo, RFAserviceinfo], filename="RFApackage", title="Download all forms", enabled=True)
-  #- al_court_bundle: ALDocumentBundle.using(elements=[RFAaffidavit, RFAconfidentialcontactinfo, RFAcomplaint, RFAcomplaintonbehalfofminor_attachment, RFAserviceinfo],  filename="RFApackage", title="All forms to deliver to court", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[RFApackage_Post_interview_instructions, RFAcomplaint, RFAcomplaintonbehalfofminor, RFAaffidavit, RFAaffidavitonbehalfofminor, RFAconfidentialcontactinfo, RFAserviceinfo], filename="RFApackage", title="Download all forms", enabled=True)
+  #- al_court_bundle: ALDocumentBundle.using(elements=[RFAcomplaint, RFAcomplaintonbehalfofminor, RFAaffidavit, RFAaffidavitonbehalfofminor, RFAconfidentialcontactinfo, RFAserviceinfo],  filename="RFApackage", title="All forms to deliver to court", enabled=True)
 ---
 attachment:
   variable name: RFAaffidavit.addendum
@@ -3551,7 +3554,7 @@ attachment:
 attachment:
   name: 5 RFA_complaint_on_behalf_of_minor
   filename: 5_RFA_complaint_on_behalf_of_minor
-  variable name: RFAcomplaintonbehalfofminor_attachment[i]
+  variable name: RFAcomplaintonbehalfofminor[i]
   skip undefined: True
   pdf template file: 5_RFA-complaint-on-behalf-of-minor.pdf
   fields:
@@ -3679,7 +3682,109 @@ attachment:
       - "request_all_emergency": ${ request_all_emergency }
       - "signature_date": ${ signature_date }
       - "users1_signature": ${ users[0].signature_if_final(i) }
-
+---
+attachment:
+  name: 6 RFA-affidavit-on-behalf-of-minor
+  filename: 6_RFA-affidavit-on-behalf-of-minor
+  variable name: RFAaffidavitonbehalfofminor[i]
+  skip undefined: True
+  pdf template file: 6_RFA-affidavit-on-behalf-of-minor.pdf
+  fields:
+      - "docket_number": ${ docket_number }
+      - "trial_court_county": ${ trial_court.address.county }
+      - "users1_name": ${ users[0] }
+      - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
+      - "other_parties1_name__1": ${ other_parties[0] }
+      - "other_parties1_name": ${ other_parties[0] }
+      - "other_parties1_birthdate": >-
+          ${ "/".join([str(f) for f in [other_parties[0].birth_month, other_parties[0].birth_day, other_parties[0].birth_year] if f]) }
+      - "other_parties1_address_address": |
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
+          Unknown
+          % else: 
+          ${ other_parties[0].address.line_one() }
+          % endif 
+      - "other_parties1_address_city": |
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
+           
+          % else: 
+          ${ other_parties[0].address.city }
+          % endif 
+      - "other_parties1_address_state": |
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
+           
+          % else: 
+          ${ other_parties[0].address.state }
+          % endif 
+      - "other_parties1_address_zip": |
+          % if defined('defendant_address_unknown') and defendant_address_unknown: 
+           
+          % else: 
+          ${ other_parties[0].address.zip }
+          % endif 
+      - "recent_incident_date": ${ recent_incident_date }
+      - "recent_incident_time": ${ recent_incident_time }
+      - "recent_incident_town": ${ recent_incident_town }
+      - "recent_incident_state": |
+          % if recent_incident_state: 
+          ${ recent_incident_state }
+          % elif other_recent_incident_state:
+          ${ other_recent_incident_state }
+          % endif 
+      - "recent_incident_description": ${ RFAaffidavit.safe_value("recent_incident_description") }
+      - "recent_incident_most_serious_yes": ${ recent_incident_most_serious }
+      - "recent_incident_most_serious_no": ${ not recent_incident_most_serious }
+      - "serious_incident_date": ${ serious_incident_date }
+      - "serious_incident_time": ${ serious_incident_time }
+      - "serious_incident_town": ${ serious_incident_town }
+      - "serious_incident_state": |
+          % if serious_incident_state: 
+          ${ serious_incident_state }
+          % elif other_serious_incident_state:
+          ${ other_serious_incident_state }
+          % endif
+      - "serious_incident_description": ${ RFAaffidavit.safe_value("serious_incident_description") }
+      - "other_incident_description": ${ RFAaffidavit.safe_value("other_incident_description") }
+      - "other_parties1_weapon_yes": ${ weapons.there_are_any == True}
+      - "other_parties1_weapon_no": ${ weapons.there_are_any == False }
+      - "other_parties1_weapon_DK": ${ weapons.there_are_any == None }
+      - "weapon1": ${ weapons[0].description }
+      - "weapon1_location": ${ weapons[0].weapon_location }
+      - "weapon2": ${ weapons[1].description }
+      - "weapon2_location": ${ weapons[1].weapon_location }
+      - "weapon3_location": ${ weapons[2].weapon_location }
+      - "weapon3": ${ weapons[2].description }
+      - "weapon4_location": ${ weapons[3].weapon_location }
+      - "weapon4": ${ weapons[3].description }
+      - "weapon5_location": ${ weapons[4].weapon_location }
+      - "weapon5": ${ weapons[4].description }
+      - "weapon6_location": ${ weapons[5].weapon_location }
+      - "weapon6": ${ weapons[5].description }
+      - "weapon7": ${ weapons[6].description }
+      - "weapon7_location": ${ weapons[6].weapon_location }
+      - "weapon8": ${ weapons[7].description }
+      - "weapon8_location": ${ weapons[7].weapon_location }
+      - "extra_sheets_attached": |
+          % if weapons.number() > 8: 
+            1
+          % else:
+            0
+          % endif
+      - "weapons_overflow": |
+          % if weapons.number() > 8: 
+            ${ RFAaffidavit.has_overflow() }
+          % endif
+      - "used_weapon_yes": ${ used_weapon }
+      - "used_weapon_no": ${ not used_weapon }
+      - "used_weapon_how": ${ RFAaffidavit.safe_value("used_weapon_how") }
+      - "danger_more_abuse_yes": ${ danger_more_abuse }
+      - "danger_more_abuse_no": ${ not danger_more_abuse }
+      - "danger_more_abuse_why": ${ danger_more_abuse_why }
+      - "other_parties1_military_yes": ${ other_parties1_military }
+      - "other_parties1_military_no": ${ not other_parties1_military }
+      - "printed_signature": ${ printed_signature }
+      - "affidavit_signature_date": ${ format_date(signature_date, format='M/d/yyyy') }
+      - "users1_signature": ${ users[0].signature_if_final(i) }
 ---
 attachment:
   name: Post-interview-Instructions
@@ -4189,6 +4294,19 @@ code: |
   RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
   RFAaffidavit.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
   RFAaffidavit.overflow_fields.gathered = True
+---
+code: |
+  RFAaffidavitonbehalfofminor.overflow_fields["weapons"].label = "Additional weapons"
+  RFAaffidavitonbehalfofminor.overflow_fields["weapons"].overflow_trigger = 8
+  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 1143
+  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].label = "Please describe the most recent incident with as much detail as possible."
+  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 752
+  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].label = "Please describe the most serious incident with as much detail as possible."
+  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1838
+  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].label = "Please describe any other incident(s) with as much detail as possible."
+  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 590
+  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].label = "Describe in detail how they used or threatened to use weapon?"
+  RFAaffidavitonbehalfofminor.overflow_fields.gathered = True
 ---
 code:  |
   RFAserviceinfo.overflow_fields["location_of_home"].overflow_trigger = 850
