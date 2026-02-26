@@ -244,6 +244,7 @@ code: |
     users[0].birthdate
     users[0].address.address
     users[0].phone_number
+    share_contact
     nav.set_section("kids")
     children.gather()
     children[0].name.first
@@ -267,7 +268,7 @@ code: |
       serious_incident_date
       serious_incident_checkboxes_OBO
     else:
-      serious_incident_date == recent_incident_date
+      serious_incident_date == recent_incident_date_OBO
       serious_incident_checkboxes_OBO
     other_incident
     set_progress(60)
@@ -3148,37 +3149,45 @@ review:
   - note: | 
       ##What happened##
   - Edit: 
-    - recent_incident_description
+    - recent_incident_date
     button: |
       **Most recent incident**
      
-       % if defined("recent_incident_coercive") and recent_incident_coercive:
+      % if defined("recent_incident_coercive") and recent_incident_coercive:
       - Date when abusive behavior first started: **${ recent_incident_coercive_start_date }**
       % endif
-      
+
+      % if defined("recent_incident_date"):
       - Date of the most recent incident: **${ recent_incident_date }**
+      % endif
       
-      % if recent_incident_time:
+      % if defined("recent_incident_time"):
       - Time of the most recent incident: **${ recent_incident_time }**
       % endif
       
-      % if recent_incident_town:
-      - Town of the most recent incident: **${ showifdef('recent_incident_town') }**
+      % if defined("recent_incident_town"):
+      - Town of the most recent incident: **${ recent_incident_town }**
       % endif
       
-      % if recent_incident_state:
+      % if defined("recent_incident_state"):
       - State of the most recent incident: **${ recent_incident_state }**
       % endif
       
-      % if other_recent_incident_state:
+      % if defined("other_recent_incident_state"):
       - Province/state/country of the most recent incident if outside of the U.S.: **${other_recent_incident_state}**
       % endif
       
+      % if defined("recent_incident_description"):
       - Most recent incident description: **${ recent_incident_description }**
-      
+      % endif
+
+      % if recent_incident_users1:
       - You were the target of the recent abuse: **${ yesno(recent_incident_users1) }**
-      
+      % endif
+
+      % if recent_incident_children:
       - Your children were the target of the recent abuse: **${ yesno(recent_incident_children) }**
+      % endif
       
       % if recent_incident_children:
       - The children who were the target of the recent abuse: 
@@ -3213,17 +3222,14 @@ review:
       % endif
       
       % if recent_incident_assault:
-      
       - The defendant sexually assaulted you and/or the child/children: **${ yesno(recent_incident_assault) }**
       
       - The defendant sexually assaulted you: **${ yesno(recent_incident_assault_users1) }**
       
       - The defendant sexually assaulted the child/children: **${ yesno(recent_incident_assault_children) }**
-      
       % endif
 
       % if defined("recent_incident_coercive") and recent_incident_coercive:
-      
       - The defendant coercively controlled you and/or the child/children: **${ yesno(recent_incident_coercive) }**
       
       - The defendant coercively controlled you: **${ yesno(recent_incident_coercive_users1) }**
@@ -3232,6 +3238,102 @@ review:
       
       % endif
 
+  - Edit: 
+    - recent_incident_date_OBO
+    button: |
+      **Most recent incident**
+     
+      % if defined("recent_incident_coercive") and recent_incident_coercive:
+      - Date when abusive behavior first started: **${ recent_incident_coercive_start_date }**
+      % endif
+
+      % if defined("recent_incident_date_OBO"):
+      - Date of the most recent incident: **${ recent_incident_date_OBO }**
+      % endif
+      
+      % if defined("recent_incident_time"):
+      - Time of the most recent incident: **${ recent_incident_time }**
+      % endif
+      
+      % if defined("recent_incident_town"):
+      - Town of the most recent incident: **${ recent_incident_town }**
+      % endif
+      
+      % if defined("recent_incident_state"):
+      - State of the most recent incident: **${ recent_incident_state }**
+      % endif
+      
+      % if not defined("recent_incident_state") and defined("other_recent_incident_state"):
+      - Province/state/country of the most recent incident if outside of the U.S.: **${other_recent_incident_state}**
+      % endif
+      
+      % if defined("recent_incident_description"):
+      - Most recent incident description: **${ recent_incident_description }**
+      % endif
+
+
+  - Edit: 
+    - serious_incident_abused_OBO
+    button: |
+      **Most recent incident**
+      % if recent_incident_users1:
+      - You were the target of the recent abuse: **${ yesno(recent_incident_users1) }**
+      % endif
+
+      % if recent_incident_children:
+      - Your children were the target of the recent abuse: **${ yesno(recent_incident_children) }**
+      % endif
+      
+      % if recent_incident_children:
+      - The children who were the target of the recent abuse: 
+      **${ showifdef('recent_incident_children_names') }** 
+      % if defined('recent_incident_other_children'):
+      **, ${ showifdef('recent_incident_other_children') }**
+      % endif
+      % endif
+      
+      % if recent_incident_harm:
+      - The defendant caused or attempted to cause physical harm: **${ yesno(recent_incident_harm) }**
+      % endif
+      
+      % if recent_incident_fear:
+      - The defendant placed you and/or them in fear of imminent serious physical harm: **${ yesno(recent_incident_fear) }**
+      % endif
+
+      % if recent_incident_abused:
+      - The defendant abused the child/children: **${ yesno(recent_incident_abused) }**
+      % endif
+
+      % if recent_incident_stalked:
+      - The defendant stalked you and/or the child/children: **${ yesno(recent_incident_stalked) }**
+      
+      - The defendant stalked you: **${ yesno(recent_incident_stalked_users1) }**
+      
+      - The defendant stalked the child/children: **${ yesno(recent_incident_stalked_children) }**
+      
+      - First stalking: **${ showifdef('recent_incident_stalked_date1') }**
+      
+      - Second stalking: **${ showifdef('recent_incident_stalked_date2') }**
+      % endif
+      
+      % if recent_incident_assault:
+      - The defendant sexually assaulted you and/or the child/children: **${ yesno(recent_incident_assault) }**
+      
+      - The defendant sexually assaulted you: **${ yesno(recent_incident_assault_users1) }**
+      
+      - The defendant sexually assaulted the child/children: **${ yesno(recent_incident_assault_children) }**
+      % endif
+
+      % if defined("recent_incident_coercive") and recent_incident_coercive:
+      - The defendant coercively controlled you and/or the child/children: **${ yesno(recent_incident_coercive) }**
+      
+      - The defendant coercively controlled you: **${ yesno(recent_incident_coercive_users1) }**
+      
+      - The defendant coercively controlled the child/children: **${ yesno(recent_incident_coercive_children) }**
+      
+      % endif
+
+      
   - Edit:
     - recent_incident_most_serious
     button: |
@@ -3918,7 +4020,7 @@ attachment:
           % endif 
       - "users1_name": ${ users[0] }
       - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
-      - "recent_incident_date": ${ recent_incident_date }
+      - "recent_incident_date": ${ recent_incident_date_OBO }
       - "recent_incident_time": ${ recent_incident_time }
       - "recent_incident_town": ${ recent_incident_town }
       - "recent_incident_state": |
