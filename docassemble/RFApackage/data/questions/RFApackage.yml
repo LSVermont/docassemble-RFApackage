@@ -58,6 +58,8 @@ metadata:
     - 400-00150C
     - 400-00151
     - 400-00156
+    - 400-00150CC
+    - 400-00151M
     - DPS-132
   fees:
     - Filing fee: 0.00
@@ -3864,6 +3866,7 @@ attachment:
       - "request_all_emergency": ${ request_all_emergency }
       - "signature_date": ${ signature_date }
       - "users1_signature": ${ users[0].signature_if_final(i) }
+      - "printed_signature": ${ printed_signature }
 ---
 attachment:
   name: 6 RFA-affidavit-on-behalf-of-minor
