@@ -3374,22 +3374,52 @@ review:
       - Other incident(s) description: **${ showifdef('other_incident_description') }**
       % endif
   - note: | 
-      ##Your safety##
+      ##Safety and weapons##
   - Edit: 
     - danger_more_abuse
-    - weapons.there_are_any
-    - weapons.revisit
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse) }**
       
       % if danger_more_abuse:
-      % if danger_more_abuse_why:
+      % if danger_more_abuse_who["users1"]:
+      - Danger of more abuse to you.
+      % endif
+      
+      % if danger_more_abuse_who["children"]:
+      - Danger of more abuse to the child/children.
+      % endif
+      
+      % if defined("danger_more_abuse_why"):
       - Information not already described before: **${ danger_more_abuse_why }**
       % else:
       - Information not already described before: **None**
       % endif
       % endif
+
+  - Edit: 
+    - danger_more_abuse_OBO
+    - danger_abuse_other_children_affidavit
+    button: |
+      - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse_OBO) }**
       
+      % if danger_more_abuse_OBO and danger_abuse_other_children_affidavit:
+      - There is danger of more abuse to these children in the household:
+      % endif
+      
+      % for child in children: 
+      **${ child }**
+      
+      % endfor
+      % if defined("danger_abuse_other_children_affidavit_why"):
+      - Why: **${ danger_abuse_other_children_affidavit_why }**
+      % endif
+
+#      % if item.attribute_defined('in_danger'):
+#      % endif
+  - Edit: 
+    - weapons.there_are_any
+    - weapons.revisit
+    button: |      
       - The defendant has used, displayed or threatened to use a gun/firearm against you or against another family member?: **${ yesno(used_firearm) }**
 
       - The defendant used, displayed or threatened to use a gun/firearm or another deadly weapon against you or another family member?: **${ yesno(used_weapon) }**
