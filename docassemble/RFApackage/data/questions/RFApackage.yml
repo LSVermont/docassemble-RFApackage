@@ -3910,8 +3910,8 @@ attachment:
   fields:
       - "trial_court_county": ${ trial_court.address.county }
       - "docket_number": ${ docket_number }
-      - "children1_name": ${ children[0].name }
-      - "children1_birthdate": ${ format_date(children[0].birthdate, format='M/d/yyyy') }
+      - "children1_name__1": ${ children[0].name }
+      - "children1_birthdate__1": ${ format_date(children[0].birthdate, format='M/d/yyyy') }
       - "other_parties1_name": ${ other_parties[0] }
       - "other_parties1_birthdate": >-
           ${ "/".join([str(f) for f in [other_parties[0].birth_month, other_parties[0].birth_day, other_parties[0].birth_year] if f]) }
@@ -3972,23 +3972,21 @@ attachment:
           False
           % endif
           % endif
-      - "children1_relationship_users1": |
+      - "children1_name__2": ${ children[0].name }
+      - "children1_birthdate__2": ${ format_date(children[0].birthdate, format='M/d/yyyy') }
+      - "children1_relationship_users1__2": |
           % if children[0].in_danger:
           ${ children[0].relationship_users1 }
           % endif
-      - "children1_relationship_OP": ${ children[0].relationship_OP }
-      - "children2_name": ${ children[1] }
-      - "children2_birthdate": ${ format_date(children[1].birthdate, format='M/d/yyyy') }
-      - "children2_relationship_users1": ${ children[1].relationship_users1 }
-      - "children2_relationship_OP": ${ children[1].relationship_OP }
-      - "children3_name": ${ children[2] }
-      - "children3_name": ${ children[2] }
-      - "children3_birthdate": ${ format_date(children[2].birthdate, format='M/d/yyyy') }
-      - "children3_birthdate": ${ format_date(children[2].birthdate, format='M/d/yyyy') }
-      - "children3_relationship_users1": ${ children[2].relationship_users1 }
-      - "children3_relationship_users1": ${ children[2].relationship_users1 }
-      - "children3_relationship_OP": ${ children[2].relationship_OP }
-      - "children3_relationship_OP": ${ children[2].relationship_OP }
+      - "children1_relationship_OP__2": ${ children[0].relationship_OP }
+      - "children2_name__1": ${ children[1] }
+      - "children2_birthdate__1": ${ format_date(children[1].birthdate, format='M/d/yyyy') }
+      - "children2_relationship_users1__1": ${ children[1].relationship_users1 }
+      - "children2_relationship_OP__1": ${ children[1].relationship_OP }
+      - "children3_name__1": ${ children[2] }
+      - "children3_birthdate__1": ${ format_date(children[2].birthdate, format='M/d/yyyy') }
+      - "children3_relationship_users1__1": ${ children[2].relationship_users1 }
+      - "children3_relationship_OP__1": ${ children[2].relationship_OP }
       - "used_firearm": ${ used_firearm }
       - "incarcerated": ${ incarcerated }
       - "children1_no_shelter": ${ children1_no_shelter }
@@ -4015,51 +4013,51 @@ attachment:
       - "request_stay_away": ${ request_stay_away_OBO }
       - "request_no_contact_children": ${ request_no_contact_OBO }
       - "request_temp_PRR": ${ request_temp_PRR_OBO }
-      - "children1_name": |
+      - "children1_name__3": |
           % if children[0].custody_wanted:
           ${ children[0] }
           % endif
-      - "children1_birthdate": |
+      - "children1_birthdate__3": |
           % if children[0].custody_wanted:
           ${ format_date(children[0].birthdate, format='M/d/yyyy') }
           % endif
-      - "children1_relationship_users1": |
+      - "children1_relationship_users1__3": |
           % if children[0].custody_wanted:
           ${ children[0].relationship_users1 }
           % endif
-      - "children1_relationship_OP":  |
+      - "children1_relationship_OP__3":  |
           % if children[0].custody_wanted:
           ${ children[0].relationship_OP }
           % endif
-      - "children2_name": |
+      - "children2_name__2": |
           % if children[1].custody_wanted:
           ${ children[1] }
           % endif
-      - "children2_birthdate": |
+      - "children2_birthdate__2": |
           % if children[1].custody_wanted:
           ${ format_date(children[1].birthdate, format='M/d/yyyy') }
           % endif      
-      - "children2_relationship_users1": |
+      - "children2_relationship_users1__2": |
           % if children[1].custody_wanted:
           ${ children[1].relationship_users1 }
           % endif
-      - "children2_relationship_OP": |
+      - "children2_relationship_OP__2": |
           % if children[1].custody_wanted:
           ${ children[1].relationship_OP }
           % endif
-      - "children3_name": |
+      - "children3_name__2": |
           % if children[2].custody_wanted:
           ${ children[2] }
           % endif      
-      - "children3_birthdate": |
+      - "children3_birthdate__2": |
           % if children[2].custody_wanted:
           ${ format_date(children[2].birthdate, format='M/d/yyyy') }
           % endif      
-      - "children3_relationship_users1": |
+      - "children3_relationship_users1__2": |
           % if children[2].custody_wanted:
           ${ children[2].relationship_users1 }
           % endif
-      - "children3_relationship_OP": |
+      - "children3_relationship_OP__2": |
           % if children[2].custody_wanted:
           ${ children[2].relationship_OP }
           % endif
