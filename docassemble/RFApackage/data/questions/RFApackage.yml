@@ -249,9 +249,9 @@ code: |
     children.gather()
     children[0].name.first
     children[0].birthdate
-    danger_more_abuse_OBO
-    danger_abuse_other_children_affidavit
     children[0].in_danger
+    if danger_more_abuse_OBO:
+      danger_abuse_other_children_affidavit_why
     parent_guardian
     nav.set_section('defendant')
     other_parties.gather()
@@ -469,8 +469,8 @@ question: |
 fields:
   - note: |
       **Your relationship to them**
-  - "In a word or two, what is your relationship to the child or children?": users1_relationship_to_children1
-    maxlength: 24
+  - "In just a few words, what is your relationship to the child or children?": users1_relationship_to_children1
+    maxlength: 30
   - note: |
       **Defendant's relationship to them**
       
@@ -517,16 +517,16 @@ fields:
       We'll ask you about that home on the next screen.
     show if: children1_no_shelter
 ---
-code: |
-  for child in children: 
-    child.in_danger
-    child.relationship_users1
-    child.relationship_OP
-  get_kids_in_danger = True
+#code: |
+#  for child in children: 
+#    child.in_danger
+#    child.relationship_users1
+#    child.relationship_OP
+#  get_kids_in_danger = True
 ---
 id: OBO danger of more abuse
 question: |
-  Danger of more abuse
+  Immediate danger of more abuse
 subquestion: |
   If you want to get a court order that starts right way, answer **Yes** to this question.
 fields:
@@ -543,22 +543,20 @@ fields:
   - "In 1 or 2 words, what is ${x.name.first}'s relationship to you?": x.relationship_users1
     maxlength: 22
     show if: x.in_danger
-  - "What is ${x.name.first}'s relationship to the defendant?": x.relationship_OP
+  - "What is ${x.name.first}'s relationship to the defendant? (The “defendant” is the person who is abusing the child.)": x.relationship_OP
     maxlength: 22
     show if: x.in_danger
 ---
 
 id: OBO danger of more abuse to other children in household
 question: |
-  Danger of abuse to other children in the home
+  Danger of abuse to children in the household
 fields:
-  - "Are there other children in the home who are in danger of abuse from the defendant?": danger_abuse_other_children_affidavit
-    datatype: yesnoradio
-  - "Why do you think they are in danger?": danger_abuse_other_children_affidavit_why
+  - "Why do you think the children are in danger?": danger_abuse_other_children_affidavit_why
     input type: area
-    js show if: |
-      val("danger_abuse_other_children_affidavit") == true
-    maxlength: 310
+    #js show if: |
+      #val("danger_abuse_other_children_affidavit") == true
+    #maxlength: 310
 ---
 id: basic questions intro screen
 question: |
@@ -2682,7 +2680,6 @@ review:
   - Edit: 
     - other_parties.revisit
     button: |
-      **Defendant**
       % for item in other_parties:
       
       - **${ item }**
@@ -2690,11 +2687,11 @@ review:
       % endfor
   - Edit: other_parties1_aliases
     button: |      
-
+      - Other names the defendant uses (aliases): 
       % if other_parties1_aliases != '':
-      - Other names the defendant uses (aliases): **${ showifdef('other_parties1_aliases') }**
+      **${ showifdef('other_parties1_aliases') }**
       % else:
-      - **No other names used**
+      **None**
       % endif
       
   - Edit: other_parties[0].address.address
@@ -2721,6 +2718,9 @@ review:
       % endif
       % if other_parties[0].birth_year:
       **${ other_parties[0].birth_year }**
+      % endif
+      % if not other_parties[0].birth_month and not other_parties[0].birth_day and not other_parties[0].birth_year:
+      **Unknown**
       % endif
       
       - Defendant is about this old: **${ showifdef('other_parties_estimated_age') }**
@@ -3396,7 +3396,6 @@ review:
 
   - Edit: 
     - danger_more_abuse_OBO
-    - danger_abuse_other_children_affidavit
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse_OBO) }**
       
@@ -3911,7 +3910,7 @@ attachment:
   fields:
       - "trial_court_county": ${ trial_court.address.county }
       - "docket_number": ${ docket_number }
-      - "children1_name": ${ children[0] }
+      - "children1_name": ${ children[0].name }
       - "children1_birthdate": ${ format_date(children[0].birthdate, format='M/d/yyyy') }
       - "other_parties1_name": ${ other_parties[0] }
       - "other_parties1_birthdate": >-
@@ -3966,22 +3965,21 @@ attachment:
           False
           % endif
       - "danger_more_abuse_other_children": |
+          % if children.number_gathered() > 1:
           % if children[1].in_danger or children[2].in_danger:
           True
           % else:
           False
           % endif
-      - "children1_relationship_users1": ${ children[0].relationship_users1 }
-      - "children1_relationship_users1": ${ children[0].relationship_users1 }
-      - "children1_relationship_OP": ${ children[0].relationship_OP }
+          % endif
+      - "children1_relationship_users1": |
+          % if children[0].in_danger:
+          ${ children[0].relationship_users1 }
+          % endif
       - "children1_relationship_OP": ${ children[0].relationship_OP }
       - "children2_name": ${ children[1] }
-      - "children2_name": ${ children[1] }
-      - "children2_birthdate": ${ format_date(children[1].birthdate, format='M/d/yyyy') }
       - "children2_birthdate": ${ format_date(children[1].birthdate, format='M/d/yyyy') }
       - "children2_relationship_users1": ${ children[1].relationship_users1 }
-      - "children2_relationship_users1": ${ children[1].relationship_users1 }
-      - "children2_relationship_OP": ${ children[1].relationship_OP }
       - "children2_relationship_OP": ${ children[1].relationship_OP }
       - "children3_name": ${ children[2] }
       - "children3_name": ${ children[2] }
@@ -4179,7 +4177,12 @@ attachment:
       - "used_weapon_yes": ${ used_weapon }
       - "used_weapon_no": ${ not used_weapon }
       - "used_weapon_how": ${ RFAaffidavitonbehalfofminor.safe_value("used_weapon_how") }
-      - "danger_abuse_other_children_affidavit_yes": ${ danger_abuse_other_children_affidavit }
+      - "danger_abuse_other_children_affidavit_yes": |
+          % if len(children.in_danger) > 1:
+          ${ True }
+          % else: 
+          ${ False }
+          % endif
       - "danger_abuse_other_children_affidavit_no": ${ not danger_abuse_other_children_affidavit }
       - "danger_abuse_other_children_affidavit_why": ${ danger_abuse_other_children_affidavit_why }
       - "other_parties1_military_yes": ${ other_parties1_military }
