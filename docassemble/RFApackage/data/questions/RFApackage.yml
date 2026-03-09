@@ -244,10 +244,14 @@ code: |
     users[0].birthdate
     users[0].address.address
     users[0].phone_number
+    share_contact
     nav.set_section("kids")
     children.gather()
     children[0].name.first
     children[0].birthdate
+    danger_more_abuse_OBO
+    danger_abuse_other_children_affidavit
+    children[0].in_danger
     parent_guardian
     nav.set_section('defendant')
     other_parties.gather()
@@ -267,13 +271,11 @@ code: |
       serious_incident_date
       serious_incident_checkboxes_OBO
     else:
-      serious_incident_date == recent_incident_date
+      serious_incident_date == recent_incident_date_OBO
       serious_incident_checkboxes_OBO
     other_incident
     set_progress(60)
-    if danger_more_abuse_OBO:
-      get_kids_in_danger
-    danger_abuse_other_children_affidavit
+
     nav.set_section('ask_weapons')
     if used_firearm:
       weapons.gather()
@@ -413,6 +415,7 @@ progressive: False
 code: |
   children[i].name.first
   children[i].birthdate
+  children[i].in_danger
   children[i].complete=True
 ---
 #####################################################################
@@ -517,8 +520,8 @@ fields:
 code: |
   for child in children: 
     child.in_danger
-    #child.relationship_users1
-    #child.relationship_OP
+    child.relationship_users1
+    child.relationship_OP
   get_kids_in_danger = True
 ---
 id: OBO danger of more abuse
@@ -1928,12 +1931,9 @@ fields:
   - note: If you choose custody, we will ask for the names of the children on the next screen.
     show if: request_temp_PRR
 
-
   - "Order the defendant to complete a domestic violence accountability program approved by the Council on Domestic Violence": request_DV_program
     datatype: yesno
 
-  
-    
   - "I want to ask for something else. (You can write what you want on an upcoming screen.)": other_request
     datatype: yesno
     
@@ -2566,7 +2566,6 @@ review:
     #- users[0].address.address
     #- users[0].mailing_address.address
     button: |
-      **Plaintiff / You**
       % if users.there_are_any:
       % for item in users:
       
@@ -2620,7 +2619,7 @@ review:
       
   - Edit: children.revisit
     button: |
-      **Children involved**
+      **Children involved in this case**
       
       % if children.there_are_any:
       % for item in children:
@@ -3148,37 +3147,45 @@ review:
   - note: | 
       ##What happened##
   - Edit: 
-    - recent_incident_description
+    - recent_incident_date
     button: |
       **Most recent incident**
      
-       % if defined("recent_incident_coercive") and recent_incident_coercive:
+      % if defined("recent_incident_coercive") and recent_incident_coercive:
       - Date when abusive behavior first started: **${ recent_incident_coercive_start_date }**
       % endif
-      
+
+      % if defined("recent_incident_date"):
       - Date of the most recent incident: **${ recent_incident_date }**
+      % endif
       
-      % if recent_incident_time:
+      % if defined("recent_incident_time"):
       - Time of the most recent incident: **${ recent_incident_time }**
       % endif
       
-      % if recent_incident_town:
-      - Town of the most recent incident: **${ showifdef('recent_incident_town') }**
+      % if defined("recent_incident_town"):
+      - Town of the most recent incident: **${ recent_incident_town }**
       % endif
       
-      % if recent_incident_state:
+      % if defined("recent_incident_state"):
       - State of the most recent incident: **${ recent_incident_state }**
       % endif
       
-      % if other_recent_incident_state:
+      % if defined("other_recent_incident_state"):
       - Province/state/country of the most recent incident if outside of the U.S.: **${other_recent_incident_state}**
       % endif
       
+      % if defined("recent_incident_description"):
       - Most recent incident description: **${ recent_incident_description }**
-      
+      % endif
+
+      % if recent_incident_users1:
       - You were the target of the recent abuse: **${ yesno(recent_incident_users1) }**
-      
+      % endif
+
+      % if recent_incident_children:
       - Your children were the target of the recent abuse: **${ yesno(recent_incident_children) }**
+      % endif
       
       % if recent_incident_children:
       - The children who were the target of the recent abuse: 
@@ -3213,17 +3220,14 @@ review:
       % endif
       
       % if recent_incident_assault:
-      
       - The defendant sexually assaulted you and/or the child/children: **${ yesno(recent_incident_assault) }**
       
       - The defendant sexually assaulted you: **${ yesno(recent_incident_assault_users1) }**
       
       - The defendant sexually assaulted the child/children: **${ yesno(recent_incident_assault_children) }**
-      
       % endif
 
       % if defined("recent_incident_coercive") and recent_incident_coercive:
-      
       - The defendant coercively controlled you and/or the child/children: **${ yesno(recent_incident_coercive) }**
       
       - The defendant coercively controlled you: **${ yesno(recent_incident_coercive_users1) }**
@@ -3232,6 +3236,102 @@ review:
       
       % endif
 
+  - Edit: 
+    - recent_incident_date_OBO
+    button: |
+      **Most recent incident**
+     
+      % if defined("recent_incident_coercive") and recent_incident_coercive:
+      - Date when abusive behavior first started: **${ recent_incident_coercive_start_date }**
+      % endif
+
+      % if defined("recent_incident_date_OBO"):
+      - Date of the most recent incident: **${ recent_incident_date_OBO }**
+      % endif
+      
+      % if defined("recent_incident_time"):
+      - Time of the most recent incident: **${ recent_incident_time }**
+      % endif
+      
+      % if defined("recent_incident_town"):
+      - Town of the most recent incident: **${ recent_incident_town }**
+      % endif
+      
+      % if defined("recent_incident_state"):
+      - State of the most recent incident: **${ recent_incident_state }**
+      % endif
+      
+      % if not defined("recent_incident_state") and defined("other_recent_incident_state"):
+      - Province/state/country of the most recent incident if outside of the U.S.: **${other_recent_incident_state}**
+      % endif
+      
+      % if defined("recent_incident_description"):
+      - Most recent incident description: **${ recent_incident_description }**
+      % endif
+
+
+  - Edit: 
+    - serious_incident_abused_OBO
+    button: |
+      **Most recent incident**
+      % if recent_incident_users1:
+      - You were the target of the recent abuse: **${ yesno(recent_incident_users1) }**
+      % endif
+
+      % if recent_incident_children:
+      - Your children were the target of the recent abuse: **${ yesno(recent_incident_children) }**
+      % endif
+      
+      % if recent_incident_children:
+      - The children who were the target of the recent abuse: 
+      **${ showifdef('recent_incident_children_names') }** 
+      % if defined('recent_incident_other_children'):
+      **, ${ showifdef('recent_incident_other_children') }**
+      % endif
+      % endif
+      
+      % if recent_incident_harm:
+      - The defendant caused or attempted to cause physical harm: **${ yesno(recent_incident_harm) }**
+      % endif
+      
+      % if recent_incident_fear:
+      - The defendant placed you and/or them in fear of imminent serious physical harm: **${ yesno(recent_incident_fear) }**
+      % endif
+
+      % if recent_incident_abused:
+      - The defendant abused the child/children: **${ yesno(recent_incident_abused) }**
+      % endif
+
+      % if recent_incident_stalked:
+      - The defendant stalked you and/or the child/children: **${ yesno(recent_incident_stalked) }**
+      
+      - The defendant stalked you: **${ yesno(recent_incident_stalked_users1) }**
+      
+      - The defendant stalked the child/children: **${ yesno(recent_incident_stalked_children) }**
+      
+      - First stalking: **${ showifdef('recent_incident_stalked_date1') }**
+      
+      - Second stalking: **${ showifdef('recent_incident_stalked_date2') }**
+      % endif
+      
+      % if recent_incident_assault:
+      - The defendant sexually assaulted you and/or the child/children: **${ yesno(recent_incident_assault) }**
+      
+      - The defendant sexually assaulted you: **${ yesno(recent_incident_assault_users1) }**
+      
+      - The defendant sexually assaulted the child/children: **${ yesno(recent_incident_assault_children) }**
+      % endif
+
+      % if defined("recent_incident_coercive") and recent_incident_coercive:
+      - The defendant coercively controlled you and/or the child/children: **${ yesno(recent_incident_coercive) }**
+      
+      - The defendant coercively controlled you: **${ yesno(recent_incident_coercive_users1) }**
+      
+      - The defendant coercively controlled the child/children: **${ yesno(recent_incident_coercive_children) }**
+      
+      % endif
+
+      
   - Edit:
     - recent_incident_most_serious
     button: |
@@ -3272,22 +3372,52 @@ review:
       - Other incident(s) description: **${ showifdef('other_incident_description') }**
       % endif
   - note: | 
-      ##Your safety##
+      ##Safety and weapons##
   - Edit: 
     - danger_more_abuse
-    - weapons.there_are_any
-    - weapons.revisit
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse) }**
       
       % if danger_more_abuse:
-      % if danger_more_abuse_why:
+      % if danger_more_abuse_who["users1"]:
+      - Danger of more abuse to you.
+      % endif
+      
+      % if danger_more_abuse_who["children"]:
+      - Danger of more abuse to the child/children.
+      % endif
+      
+      % if defined("danger_more_abuse_why"):
       - Information not already described before: **${ danger_more_abuse_why }**
       % else:
       - Information not already described before: **None**
       % endif
       % endif
+
+  - Edit: 
+    - danger_more_abuse_OBO
+    - danger_abuse_other_children_affidavit
+    button: |
+      - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse_OBO) }**
       
+      % if danger_more_abuse_OBO and danger_abuse_other_children_affidavit:
+      - There is danger of more abuse to these children in the household:
+      % endif
+      
+      % for child in children: 
+      **${ child }**
+      
+      % endfor
+      % if defined("danger_abuse_other_children_affidavit_why"):
+      - Why: **${ danger_abuse_other_children_affidavit_why }**
+      % endif
+
+#      % if item.attribute_defined('in_danger'):
+#      % endif
+  - Edit: 
+    - weapons.there_are_any
+    - weapons.revisit
+    button: |      
       - The defendant has used, displayed or threatened to use a gun/firearm against you or against another family member?: **${ yesno(used_firearm) }**
 
       - The defendant used, displayed or threatened to use a gun/firearm or another deadly weapon against you or another family member?: **${ yesno(used_weapon) }**
@@ -3314,6 +3444,34 @@ review:
 
   - note: | 
       ##What you want in the RFA order##
+  - Edit: 
+    - request_not_abuse_OBO
+    button: |      
+      The things you would like (and would not like) included in the Relief from Abuse order. Select Edit on the right to edit the details.
+      
+      - Order the defendant to not abuse the child/children and not interfere with their personal liberty: **${ word(yesno(request_not_abuse_OBO)) }**
+      - Order the defendant to not stalk or sexually abuse the child/children: **${ word(yesno(request_no_stalking_assault_OBO)) }**
+      - Order the defendant to immediately leave the residence (home), and order sole possession of the residence to me as I care for the child/children: **${ word(yesno(request_leave_OBO)) }**
+      - Order the defendant not to possess or purchase guns/firearms for the duration of the order: **${ word(yesno(request_no_firearms_OBO)) }**
+      - Order the defendant to surrender immediately to law enforcement all guns/firearms that they own, possess or control: **${ word(yesno(request_surrender_firearms_OBO)) }**
+      - Order the defendant to stop cruelly treating a pet/pets: **${ word(yesno(request_no_pet_harm_OBO)) }**
+      - Order me to get temporary possession and control of a pet/pets: **${ word(yesno(request_control_of_pet_OBO)) }**
+      - Order the defendant to return any personal documents in their possession that pertain me and/or my children. (Examples: immigration documents, birth certificates and identification cards.): **${ word(yesno(surrender_plaintiffs_documents_OBO)) }**
+      - Order me to get temporary possession of a car/truck/vehicle: **${ word(yesno(surrender_vehicle_OBO)) }**
+      - Order the defendant to complete a domestic violence accountability program approved by the Council on Domestic Violence: **${ word(yesno(request_DV_program_OBO)) }**
+      - Order the defendant to stay a certain distance away from the child/children: **${ word(yesno(request_stay_away_OBO)) }**
+      % if defined("request_stay_away_feet_OBO"):
+      --- **${ request_stay_away_feet_OBO } feet**
+      % endif
+      - Order the defendant to not contact the child/children in any way: **${ word(yesno(request_no_contact_OBO)) }**
+      - Award temporary Parental Rights and Responsibilities (custody) of our child/children to me. (For child/children of you and the defendant.): **${ word(yesno(request_temp_PRR_OBO)) }**
+      - Order the defendant to have supervised contact with the child/children: **${ word(yesno(request_supervised_contact_OBO)) }**
+      - Order that the child/children will be picked up and dropped off at a certain supervised location: **${ word(yesno(request_supervised_exchange_OBO)) }**
+      - Order defendant not to take any regulated drug unless it is prescribed by a physician, or drink alcohol, for at least 8 hours prior to a scheduled contact with the child/children, or during contact with the child/children). And if defendant appears to be under the influence of drugs or alcohol, allow me to cancel the scheduled visit with the child/children.: **${ word(yesno(request_no_drugs_alcohol_OBO)) }**
+      - Order the defendant to not physically punish the child/children named above in any way:  **${ word(yesno(request_no_punishment_OBO)) }**
+      - Order the defendant to pay temporary child support for the child/children: **${ word(yesno(request_child_support_OBO)) }**
+      - I want to ask for something else. (You can write what you want on an upcoming screen.):  **${ word(yesno(other_request_OBO)) }** --- **${ request_other_description }**
+    
   - Edit: 
     - request_not_abuse
     button: |      
@@ -3859,6 +4017,54 @@ attachment:
       - "request_stay_away": ${ request_stay_away_OBO }
       - "request_no_contact_children": ${ request_no_contact_OBO }
       - "request_temp_PRR": ${ request_temp_PRR_OBO }
+      - "children1_name": |
+          % if children[0].custody_wanted:
+          ${ children[0] }
+          % endif
+      - "children1_birthdate": |
+          % if children[0].custody_wanted:
+          ${ format_date(children[0].birthdate, format='M/d/yyyy') }
+          % endif
+      - "children1_relationship_users1": |
+          % if children[0].custody_wanted:
+          ${ children[0].relationship_users1 }
+          % endif
+      - "children1_relationship_OP":  |
+          % if children[0].custody_wanted:
+          ${ children[0].relationship_OP }
+          % endif
+      - "children2_name": |
+          % if children[1].custody_wanted:
+          ${ children[1] }
+          % endif
+      - "children2_birthdate": |
+          % if children[1].custody_wanted:
+          ${ format_date(children[1].birthdate, format='M/d/yyyy') }
+          % endif      
+      - "children2_relationship_users1": |
+          % if children[1].custody_wanted:
+          ${ children[1].relationship_users1 }
+          % endif
+      - "children2_relationship_OP": |
+          % if children[1].custody_wanted:
+          ${ children[1].relationship_OP }
+          % endif
+      - "children3_name": |
+          % if children[2].custody_wanted:
+          ${ children[2] }
+          % endif      
+      - "children3_birthdate": |
+          % if children[2].custody_wanted:
+          ${ format_date(children[2].birthdate, format='M/d/yyyy') }
+          % endif      
+      - "children3_relationship_users1": |
+          % if children[2].custody_wanted:
+          ${ children[2].relationship_users1 }
+          % endif
+      - "children3_relationship_OP": |
+          % if children[2].custody_wanted:
+          ${ children[2].relationship_OP }
+          % endif
       - "other_children_PRR": ${ other_children_PRR_OBO }
       - "other_children_PRR_names": ${ other_children_PRR_names_OBO }
       - "request_supervised_contact": ${ request_supervised_contact_OBO }
@@ -3918,7 +4124,7 @@ attachment:
           % endif 
       - "users1_name": ${ users[0] }
       - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
-      - "recent_incident_date": ${ recent_incident_date }
+      - "recent_incident_date": ${ recent_incident_date_OBO }
       - "recent_incident_time": ${ recent_incident_time }
       - "recent_incident_town": ${ recent_incident_town }
       - "recent_incident_state": |
