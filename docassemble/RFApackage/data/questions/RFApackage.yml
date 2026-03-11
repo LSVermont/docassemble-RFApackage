@@ -552,9 +552,6 @@ question: |
 fields:
   - "Why do you think the children are in danger?": danger_abuse_other_children_affidavit_why
     input type: area
-    #js show if: |
-      #val("danger_abuse_other_children_affidavit") == true
-    #maxlength: 310
 ---
 id: basic questions intro screen
 question: |
@@ -2177,7 +2174,7 @@ fields:
 ---
 id: More on your relationship to defendant
 question: |
-  More on your relationship to defendant
+  More on your relationship to ${ other_parties[0] }
 subquestion: |
   Law enforcement asks these specific questions on their confidential form.
 fields:  
@@ -2449,11 +2446,13 @@ fields:
     datatype: radio
     code: |
       [{item: phone_number_formatted(item) or item} for item in [users[0].phone_number, users1_work_phone_number] if item] + [{"other": "Other"}]
+    #js show if: |
+      #val('notify_served') == true
     show if:
       variable: notify_served
       is: True
       code: |
-        users[0].phone_number or users1_work_phone_number
+        users[0].phone_number or users1_work_phone_number        
   - Notification phone number: users1_notify_phone_number_other_input
     datatype: al_international_phone
     maxlength: 45
@@ -3968,6 +3967,7 @@ attachment:
       - "serious_incident_assault": ${ serious_incident_assault_OBO }
       - "serious_incident_harm": ${ recent_incident_harm_OBO }
       - "serious_incident_fear": ${serious_incident_fear_OBO }
+      - "serious_incident_coercive": ${ serious_incident_coercive_OBO }
       - "danger_more_abuse": ${ danger_more_abuse_OBO }
       - "danger_more_abuse_children": |
           % if children[0].in_danger:
@@ -3998,7 +3998,7 @@ attachment:
       - "children3_birthdate__1": ${ format_date(children[2].birthdate, format='M/d/yyyy') }
       - "children3_relationship_users1__1": ${ children[2].relationship_users1 }
       - "children3_relationship_OP__1": ${ children[2].relationship_OP }
-      - "used_firearm": ${ used_firearm }
+      - "used_firearm": ${ used_firearm_OBO }
       - "incarcerated": ${ incarcerated }
       - "children1_no_shelter": ${ children1_no_shelter }
       - "residence_shared_address": |
