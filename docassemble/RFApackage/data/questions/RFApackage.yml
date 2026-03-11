@@ -4020,6 +4020,15 @@ attachment:
       - "request_surrender_firearms": ${ request_surrender_firearms_OBO }
       - "request_no_pet_harm": ${ request_no_pet_harm_OBO }
       - "request_control_of_pet": ${ request_control_of_pet_OBO }
+      - "surrender_plaintiffs_documents_OBO": ${ surrender_plaintiffs_documents_OBO }
+      - "surrender_plaintiffs_documents_users1_OBO":  ${ surrender_plaintiffs_documents_users1_OBO }
+      - "surrender_plaintiffs_documents_children_OBO":  ${ surrender_plaintiffs_documents_children_OBO }
+      - "surrender_vehicle_OBO": ${ surrender_vehicle_OBO }
+      - "surrender_vehicle_owner_OBO": ${ surrender_vehicle_owner_OBO }
+      - "surrender_vehicle_pays_loan_OBO": ${ surrender_vehicle_pays_loan_OBO }
+      - "surrender_vehicle_has_possession_OBO": ${ surrender_vehicle_has_possession_OBO }
+      - "surrender_vehicle_restricted_from_use_OBO": ${ surrender_vehicle_restricted_from_use_OBO }
+      - "request_DV_program_OBO": ${ request_DV_program_OBO }
       - "request_stay_away_feet": ${ request_stay_away_feet_OBO }
       - "request_stay_away": ${ request_stay_away_OBO }
       - "request_no_contact_children": ${ request_no_contact_OBO }
@@ -4147,7 +4156,7 @@ attachment:
           % if not recent_incident_most_serious:
           ${ serious_incident_date.format() }
           % else:
-          ${ recent_incident_date_OBO }
+          
           % endif
       - "serious_incident_time": ${ serious_incident_time }
       - "serious_incident_town": ${ serious_incident_town }
@@ -4188,17 +4197,24 @@ attachment:
           % if weapons.number() > 8: 
             ${ RFAaffidavit.has_overflow() }
           % endif
-      - "used_firearm": ${ used_firearm }
-      - "used_weapon_yes": ${ used_weapon }
-      - "used_weapon_no": ${ not used_weapon }
+      - "used_firearm": ${ used_firearm_OBO }
+      - "used_weapon_yes": ${ used_weapon_OBO }
+      - "used_weapon_no": ${ not used_weapon_OBO }
       - "used_weapon_how": ${ RFAaffidavitonbehalfofminor.safe_value("used_weapon_how") }
       - "danger_abuse_other_children_affidavit_yes": |
-          % if len(children.in_danger) > 1:
-          ${ True }
-          % else: 
-          ${ False }
+          % if children.number_gathered() > 1:
+          % if children[1].in_danger or children[2].in_danger:
+          True
+          % else:
+          False
           % endif
-      - "danger_abuse_other_children_affidavit_no": ${ not danger_abuse_other_children_affidavit }
+          % endif
+      - "danger_abuse_other_children_affidavit_no": |
+          % if children.number_gathered() < 2:
+          True
+          % else:
+          False
+          % endif
       - "danger_abuse_other_children_affidavit_why": ${ danger_abuse_other_children_affidavit_why }
       - "other_parties1_military_yes": ${ other_parties1_military }
       - "other_parties1_military_no": ${ not other_parties1_military }
