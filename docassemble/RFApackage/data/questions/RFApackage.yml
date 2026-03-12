@@ -335,7 +335,7 @@ code: |
     users[0].name.first
     users[0].birthdate
     users[0].address.address
-    ask_if_user_gets_reach_up
+    users1_gets_reach_up
     users[0].phone_number
     users[0].email
     set_progress(16)
@@ -897,7 +897,6 @@ fields:
     show if: users_mailing_address_different
 ---
 id: user reach up benefits 
-continue button field: ask_if_user_gets_reach_up
 question: |
   Do you get Reach Up benefits from the state?
 fields: 
@@ -1032,7 +1031,6 @@ fields:
     required: False
 ---
 id: About the defendant
-continue button field: more_about_defendant
 question: |
   More about ${ other_parties[0].name }
 subquestion: |
@@ -1044,8 +1042,9 @@ fields:
       who_needs_protection == 'order_obo_child'
   - "${ other_parties[0].name } is a current member of the military": other_parties1_military
     datatype: yesno
-  - "${ other_parties[0].name } is incarcerated (in jail) and has been convicted of one of the crimes specified in this Vermont law: 15 V.S.A. 1103 (c)(1)(B) ${ display_template(list_of_crimes, scrollable=True, collapse=True) }": incarcerated
+  - "${ other_parties[0].name } is incarcerated (in jail) and has been convicted of one of the crimes specified in this Vermont law: 15 V.S.A. 1103 (c)(1)(B) ${ display_template(list_of_crimes, scrollable=True, collapse=True) }": other_parties1_incarcerated
     datatype: yesno 
+continue button field: more_about_defendant
 ---
 template: coercive_control
 subject: About coercive control
@@ -1258,7 +1257,7 @@ fields:
 
   - "The defendant caused or attempted to cause physical harm": recent_incident_harm
     datatype: yesno
-  - "The defendant placed you and/or them in fear of imminent serious physical harm": recent_incident_fear
+  - "The defendant placed you and/or the child/children in fear of imminent serious physical harm": recent_incident_fear
     datatype: yesno
   - "The defendant abused the child/children -- meaning they physically injured or otherwise treated the child(ren) in a manner which placed child(ren's) life, health, development or welfare in jeopardy. See the definition of child abuse in Vermont law: [33 V.S.A. § 4912(1).](https://legislature.vermont.gov/statutes/section/33/049/04912)": recent_incident_abused
     datatype: yesno
@@ -1574,8 +1573,6 @@ question: |
 fields:
   - "Has the defendant used, displayed or threatened to use a **gun/firearm** against you or against another family member?": used_firearm
     datatype: yesnoradio
-  - "Has the defendant used, displayed or threatened to use a **gun/firearm** against the child/children or against another family member?": used_firearm_OBO
-    datatype: yesnoradio
   - note: The question above asks specifically about fireams (guns). This next question is found on a different form and it asks about **any** deadly weapons.
   - "Has the defendant used, displayed or threatened to use a **gun/firearm or another deadly weapon** against you or another family member?": used_weapon
     datatype: yesnoradio    
@@ -1664,7 +1661,7 @@ fields:
     datatype: yesno    
   - "Order me to get temporary possession and control of a pet/pets": request_control_of_pet_OBO
     datatype: yesno    
-  - "Order the defendant to return any personal documents in their possession that pertain me and/or my children. (Examples: immigration documents, birth certificates and identification cards.)": surrender_plaintiffs_documents_OBO
+  - "Order the defendant to return any personal documents in their possession that pertain to me and/or my children. (Examples: immigration documents, birth certificates and identification cards.)": surrender_plaintiffs_documents_OBO
     datatype: yesno
   - "I want my documents.": surrender_plaintiffs_documents_users1_OBO
     datatype: yesno
@@ -1828,7 +1825,7 @@ fields:
     datatype: yesno
 
   
-  - "Order the defendant to return any personal documents in their possession that pertain me and/or my children. (Examples: immigration documents, birth certificates and identification cards.)": surrender_plaintiffs_documents
+  - "Order the defendant to return any personal documents in their possession that pertain to me and/or my children. (Examples: immigration documents, birth certificates and identification cards.)": surrender_plaintiffs_documents
     datatype: yesno
   - "I want my documents.": surrender_plaintiffs_documents_users1
     datatype: yesno
@@ -2731,13 +2728,13 @@ review:
       - Defendant is about this old: **${ showifdef('other_parties_estimated_age') }**
 
   - Edit: 
-    - incarcerated
+    - other_parties1_incarcerated
     button: |
-      - Reach Up benefits: **${ yesno(other_parties1_gets_reach_up) }**
+      - Defendant gets Reach Up benefits: **${ yesno(other_parties1_gets_reach_up) }**
       
-      - Current member of the military: **${ yesno(other_parties1_military) }**
+      - Is current member of the military: **${ yesno(other_parties1_military) }**
       
-      - Incarcerated (in jail) and has been convicted of one of the crimes specified in 15 V.S.A. 1103 (c)(1)(B): **${ yesno(incarcerated) }**
+      - Is incarcerated (in jail) and has been convicted of one of the crimes specified in 15 V.S.A. 1103 (c)(1)(B): **${ yesno(other_parties1_incarcerated) }**
       
   - Edit: other_parties[0].phone_number
     button: |
@@ -3460,7 +3457,7 @@ review:
       - Order the defendant to surrender immediately to law enforcement all guns/firearms that they own, possess or control: **${ word(yesno(request_surrender_firearms_OBO)) }**
       - Order the defendant to stop cruelly treating a pet/pets: **${ word(yesno(request_no_pet_harm_OBO)) }**
       - Order me to get temporary possession and control of a pet/pets: **${ word(yesno(request_control_of_pet_OBO)) }**
-      - Order the defendant to return any personal documents in their possession that pertain me and/or my children. (Examples: immigration documents, birth certificates and identification cards.): **${ word(yesno(surrender_plaintiffs_documents_OBO)) }**
+      - Order the defendant to return any personal documents in their possession that pertain to me and/or my children. (Examples: immigration documents, birth certificates and identification cards.): **${ word(yesno(surrender_plaintiffs_documents_OBO)) }**
       - Order me to get temporary possession of a car/truck/vehicle: **${ word(yesno(surrender_vehicle_OBO)) }**
       - Order the defendant to complete a domestic violence accountability program approved by the Council on Domestic Violence: **${ word(yesno(request_DV_program_OBO)) }**
       - Order the defendant to stay a certain distance away from the child/children: **${ word(yesno(request_stay_away_OBO)) }**
@@ -3524,7 +3521,7 @@ review:
       % endif
 
       % if surrender_plaintiffs_documents:
-      Order the defendant to return any personal documents in their possession that pertain me and/or my children. (Examples: immigration documents, birth certificates and identification cards.): **${ yesno(surrender_plaintiffs_documents) }**
+      Order the defendant to return any personal documents in their possession that pertain to me and/or my children. (Examples: immigration documents, birth certificates and identification cards.): **${ yesno(surrender_plaintiffs_documents) }**
       % endif
       
       % if surrender_plaintiffs_documents_users1:
@@ -3999,7 +3996,7 @@ attachment:
       - "children3_relationship_users1__1": ${ children[2].relationship_users1 }
       - "children3_relationship_OP__1": ${ children[2].relationship_OP }
       - "used_firearm": ${ used_firearm_OBO }
-      - "incarcerated": ${ incarcerated }
+      - "incarcerated": ${ other_parties1_incarcerated }
       - "children1_no_shelter": ${ children1_no_shelter }
       - "residence_shared_address": |
           % if defined('residence_shared_address'):
@@ -4342,7 +4339,7 @@ attachment:
       - "danger_more_abuse_children": ${ danger_more_abuse_who["children"] }
       - "danger_more_abuse_users1": ${ danger_more_abuse_who["users1"] }
       - "used_firearm": ${ used_firearm }
-      - "incarcerated": ${ incarcerated }
+      - "incarcerated": ${ other_parties1_incarcerated }
       - "users1_no_shelter": ${ users1_no_shelter }
       - "residence_shared_address": |
           % if defined('residence_shared_address'):
