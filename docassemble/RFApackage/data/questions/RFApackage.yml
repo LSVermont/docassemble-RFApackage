@@ -194,6 +194,7 @@ objects:
   - users: ALPeopleList.using(ask_number=True,target_number=1)
   - other_parties: ALPeopleList.using(ask_number=True,target_number=1)
   - children: ALPeopleList.using(ask_number=True,complete_attribute="complete")
+  - weapons: DAList.using(object_type=DAObject, complete_attribute="weapon_location")
 ---
 
 
@@ -271,15 +272,14 @@ code: |
       serious_incident_date
       serious_incident_checkboxes_OBO
     else:
-      serious_incident_date == recent_incident_date_OBO
       serious_incident_checkboxes_OBO
     other_incident
     set_progress(60)
 
     nav.set_section('ask_weapons')
-    if used_firearm:
+    weapons_info_OBO
+    if weapons.there_are_any == True:
       weapons.gather()
-      weapons_info
     nav.set_section('order')
     set_progress(60)
     request_not_abuse_OBO
@@ -335,7 +335,7 @@ code: |
     users[0].name.first
     users[0].birthdate
     users[0].address.address
-    ask_if_user_gets_reach_up
+    users1_gets_reach_up
     users[0].phone_number
     users[0].email
     set_progress(16)
@@ -359,9 +359,9 @@ code: |
     set_progress(50)
     danger_more_abuse
     nav.set_section('ask_weapons')
-    if used_firearm:
+    weapons_info
+    if weapons.there_are_any == True:
       weapons.gather()
-      weapons_info
     nav.set_section('order')
     set_progress(60)
     if users1_no_shelter: 
@@ -507,10 +507,8 @@ question: |
 fields:    
   - note: |
       Select all that apply to this situation.
-  - "Defendant is incarcerated and has been convicted of one of the crimes specified in 15 V.S.A. §1103(c)(1)(B) ${ display_template(list_of_crimes, scrollable=True, collapse=True) }": incarcerated
-    datatype: yesno
-  - "Defendant has used, displayed, or threatened to use a firearm against the children or against a family member.": used_firearm
-    datatype: yesno
+#  - "Defendant has used, displayed, or threatened to use a firearm against the children or against a family member.": used_firearm
+#    datatype: yesno
   - "The child or children will be forced to leave their current home and will be without shelter unless defendant is ordered to leave the residence.": children1_no_shelter
     datatype: yesno
   - note: |
@@ -554,9 +552,6 @@ question: |
 fields:
   - "Why do you think the children are in danger?": danger_abuse_other_children_affidavit_why
     input type: area
-    #js show if: |
-      #val("danger_abuse_other_children_affidavit") == true
-    #maxlength: 310
 ---
 id: basic questions intro screen
 question: |
@@ -902,7 +897,6 @@ fields:
     show if: users_mailing_address_different
 ---
 id: user reach up benefits 
-continue button field: ask_if_user_gets_reach_up
 question: |
   Do you get Reach Up benefits from the state?
 fields: 
@@ -1037,20 +1031,20 @@ fields:
     required: False
 ---
 id: About the defendant
-continue button field: more_about_defendant
 question: |
-  More about the defendant
+  More about ${ other_parties[0].name }
 subquestion: |
   Select all that apply.
 fields:
-  - "Defendant gets Reach Up benefits from the state": other_parties1_gets_reach_up
+  - "${ other_parties[0].name } gets Reach Up benefits from the state": other_parties1_gets_reach_up
     datatype: yesno
     hide if: |
       who_needs_protection == 'order_obo_child'
-  - "Defendant is a current member of the military": other_parties1_military
+  - "${ other_parties[0].name } is a current member of the military": other_parties1_military
     datatype: yesno
-  - "Defendant is incarcerated (in jail) and has been convicted of one of the crimes specified in this Vermont law: 15 V.S.A. 1103 (c)(1)(B) ${ display_template(list_of_crimes, scrollable=True, collapse=True) }": incarcerated
+  - "${ other_parties[0].name } is incarcerated (in jail) and has been convicted of one of the crimes specified in this Vermont law: 15 V.S.A. 1103 (c)(1)(B) ${ display_template(list_of_crimes, scrollable=True, collapse=True) }": other_parties1_incarcerated
     datatype: yesno 
+continue button field: more_about_defendant
 ---
 template: coercive_control
 subject: About coercive control
@@ -1166,11 +1160,11 @@ fields:
 id: ask defendant address
 continue button field: ask_defendant_address
 question: |
-  What is the defendant's home address?
+  What is ${ other_parties[0].name }'s home address?
 subquestion: |
   The court will need an address of some kind. Include what you can of the defendant's home address. Later in this program you can give the address where they work or where they are staying. **You will need to provide at least one address.**
 fields:
-  - I don't know the defendant's home address: defendant_address_unknown
+  - I don't know ${ other_parties[0].name }'s home address: defendant_address_unknown
     datatype: yesno
     css class: indent-me
     disable others: True
@@ -1204,7 +1198,7 @@ fields:
 
 id: Gather defendants phone numbers
 question: |
-  What are the defendant's phone numbers?
+  What are ${ other_parties[0].name }'s phone numbers?
 subquestion: |
   If you don't know you can leave these blank.
 fields:  
@@ -1263,7 +1257,7 @@ fields:
 
   - "The defendant caused or attempted to cause physical harm": recent_incident_harm
     datatype: yesno
-  - "The defendant placed you and/or them in fear of imminent serious physical harm": recent_incident_fear
+  - "The defendant placed you and/or the child/children in fear of imminent serious physical harm": recent_incident_fear
     datatype: yesno
   - "The defendant abused the child/children -- meaning they physically injured or otherwise treated the child(ren) in a manner which placed child(ren's) life, health, development or welfare in jeopardy. See the definition of child abuse in Vermont law: [33 V.S.A. § 4912(1).](https://legislature.vermont.gov/statutes/section/33/049/04912)": recent_incident_abused
     datatype: yesno
@@ -1562,19 +1556,58 @@ fields:
 #    maxlength: 310
 #    required: False
 ---
-objects:
-  - weapons: DAList.using(object_type=DAObject, complete_attribute="weapon_location")
+#id: Gather weapons
+#question: |
+#  Gather list of weapons
+#fields:
+#  - Does the defendant own or have access to guns/firearms or other deadly weapons?: weapons.there_are_any
+#    input type: radio
+#    choices:
+#      - Yes: True
+#      - No: False
+#      - I don't know: None
 ---
-id: Gather weapons
+id: Weapons
 question: |
-  Gather list of weapons
+  Weapons
+fields:
+  - "Has the defendant used, displayed or threatened to use a **gun/firearm** against you or against another family member?": used_firearm
+    datatype: yesnoradio
+  - note: The question above asks specifically about fireams (guns). This next question is found on a different form and it asks about **any** deadly weapons.
+  - "Has the defendant used, displayed or threatened to use a **gun/firearm or another deadly weapon** against you or another family member?": used_weapon
+    datatype: yesnoradio    
+  - "Describe in detail how they used or threatened to use the weapon(s).": used_weapon_how
+    input type: area
+    show if: used_weapon
+continue button field: weapons_info
+---
+id: Weapons OBO minor
+question: |
+  Weapons
+fields:
+  - "Has the defendant used, displayed or threatened to use a **gun/firearm** against the child/children or against another family member?": used_firearm_OBO
+    datatype: yesnoradio
+  - note: The question above asks specifically about fireams (guns). This next question is found on a different form and it asks about **any** deadly weapons.  
+  - "Has the defendant used, displayed or threatened to use a **gun/firearm or another deadly weapon** against the children or another family member?": used_weapon_OBO
+    datatype: yesnoradio  
+  - "Describe in detail how they used or threatened to use the weapon(s).": used_weapon_how
+    input type: area
+    show if: used_weapon_OBO
+
+continue button field: weapons_info_OBO
+---
+id: access to weapons
+question: |
+  ${ other_parties[0].name }'s access to weapons
+subquestion: |
+  Weapons can make this a more dangerous time. If you let the court know about weapons, they may be able to collect the weapons from the defendant as part of the court order. This can help with safety.
 fields:
   - Does the defendant own or have access to guns/firearms or other deadly weapons?: weapons.there_are_any
     input type: radio
     choices:
       - Yes: True
       - No: False
-      - I don't know: None
+      - I don't know: None 
 ---
 id: List of weapons
 question: |
@@ -1604,39 +1637,6 @@ fields:
       - No: False
       - I don't know: False
 ---
-id: Weapons
-question: |
-  Weapons
-subquestion: |
-  Weapons can make this a more dangerous time for you and/or the children. If you let the court know about weapons, they may be able to collect the weapons from the defendant as part of the court order. This can help keep you safe.
-fields:
-  - "Has the defendant used, displayed or threatened to use a **gun/firearm** against you or against another family member?": used_firearm
-    datatype: yesnoradio
-  - "Has the defendant used, displayed or threatened to use a **gun/firearm** against the child/children or against another family member?": used_firearm
-    datatype: yesnoradio
-    hide if: |
-      val("who_needs_protection") == "order_obo_child"
-  - note: The question above asks specifically about fireams (guns). This next question is found on a different form and it asks about **any** deadly weapons.
-  - "Has the defendant used, displayed or threatened to use a **gun/firearm or another deadly weapon** against you or another family member?": used_weapon
-    datatype: yesnoradio
-    show if: |
-      val("who_needs_protection") == "order_obo_child"
-    
-  - "Describe in detail how they used or threatened to use the weapon(s).": used_weapon_how
-    input type: area
-    show if: used_weapon
-    
-  - note: |
-      <h2 class="h3">Access to weapons
-  - Does the defendant own or have access to guns/firearms or other deadly weapons?: weapons.there_are_any
-    input type: radio
-    choices:
-      - Yes: True
-      - No: False
-      - I don't know: None 
-    
-continue button field: weapons_info
----
 id: What you want to ask for in the RFA order -- OBO minor
 question: |
   What you want to ask for in the RFA order
@@ -1661,7 +1661,7 @@ fields:
     datatype: yesno    
   - "Order me to get temporary possession and control of a pet/pets": request_control_of_pet_OBO
     datatype: yesno    
-  - "Order the defendant to return any personal documents in their possession that pertain me and/or my children. (Examples: immigration documents, birth certificates and identification cards.)": surrender_plaintiffs_documents_OBO
+  - "Order the defendant to return any personal documents in their possession that pertain to me and/or my children. (Examples: immigration documents, birth certificates and identification cards.)": surrender_plaintiffs_documents_OBO
     datatype: yesno
   - "I want my documents.": surrender_plaintiffs_documents_users1_OBO
     datatype: yesno
@@ -1825,7 +1825,7 @@ fields:
     datatype: yesno
 
   
-  - "Order the defendant to return any personal documents in their possession that pertain me and/or my children. (Examples: immigration documents, birth certificates and identification cards.)": surrender_plaintiffs_documents
+  - "Order the defendant to return any personal documents in their possession that pertain to me and/or my children. (Examples: immigration documents, birth certificates and identification cards.)": surrender_plaintiffs_documents
     datatype: yesno
   - "I want my documents.": surrender_plaintiffs_documents_users1
     datatype: yesno
@@ -2141,7 +2141,7 @@ fields:
 ---
 id: About the defendant's vehicle
 question: |
-  The defendant's vehicle (their car or truck)
+  ${ other_parties[0].name }'s vehicle (their car or truck)
 fields:
   - "Does the defendant have a vehicle?": vehicle
     datatype: yesnoradio
@@ -2171,7 +2171,7 @@ fields:
 ---
 id: More on your relationship to defendant
 question: |
-  More on your relationship to defendant
+  More on your relationship to ${ other_parties[0] }
 subquestion: |
   Law enforcement asks these specific questions on their confidential form.
 fields:  
@@ -2188,7 +2188,7 @@ fields:
 ---
 id: Defendants work information
 question: |
-  Defendant's work information
+  ${ other_parties[0].name }'s work information
 subquestion: |
   Tell us about the defendant's workplace and work hours. Law enforcement may serve the order there if they cannot find the defendant at home.
   
@@ -2443,11 +2443,13 @@ fields:
     datatype: radio
     code: |
       [{item: phone_number_formatted(item) or item} for item in [users[0].phone_number, users1_work_phone_number] if item] + [{"other": "Other"}]
+    #js show if: |
+      #val('notify_served') == true
     show if:
       variable: notify_served
       is: True
       code: |
-        users[0].phone_number or users1_work_phone_number
+        users[0].phone_number or users1_work_phone_number        
   - Notification phone number: users1_notify_phone_number_other_input
     datatype: al_international_phone
     maxlength: 45
@@ -2726,13 +2728,13 @@ review:
       - Defendant is about this old: **${ showifdef('other_parties_estimated_age') }**
 
   - Edit: 
-    - incarcerated
+    - other_parties1_incarcerated
     button: |
-      - Reach Up benefits: **${ yesno(other_parties1_gets_reach_up) }**
+      - Defendant gets Reach Up benefits: **${ yesno(other_parties1_gets_reach_up) }**
       
-      - Current member of the military: **${ yesno(other_parties1_military) }**
+      - Is current member of the military: **${ yesno(other_parties1_military) }**
       
-      - Incarcerated (in jail) and has been convicted of one of the crimes specified in 15 V.S.A. 1103 (c)(1)(B): **${ yesno(incarcerated) }**
+      - Is incarcerated (in jail) and has been convicted of one of the crimes specified in 15 V.S.A. 1103 (c)(1)(B): **${ yesno(other_parties1_incarcerated) }**
       
   - Edit: other_parties[0].phone_number
     button: |
@@ -3455,7 +3457,7 @@ review:
       - Order the defendant to surrender immediately to law enforcement all guns/firearms that they own, possess or control: **${ word(yesno(request_surrender_firearms_OBO)) }**
       - Order the defendant to stop cruelly treating a pet/pets: **${ word(yesno(request_no_pet_harm_OBO)) }**
       - Order me to get temporary possession and control of a pet/pets: **${ word(yesno(request_control_of_pet_OBO)) }**
-      - Order the defendant to return any personal documents in their possession that pertain me and/or my children. (Examples: immigration documents, birth certificates and identification cards.): **${ word(yesno(surrender_plaintiffs_documents_OBO)) }**
+      - Order the defendant to return any personal documents in their possession that pertain to me and/or my children. (Examples: immigration documents, birth certificates and identification cards.): **${ word(yesno(surrender_plaintiffs_documents_OBO)) }**
       - Order me to get temporary possession of a car/truck/vehicle: **${ word(yesno(surrender_vehicle_OBO)) }**
       - Order the defendant to complete a domestic violence accountability program approved by the Council on Domestic Violence: **${ word(yesno(request_DV_program_OBO)) }**
       - Order the defendant to stay a certain distance away from the child/children: **${ word(yesno(request_stay_away_OBO)) }**
@@ -3519,7 +3521,7 @@ review:
       % endif
 
       % if surrender_plaintiffs_documents:
-      Order the defendant to return any personal documents in their possession that pertain me and/or my children. (Examples: immigration documents, birth certificates and identification cards.): **${ yesno(surrender_plaintiffs_documents) }**
+      Order the defendant to return any personal documents in their possession that pertain to me and/or my children. (Examples: immigration documents, birth certificates and identification cards.): **${ yesno(surrender_plaintiffs_documents) }**
       % endif
       
       % if surrender_plaintiffs_documents_users1:
@@ -3949,7 +3951,12 @@ attachment:
       - "existing_order_county": ${ existing_order_county }
       - "existing_order_users_attorney": ${ existing_order_users_attorney }
       - "existing_order_OP_attorney": ${ existing_order_OP_attorney }
-      - "serious_incident_date": ${ serious_incident_date.format() }
+      - "serious_incident_date": |
+          % if not recent_incident_most_serious:
+          ${ serious_incident_date.format() }
+          % else:
+          ${ recent_incident_date_OBO }
+          % endif
       - "serious_incident_yes": ${ True }
       - "serious_incident_abused": ${ serious_incident_abused_OBO }
       - "other_parties1_parent_abuse": ${ serious_incident_parent_abuse_OBO }
@@ -3957,6 +3964,7 @@ attachment:
       - "serious_incident_assault": ${ serious_incident_assault_OBO }
       - "serious_incident_harm": ${ recent_incident_harm_OBO }
       - "serious_incident_fear": ${serious_incident_fear_OBO }
+      - "serious_incident_coercive": ${ serious_incident_coercive_OBO }
       - "danger_more_abuse": ${ danger_more_abuse_OBO }
       - "danger_more_abuse_children": |
           % if children[0].in_danger:
@@ -3987,8 +3995,8 @@ attachment:
       - "children3_birthdate__1": ${ format_date(children[2].birthdate, format='M/d/yyyy') }
       - "children3_relationship_users1__1": ${ children[2].relationship_users1 }
       - "children3_relationship_OP__1": ${ children[2].relationship_OP }
-      - "used_firearm": ${ used_firearm }
-      - "incarcerated": ${ incarcerated }
+      - "used_firearm": ${ used_firearm_OBO }
+      - "incarcerated": ${ other_parties1_incarcerated }
       - "children1_no_shelter": ${ children1_no_shelter }
       - "residence_shared_address": |
           % if defined('residence_shared_address'):
@@ -4009,6 +4017,15 @@ attachment:
       - "request_surrender_firearms": ${ request_surrender_firearms_OBO }
       - "request_no_pet_harm": ${ request_no_pet_harm_OBO }
       - "request_control_of_pet": ${ request_control_of_pet_OBO }
+      - "surrender_plaintiffs_documents_OBO": ${ surrender_plaintiffs_documents_OBO }
+      - "surrender_plaintiffs_documents_users1_OBO":  ${ surrender_plaintiffs_documents_users1_OBO }
+      - "surrender_plaintiffs_documents_children_OBO":  ${ surrender_plaintiffs_documents_children_OBO }
+      - "surrender_vehicle_OBO": ${ surrender_vehicle_OBO }
+      - "surrender_vehicle_owner_OBO": ${ surrender_vehicle_owner_OBO }
+      - "surrender_vehicle_pays_loan_OBO": ${ surrender_vehicle_pays_loan_OBO }
+      - "surrender_vehicle_has_possession_OBO": ${ surrender_vehicle_has_possession_OBO }
+      - "surrender_vehicle_restricted_from_use_OBO": ${ surrender_vehicle_restricted_from_use_OBO }
+      - "request_DV_program_OBO": ${ request_DV_program_OBO }
       - "request_stay_away_feet": ${ request_stay_away_feet_OBO }
       - "request_stay_away": ${ request_stay_away_OBO }
       - "request_no_contact_children": ${ request_no_contact_OBO }
@@ -4132,7 +4149,12 @@ attachment:
       - "recent_incident_description": ${ RFAaffidavitonbehalfofminor.safe_value("recent_incident_description") }
       - "recent_incident_most_serious_yes": ${ recent_incident_most_serious }
       - "recent_incident_most_serious_no": ${ not recent_incident_most_serious }
-      - "serious_incident_date": ${ serious_incident_date }
+      - "serious_incident_date": |
+          % if not recent_incident_most_serious:
+          ${ serious_incident_date.format() }
+          % else:
+          
+          % endif
       - "serious_incident_time": ${ serious_incident_time }
       - "serious_incident_town": ${ serious_incident_town }
       - "serious_incident_state": |
@@ -4172,16 +4194,24 @@ attachment:
           % if weapons.number() > 8: 
             ${ RFAaffidavit.has_overflow() }
           % endif
-      - "used_weapon_yes": ${ used_weapon }
-      - "used_weapon_no": ${ not used_weapon }
+      - "used_firearm": ${ used_firearm_OBO }
+      - "used_weapon_yes": ${ used_weapon_OBO }
+      - "used_weapon_no": ${ not used_weapon_OBO }
       - "used_weapon_how": ${ RFAaffidavitonbehalfofminor.safe_value("used_weapon_how") }
       - "danger_abuse_other_children_affidavit_yes": |
-          % if len(children.in_danger) > 1:
-          ${ True }
-          % else: 
-          ${ False }
+          % if children.number_gathered() > 1:
+          % if children[1].in_danger or children[2].in_danger:
+          True
+          % else:
+          False
           % endif
-      - "danger_abuse_other_children_affidavit_no": ${ not danger_abuse_other_children_affidavit }
+          % endif
+      - "danger_abuse_other_children_affidavit_no": |
+          % if children.number_gathered() < 2:
+          True
+          % else:
+          False
+          % endif
       - "danger_abuse_other_children_affidavit_why": ${ danger_abuse_other_children_affidavit_why }
       - "other_parties1_military_yes": ${ other_parties1_military }
       - "other_parties1_military_no": ${ not other_parties1_military }
@@ -4309,7 +4339,7 @@ attachment:
       - "danger_more_abuse_children": ${ danger_more_abuse_who["children"] }
       - "danger_more_abuse_users1": ${ danger_more_abuse_who["users1"] }
       - "used_firearm": ${ used_firearm }
-      - "incarcerated": ${ incarcerated }
+      - "incarcerated": ${ other_parties1_incarcerated }
       - "users1_no_shelter": ${ users1_no_shelter }
       - "residence_shared_address": |
           % if defined('residence_shared_address'):
@@ -4475,7 +4505,12 @@ attachment:
       - "recent_incident_description": ${ RFAaffidavit.safe_value("recent_incident_description") }
       - "recent_incident_most_serious_yes": ${ recent_incident_most_serious }
       - "recent_incident_most_serious_no": ${ not recent_incident_most_serious }
-      - "serious_incident_date": ${ serious_incident_date }
+      - "serious_incident_date": |
+          % if not recent_incident_most_serious:
+          ${ serious_incident_date.format() }
+          % else:
+          ${ recent_incident_date_OBO.format() }
+          % endif
       - "serious_incident_time": ${ serious_incident_time }
       - "serious_incident_town": ${ serious_incident_town }
       - "serious_incident_state": |
@@ -4489,6 +4524,7 @@ attachment:
       - "other_parties1_weapon_yes": ${ weapons.there_are_any == True}
       - "other_parties1_weapon_no": ${ weapons.there_are_any == False }
       - "other_parties1_weapon_DK": ${ weapons.there_are_any == None }
+      - "used_firearm": ${ used_firearm }
       - "weapon1": ${ weapons[0].description }
       - "weapon1_location": ${ weapons[0].weapon_location }
       - "weapon2": ${ weapons[1].description }
