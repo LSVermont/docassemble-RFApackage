@@ -2616,14 +2616,16 @@ review:
       % if users1_gets_reach_up == None:
       - You get Reach Up benefits: **You chose not to answer**
       % endif
-      
+  - note: |
+      ###Children
+    show if: children.there_are_any
   - Edit: children.revisit
     button: |
       **Children involved in this case**
       
       % if children.there_are_any:
       % for item in children:
-      - **${ item }**
+      - **${ item }**; ${ item.birthdate }; In further danger: ${ word(yesno(item.in_danger)) }
       % endfor
       % else:
       - No children involved
@@ -3617,6 +3619,9 @@ review:
       You want custody of:
       
       * **${ showifdef('children[0]') }**
+
+        * Relationship to you: ${ children[0].relationship_users1 }
+        * Relationship to defendant: ${ children[0].relationship_OP }
       % else:
       You do **not** want custody of:
       
@@ -3631,6 +3636,9 @@ review:
       You want custody of:
       
       * **${ showifdef('children[1]') }**
+
+        * Relationship to you: ${ children[1].relationship_users1 }
+        * Relationship to defendant: ${ children[1].relationship_OP }
       % else:
       You do **not** want custody of:
       
@@ -3645,15 +3653,53 @@ review:
       You want custody of:
       
       * **${ showifdef('children[2]') }**
+
+        * Relationship to you: ${ children[2].relationship_users1 }
+        * Relationship to defendant: ${ children[2].relationship_OP }
       % else:
       You do **not** want custody of:
       
       * **${ showifdef('children[2]') }**   
       % endif
       % endif  
+  - Edit:
+    - children[3].custody_wanted
+    button: |
+      % if request_temp_PRR:
+      % if children[3].custody_wanted:
+      You want custody of:
+      
+      * **${ showifdef('children[3]') }**
+
+        * Relationship to you: ${ children[3].relationship_users1 }
+        * Relationship to defendant: ${ children[3].relationship_OP }
+      % else:
+      You do **not** want custody of:
+      
+      * **${ showifdef('children[3]') }**   
+      % endif
+      % endif  
+
+  - Edit:
+    - children[4].custody_wanted
+    button: |
+      % if request_temp_PRR:
+      % if children[2].custody_wanted:
+      You want custody of:
+      
+      * **${ showifdef('children[4]') }**
+
+        * Relationship to you: ${ children[4].relationship_users1 }
+        * Relationship to defendant: ${ children[4].relationship_OP }
+      % else:
+      You do **not** want custody of:
+      
+      * **${ showifdef('children[4]') }**   
+      % endif
+      % endif  
   - Edit: request_all_emergency
     button: |
-      You request this RFA on an emergency basis: **${ yesno(request_all_emergency) }** 
+      You request this RFA order on an emergency basis: **${ yesno(request_all_emergency) }** 
   - note: | 
       ##Filing##
   - Edit: 
@@ -3700,37 +3746,37 @@ review:
        For child support: **${ word(yesno(existing_order["child_support_order"])) }**
        % endif
        
-      % if existing_order_state != '':
-      State(s) of the existing order(s) or pending court proceeding(s): **${ showifdef('existing_order_state') }**
-      % endif
-      
-      % if existing_order_county != '':
-      County/counties of the existing order(s) or pending court proceeding(s): **${ showifdef('existing_order_county') }**
-      % endif
-      
-      % if existing_order_users_attorney != '':
-      Name of your attorney for the existing order(s) or pending court proceeding(s): **${ showifdef('existing_order_users_attorney') }**
-      % endif
-      
-      % if existing_order_OP_attorney != '':
-      Name of the defendant's attorney for the existing order(s) or pending court proceeding(s): **${ showifdef('existing_order_OP_attorney') }**
-      % endif
+       % if existing_order_county != '':
+       In this county: **${ showifdef('existing_order_county') }**
+       % endif
+       
+       % if existing_order_state != '':
+       In this state: **${ showifdef('existing_order_state') }**
+       % endif
+       
+       % if existing_order_users_attorney != '':
+       Your attorney for that proceeding: **${ showifdef('existing_order_users_attorney') }**
+       % endif
+       
+       % if existing_order_OP_attorney != '':
+       Defendant's attorney for that proceeding: **${ showifdef('existing_order_OP_attorney') }**
+       % endif
   - note: | 
       ## Service (delivery) of the RFA order##
   - Edit: notify_served
     button: |
-      - You wish to be notified by phone after the order is served: **${ yesno(notify_served) }**
+      - You want to be notified after the order is served: **${ yesno(notify_served) }**
       
-      - The defendant will try to avoid being served this order: **${ yesno(avoid_served) }**
+      - The defendant will try to avoid being served: **${ yesno(avoid_served) }**
       
       - The defendant has guard dogs or vicious dogs: **${ yesno(guard_dog) }**
       
       - The defendant is likely to be under the influence of drugs or alcohol: **${ yesno(under_infl) }**
       
-      - The officer who serves this order will be in any danger: **${ yesno(danger_for_officer) }**
+      - The officer who serves this will be in any danger: **${ yesno(danger_for_officer) }**
       
       % if showifdef("danger_for_officer_why"):
-      - Why the officer will be in danger: **${ showifdef("danger_for_officer_why") }**
+      - Why: **${ showifdef("danger_for_officer_why") }**
       % endif
    
 
@@ -3746,7 +3792,7 @@ review:
 ---
 continue button field: users.revisit
 question: |
-  Edit Plaintiff
+  Edit information about you
 subquestion: |
   ${ users.table }
 ---
@@ -3770,7 +3816,7 @@ confirm: True
 ---
 continue button field: other_parties.revisit
 question: |
-  Edit Defendant
+  Edit information about the defendant
 subquestion: |
   ${ other_parties.table }
 ---
@@ -3790,7 +3836,7 @@ confirm: True
 ---
 continue button field: children.revisit
 question: |
-  Edit Children
+  Edit children
 subquestion: |
   ${ children.table }
   ${ children.add_action() }
@@ -3802,9 +3848,12 @@ columns:
       row_item.name.full() if defined("row_item.name.first") else ""
   - Birthdate: |
       row_item.birthdate if defined("row_item.birthdate") else ""
+  - In further danger: |
+      row_item.in_danger if defined("row_item.in_danger") else ""
 edit:
   - name.first
   - birthdate
+  - in_danger
 confirm: True
 ---
 continue button field: weapons.revisit
