@@ -2560,7 +2560,7 @@ subquestion: |
   Edit your answers here. Choose the section(s) that you want to edit. When you are done, scroll to the bottom and select "Resume."
 review:
   - note: | 
-      ##Information about you##
+      ##About you##
   - Edit: 
     - users.revisit
     #- users[0].address.address
@@ -2616,21 +2616,7 @@ review:
       % if users1_gets_reach_up == None:
       - You get Reach Up benefits: **You chose not to answer**
       % endif
-  - note: |
-      ###Children
-    show if: children.there_are_any
-  - Edit: children.revisit
-    button: |
-      **Children involved in this case**
-      
-      % if children.there_are_any:
-      % for item in children:
-      - **${ item }**; ${ item.birthdate }; In further danger: ${ word(yesno(item.in_danger)) }
-      % endfor
-      % else:
-      - No children involved
-      % endif
-      
+
   - Edit: 
     - users1_no_shelter
     - rent_or_own
@@ -2678,9 +2664,25 @@ review:
       % if whose_name == "i_donnot_know":
       - **You don't know who rents or owns the home** 
       % endif        
+
+  - note: |
+      ###About children
+    show if: children.there_are_any
+  - Edit: children.revisit
+    button: |
+      **Children involved in this case**
+      
+      % if children.there_are_any:
+      % for item in children:
+      - **${ item }**; Born: ${ item.birthdate }; In further danger: ${ word(yesno(item.in_danger)) }
+      % endfor
+      % else:
+      - No children involved
+      % endif
+
       
   - note: | 
-      ##Information about the defendant##
+      ##About the defendant##
   - Edit: 
     - other_parties.revisit
     button: |
@@ -2927,51 +2929,38 @@ review:
       % endif
       
       % if sex_other:      
-      Sex/gender: 
-      
-      - **${ showifdef('other_sex_field') }**
+      Sex/gender: **${ showifdef('other_sex_field') }**
       % endif
       
-
-
       Race:
-      
       % if race["race_white"]:      
-        - **White**
+        **White**
       % endif
-      
       % if race["race_black"]:      
-        - **Black**
+        **Black**
       % endif
-      
       % if race["race_native"]:     
-        - **Native American**
+        **Native American**
       % endif
-      
       % if race["race_asian"]:      
-        - **Asian**
+        **Asian**
       % endif
-
       % if race["race_other"]:      
-        - **${ showifdef('other_race_field') }** 
+        **${ showifdef('other_race_field') }** 
       % endif
 
       Skin color/tone:
-
       % if skin["skin_light"]:      
-        - **Light** 
+        **Light** 
       % endif
-      
       % if skin["skin_medium"]:     
-        - **Medium** 
+        **Medium** 
       % endif
-      
       % if skin["skin_dark"]:      
-        - **Dark** 
+        **Dark** 
       % endif
-
       % if skin["skin_other"]:     
-        - **Other** 
+        **Other** 
       % endif
 
       Height: **${other_parties1_height_ft}' ${ other_parties1_height_in }"**
@@ -2979,29 +2968,23 @@ review:
       Weight: **${other_parties1_weight_lbs} lbs** 
       
       Eye color:
-      
       % if eyes["eyes_brown"]:
-        - **Brown**
+        **Brown**
       % endif
-        
       % if eyes["eyes_blue"]:
-        - **Blue**
+        **Blue**
       % endif 
-      
       % if eyes["eyes_gray"]:
-        - **Gray**
+        **Gray**
       % endif 
-      
       % if eyes["eyes_green"]:
-        - **Green**
+        **Green**
       % endif 
-      
       % if eyes["eyes_hazel"]:
-        - **Hazel**
+        **Hazel**
       % endif
-      
       % if eyes["eyes_other"]:
-        - **Other**
+        **Other**
       % endif
       
       % if lenses_glasses: 
@@ -3012,57 +2995,43 @@ review:
         Contacts: **${ word(yesno(lenses_contacts)) }**
       % endif     
 
-
-
-
   - Edit: hair_color
     button: |      
       Hair length: 
-      
       % if hair["hair_short"]:
-        - **Short**
+        **Short**
       % endif
-      
       % if hair["hair_medium"]:
-        - **Medium**
+        **Medium**
       % endif
-      
       % if hair["hair_long"]:
-        - **Long**
+        **Long**
       % endif
-      
       % if hair["hair_bald"]:
-        - **Bald**
+        **Bald**
       % endif
       
       Hair color: 
-      
       % if hair_color["hair_brown"]:
-        - **Brown**
+        **Brown**
       % endif
-      
       % if hair_color["hair_blond"]:
-        - **Blond**
+        **Blond**
       % endif
-      
       % if hair_color["hair_black"]:
-        - **Black**
+        **Black**
       % endif
-      
       % if hair_color["hair_red"]:
-        - **Red**
+        **Red**
       % endif
-      
       % if hair_color["hair_gray"]:
-        - **Gray / white**
+        **Gray / white**
       % endif
-      
       % if hair_color["hair_bald_color"]:
-        - **Bald**
+        **Bald**
       % endif
-      
       % if hair_color["hair_other"]:
-        - **${ showifdef('other_hair_field') }**
+        **${ showifdef('other_hair_field') }**
       % endif
       
       % if hair_beard:
@@ -3091,10 +3060,6 @@ review:
 
   - note: | 
       ##Your relationship to the defendant##
-      
-#  - Edit: relationship_question
-#    button: |
-#      - **${ showifdef('relationship_question') }**
       
   - Edit: 
     - is_spouse   
@@ -3384,17 +3349,17 @@ review:
       
       % if danger_more_abuse:
       % if danger_more_abuse_who["users1"]:
-      - Danger of more abuse to you.
+      - There is danger of more abuse to you.
       % endif
       
       % if danger_more_abuse_who["children"]:
-      - Danger of more abuse to the child/children.
+      - There is danger of more abuse to the child/children.
       % endif
       
       % if defined("danger_more_abuse_why"):
       - Information not already described before: **${ danger_more_abuse_why }**
       % else:
-      - Information not already described before: **None**
+      - Information not already described: **None**
       % endif
       % endif
 
@@ -3415,8 +3380,6 @@ review:
       - Why: **${ danger_abuse_other_children_affidavit_why }**
       % endif
 
-#      % if item.attribute_defined('in_danger'):
-#      % endif
   - Edit: 
     - weapons.there_are_any
     - weapons.revisit
@@ -3437,10 +3400,9 @@ review:
       % endif
       
       % if weapons.there_are_any:
-      Weapons
       % for item in weapons:
       
-        1. **${ item.description }  --  ${ item.weapon_location }**
+      - **${ item.description }  --  ${ item.weapon_location }**
       
       % endfor   
       % endif
