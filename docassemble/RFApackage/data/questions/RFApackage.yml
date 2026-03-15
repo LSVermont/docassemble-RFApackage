@@ -3727,7 +3727,14 @@ review:
       ## Service (delivery) of the RFA order##
   - Edit: notify_served
     button: |
-      - You want to be notified after the order is served: **${ yesno(notify_served) }**
+      - You want to be notified after the order is served: **${ yesno(notify_served) }** 
+          % if notify_served:
+          % if users1_notify_phone_number == "other":
+           at ${ phone_number_formatted(users1_notify_phone_number_other_input) or users1_notify_phone_number_other_input}
+          % else:
+           at ${ phone_number_formatted(users1_notify_phone_number) or users1_notify_phone_number}
+          % endif
+          % endif
       
       - The defendant will try to avoid being served: **${ yesno(avoid_served) }**
       
