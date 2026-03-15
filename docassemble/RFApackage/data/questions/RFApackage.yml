@@ -2799,25 +2799,27 @@ review:
       % if vehicle:
       
       % if vehicle_make != '':
-      - Brand car or truck they drive: **${ showifdef('vehicle_make') }**
+      - Brand of the car or truck they drive: **${ showifdef('vehicle_make') }**
       % endif
       
       % if vehicle_model != '':
-      - Model car or truck: **${ showifdef('vehicle_model') }**
+      - Model: **${ showifdef('vehicle_model') }**
       % endif
-      
-      % if vehicle_color != '':
-      - Color of car or truck: **${ showifdef('vehicle_color') }**
-      % endif
-      
-      % if vehicle_plate != '':
-      - Vehicle plate number: **${ showifdef('vehicle_plate') }**
-      % endif
-      
+
       % if vehicle_year != '':
       - Vehicle year: **${ showifdef('vehicle_year') }**
       % endif
       % endif
+      
+      % if vehicle_color != '':
+      - Color: **${ showifdef('vehicle_color') }**
+      % endif
+      
+      % if vehicle_plate != '':
+      - Plate number: **${ showifdef('vehicle_plate') }**
+      % endif
+      
+
       
 
   - Edit: employed
@@ -2835,15 +2837,15 @@ review:
 
       % if employed:
       % if employer != '':
-      - Defendant's employer: **${ showifdef('employer') }**
+      - Defendant works for: **${ showifdef('employer') }**
       % endif
       
       % if employers_street_address != '':
-      - Their employer's street address: **${ showifdef('employers_street_address') }**
+      - Their work address: 
+      **${ showifdef('employers_street_address') }**
       % endif
-      
       % if employers_city_state != '':
-      - Employer's city and state: **${ showifdef('employers_city_state') }**
+      **${ showifdef('employers_city_state') }**
       % endif
       
       % if work_mondays != '':
