@@ -2716,16 +2716,13 @@ review:
       % if not other_parties[0].birth_month and not other_parties[0].birth_day and not other_parties[0].birth_year:
       **Unknown**
       % endif
-      
       - Defendant is about this old: **${ showifdef('other_parties_estimated_age') }**
 
   - Edit: 
     - other_parties1_incarcerated
     button: |
       - Defendant gets Reach Up benefits: **${ yesno(other_parties1_gets_reach_up) }**
-      
       - Is current member of the military: **${ yesno(other_parties1_military) }**
-      
       - Is incarcerated (in jail) and has been convicted of one of the crimes specified in 15 V.S.A. 1103 (c)(1)(B): **${ yesno(other_parties1_incarcerated) }**
       
   - Edit: other_parties[0].phone_number
@@ -2733,19 +2730,15 @@ review:
       % if other_parties[0].phone_number != '':
       - Home phone: **${ showifdef('other_parties[0].phone_number') }**
       % endif
-      
       % if other_parties[0].mobile_number != '':
       - Cell phone: **${ showifdef('other_parties[0].mobile_number') }**
       % endif
-      
       % if other_parties1_work_phone_number != '':
       - Work phone: **${ showifdef('other_parties1_work_phone_number') }**
       % endif
-      
       % if other_parties1_other_phone_number != '':
       - Other phone: **${ showifdef('other_parties1_other_phone_number') }**  
       % endif
-
       % if other_parties[0].phone_number == '' and other_parties[0].mobile_number == '' and other_parties1_work_phone_number == '' and other_parties1_other_phone_number == '':
       - Phone number: **Unknown**
       % endif
@@ -2758,23 +2751,17 @@ review:
       **Defendant's home address -- details for law enforcement**
       
       - The house or building number on the street -- ONLY the number: **${ showifdef('house') }**
-      
       - Name of the street or Town Road number -- ONLY the street name: **${ showifdef('other_parties1_street_only') }**
-      
       - Town / city: **${ showifdef('other_parties1_city') }**
-      
       % if other_parties1_state:
       - State: **${ showifdef('other_parties1_state') }**
       % endif
-      
       % if location_of_home:
       - Description of the location of the home: **${ showifdef('location_of_home') }**
       % endif
-      
       % if description_of_home:
       - Description of the home: **${ showifdef('description_of_home') }**
       % endif
-      
       % if best_contact_time:
       - Best days and times to contact the defendant at home: **${ showifdef('best_contact_time') }**
       % endif
@@ -2785,30 +2772,22 @@ review:
       
       - Defendant has a car or truck: **${ word(yesno(vehicle)) }**
       % if vehicle:
-      
       % if vehicle_make != '':
       - Brand of the car or truck they drive: **${ showifdef('vehicle_make') }**
       % endif
-      
       % if vehicle_model != '':
       - Model: **${ showifdef('vehicle_model') }**
       % endif
-
       % if vehicle_year != '':
       - Vehicle year: **${ showifdef('vehicle_year') }**
       % endif
       % endif
-      
       % if vehicle_color != '':
       - Color: **${ showifdef('vehicle_color') }**
       % endif
-      
       % if vehicle_plate != '':
       - Plate number: **${ showifdef('vehicle_plate') }**
-      % endif
-      
-
-      
+      % endif      
 
   - Edit: employed
     button: |
@@ -2822,12 +2801,10 @@ review:
       % else:
       **No**
       % endif
-
       % if employed:
       % if employer != '':
       - Defendant works for: **${ showifdef('employer') }**
       % endif
-      
       % if employers_street_address != '':
       - Their work address: 
       **${ showifdef('employers_street_address') }**
@@ -2835,31 +2812,24 @@ review:
       % if employers_city_state != '':
       **${ showifdef('employers_city_state') }**
       % endif
-      
       % if work_mondays != '':
       - Work hours on Mondays: **${ showifdef('work_mondays') }**
       % endif
-      
       % if work_tues != '':
       - Work hours on Tuesdays: **${ showifdef('work_tues') }**
       % endif
-      
       % if work_weds != '':
       - Work hours on Wednesdays: **${ showifdef('work_weds') }**
       % endif
-      
       % if work_thurs != '':
       - Work hours on Thursdays: **${ showifdef('work_thurs') }**
       % endif
-      
       % if work_fri != '':
       - Work hours on Fridays: **${ showifdef('work_fri') }**
       % endif
-      
       % if work_sat != '':
       - Work hours on Saturdays: **${ showifdef('work_sat') }**
       % endif
-      
       % if work_sun != '':
       - Work hours on Sundays: **${ showifdef('work_sun') }**
       % endif
@@ -2871,38 +2841,29 @@ review:
       **Other places the defendant might be**
       
       % if house2 != '':
-      The house or building number on the street (Example: Enter '10' if it's 10 Main Street.): **${ house2 }**
+      - The house or building number on the street (Example: Enter '10' if it's 10 Main Street.): **${ house2 }**
       % endif
-      
       % if other_location_street_address != '':
-      Street or Town Road (Example: Enter 'Main Street'): **${ showifdef('other_location_street_address') }**
+      - Street or Town Road (Example: Enter 'Main Street'): **${ showifdef('other_location_street_address') }**
       % endif
-      
       % if other_location_city != '':
-      Town / city: **${ showifdef('other_location_city') }**
+      - Town / city: **${ showifdef('other_location_city') }**
       % endif
-      
       % if other_location_state != '':
-      State: **${ showifdef('other_location_state') }**
+      - State: **${ showifdef('other_location_state') }**
       % endif
-      
       % if other_location_phone != '':
-      Phone number at that location: **${ showifdef('other_location_phone') }**
+      - Phone number at that location: **${ showifdef('other_location_phone') }**
       % endif
-
       % if other_location2 == True:
-      I have another place to list: **${ yesno(other_location2) }**
+      - I have another place to list: **${ yesno(other_location2) }**
       
-      The house or building number on the street (Example: Enter '10' if it's 10 Main Street.): **${ showifdef('house3') }**
-      
-      Street or Town Road (Example: Enter 'Main Street'): **${ showifdef('other_location2_street_address') }**
-      
-      Town / city: **${ showifdef('other_location2_city') }**
-      
-      State: **${ showifdef('other_location2_state') }**
-      
+      - The house or building number on the street (Example: Enter '10' if it's 10 Main Street.): **${ showifdef('house3') }**
+      - Street or Town Road (Example: Enter 'Main Street'): **${ showifdef('other_location2_street_address') }**
+      - Town / city: **${ showifdef('other_location2_city') }**
+      - State: **${ showifdef('other_location2_state') }**
       % if other_location2_phone != '':
-      Phone number at that location: **${ showifdef('other_location2_phone') }**
+      - Phone number at that location: **${ showifdef('other_location2_phone') }**
       % endif
       % endif
 
@@ -2911,18 +2872,15 @@ review:
       **What the defendant looks like**
 
       % if sex_female:
-      Female: **${ word(yesno(sex_female)) }**
+      - Female: **${ word(yesno(sex_female)) }**
       % endif
-      
       % if sex_male:      
-      Male: **${ word(yesno(sex_male)) }**
+      - Male: **${ word(yesno(sex_male)) }**
       % endif
-      
       % if sex_other:      
-      Sex/gender: **${ showifdef('other_sex_field') }**
+      - Sex/gender: **${ showifdef('other_sex_field') }**
       % endif
-      
-      Race:
+      - Race:
       % if race["race_white"]:      
         **White**
       % endif
@@ -2938,8 +2896,7 @@ review:
       % if race["race_other"]:      
         **${ showifdef('other_race_field') }** 
       % endif
-
-      Skin color/tone:
+      - Skin color/tone:
       % if skin["skin_light"]:      
         **Light** 
       % endif
@@ -2952,12 +2909,9 @@ review:
       % if skin["skin_other"]:     
         **Other** 
       % endif
-
-      Height: **${other_parties1_height_ft}' ${ other_parties1_height_in }"**
-
-      Weight: **${other_parties1_weight_lbs} lbs** 
-      
-      Eye color:
+      - Height: **${other_parties1_height_ft}' ${ other_parties1_height_in }"**
+      - Weight: **${other_parties1_weight_lbs} lbs** 
+      - Eye color:
       % if eyes["eyes_brown"]:
         **Brown**
       % endif
@@ -2976,18 +2930,16 @@ review:
       % if eyes["eyes_other"]:
         **Other**
       % endif
-      
       % if lenses_glasses: 
-        Glasses: **${ word(yesno(lenses_glasses)) }**
+      - Glasses: **${ word(yesno(lenses_glasses)) }**
       % endif
-      
       % if lenses_contacts:
-        Contacts: **${ word(yesno(lenses_contacts)) }**
+      - Contacts: **${ word(yesno(lenses_contacts)) }**
       % endif     
 
   - Edit: hair_color
     button: |      
-      Hair length: 
+      - Hair length: 
       % if hair["hair_short"]:
         **Short**
       % endif
@@ -2999,9 +2951,8 @@ review:
       % endif
       % if hair["hair_bald"]:
         **Bald**
-      % endif
-      
-      Hair color: 
+      % endif 
+      - Hair color: 
       % if hair_color["hair_brown"]:
         **Brown**
       % endif
@@ -3023,29 +2974,23 @@ review:
       % if hair_color["hair_other"]:
         **${ showifdef('other_hair_field') }**
       % endif
-      
       % if hair_beard:
-      Beard: **${ yesno(hair_beard) }**
+      - Beard: **${ yesno(hair_beard) }**
       % endif
-      
       % if hair_mustache:
-      Mustache: **${ yesno(hair_mustache) }**
+      - Mustache: **${ yesno(hair_mustache) }**
       % endif
-      
       % if tattoos: 
-      Tattoos: **${ yesno(tattoos) } - ${ showifdef('tattoos_location') }**
+      - Tattoos: **${ yesno(tattoos) } - ${ showifdef('tattoos_location') }**
       % endif
-      
       % if scars:
-      Scars or marks: **${ word(yesno(scars)) } - ${ showifdef('scars_location') }**
+      - Scars or marks: **${ word(yesno(scars)) } - ${ showifdef('scars_location') }**
       % endif
-      
       % if piercing:
-      Body piercing / earrings: **${ word(yesno(piercing)) } - ${ showifdef('piercing_location') }**
+      - Body piercing / earrings: **${ word(yesno(piercing)) } - ${ showifdef('piercing_location') }**
       % endif
-      
       % if other_marks:
-      Other identifying marks: **${ word(yesno(other_marks)) } - ${ showifdef('marks_location') }**
+      - Other identifying marks: **${ word(yesno(other_marks)) } - ${ showifdef('marks_location') }**
       % endif
 
   - note: | 
@@ -3057,27 +3002,21 @@ review:
       % if is_spouse:
       - Spouse: **${ yesno(is_spouse) }**
       % endif
-
       % if ex_spouse:
       - Ex-spouse (former spouse): **${ yesno(ex_spouse) }** 
       % endif
-
       % if live_together:
       - Someone you have been living with or sharing occupancy: **${ yesno(live_together) }**
       % endif
-      
       % if sexual_relationship:
       - Someone with whom you have had a sexual relationship: **${ yesno(sexual_relationship) }**
       % endif
-      
       % if dating:
       - Someone you have dated: **${ yesno(dating) }**
       % endif
-      
       % if family_member:
       - A member of your family: **${ yesno(family_member) }** - **${ showifdef('family_member_description') }**
       % endif
-      
       % if other_relationship:
       - A different relationship to you: **${ yesno(other_relationship) }** - **${ other_relationship_description }**
       % endif
@@ -3087,19 +3026,15 @@ review:
       % if relationship_for_LE["spouse_or_ex_spouse"]:
       -  You are the spouse or ex-spouse (former spouse) of the defendant: **${ word(yesno(relationship_for_LE["spouse_or_ex_spouse"])) }** 
       % endif
-      
       % if relationship_for_LE["lived_together"]:
       - The defendant and you have lived together while having a sexual relationship together: **${ word(yesno(relationship_for_LE["lived_together"])) }**
       % endif
-      
       % if relationship_for_LE["had_kids_together"]:
       - The defendant and you have a child or children in common: **${ word(yesno(relationship_for_LE["had_kids_together"])) }**
       % endif
-      
       % if relationship_for_LE["defendants_child"]:
       - You are the defendant’s child or step-child, **or** you are filing on behalf of that child or step-child: **${ word(yesno(relationship_for_LE["defendants_child"])) }**
       % endif
-      
       % if relationship_for_LE["plaintiffs_child"]:
       - You are the child of a person who currently or has in the past lived with the defendant while having a sexual relationship together, **or** you are  filing on behalf of that person: **${ word(yesno(relationship_for_LE["plaintiffs_child"])) }**
       % endif
@@ -3318,7 +3253,7 @@ review:
   - Edit: 
     - danger_more_abuse
     button: |
-      There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse) }**
+      - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse) }**
       % if danger_more_abuse:
       % if danger_more_abuse_who["users1"]:
       - There is danger of more abuse to you.
@@ -3326,11 +3261,10 @@ review:
       % if danger_more_abuse_who["children"]:
       - There is danger of more abuse to the child/children.
       % endif
-      
       % if defined("danger_more_abuse_why"):
-      Information not already described before: **${ danger_more_abuse_why }**
+      - Information not already described before: **${ danger_more_abuse_why }**
       % else:
-      Information not already described: **None**
+      - Information not already described: **None**
       % endif
       % endif
 
@@ -3338,14 +3272,11 @@ review:
     - danger_more_abuse_OBO
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse_OBO) }**
-      
       % if danger_more_abuse_OBO and danger_abuse_other_children_affidavit:
       - There is danger of more abuse to these children in the household:
       % endif
-      
-      % for child in children: 
-      **${ child }**
-      
+      % for child in children.in_danger: 
+      - **${ child }**
       % endfor
       % if defined("danger_abuse_other_children_affidavit_why"):
       - Why: **${ danger_abuse_other_children_affidavit_why }**
@@ -3356,20 +3287,16 @@ review:
     - weapons.revisit
     button: |      
       - The defendant has used, displayed or threatened to use a gun/firearm against you or against another family member?: **${ yesno(used_firearm) }**
-
       - The defendant used, displayed or threatened to use a gun/firearm or another deadly weapon against you or another family member?: **${ yesno(used_weapon) }**
-      
       % if defined('used_weapon_how'):
       - This is how: **${ showifdef('used_weapon_how') }**
       % endif
-      
       % if weapons.there_are_any == True:
       - The defendant owns or has access to guns/firearms or other deadly weapons?: **${ yesno(weapons.there_are_any) }**
       % endif
       % if weapons.there_are_any == False:
        - The defendant owns or has access to guns/firearms or other deadly weapons?: **${ yesno(weapons.there_are_any) }**  
       % endif
-      
       % if weapons.there_are_any:
       % for item in weapons:
       
