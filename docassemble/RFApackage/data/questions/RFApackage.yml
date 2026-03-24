@@ -209,15 +209,13 @@ code: |
   allowed_courts = interview_metadata["RFApackage"]["allowed courts"]
   user_role = "plaintiff"
   user_ask_role = "plaintiff"
-  trial_court
-  docket_number
-  set_progress(8)
-  
+  set_progress(4)
+
+  nav.set_section("screening")
   who_needs_protection  
   
   ##################order on behalf of child(ren) only##
   if who_needs_protection == 'order_obo_child':
-    nav.set_section("screening")
     what_want_to_do
     if what_want_to_do == 'extend_or_change':
       initial_screening_questions_1_exit
@@ -229,7 +227,7 @@ code: |
       elif defendant_lives_in_vermont is None:
         initial_screening_questions_5_important_note
       else:
-        initial_screening_questions_5_exit_b
+        initial_screening_questions_5_important_note_b
         
     if not plaintiff_lives_in_vermont:
       defendant_lives_in_vermont
@@ -238,7 +236,7 @@ code: |
       elif defendant_lives_in_vermont is None:
         initial_screening_questions_5_important_note
       else:
-        initial_screening_questions_5_exit_a
+        initial_screening_questions_5_important_note_b
     nav.set_section("about")
     users.gather()
     users[0].name.first
@@ -265,7 +263,7 @@ code: |
     more_about_situation
     if children1_no_shelter:
       rent_or_own
-    set_progress(12)
+    set_progress(30)
 
     nav.set_section('incidents')
     recent_incident_date_OBO
@@ -294,7 +292,6 @@ code: |
 
   else:
     ################order for self or self and kids##
-    nav.set_section("screening")
     what_want_to_do
     if what_want_to_do == 'extend_or_change':
       initial_screening_questions_1_exit
@@ -321,7 +318,7 @@ code: |
       elif defendant_lives_in_vermont is None:
         initial_screening_questions_5_important_note
       else:
-        initial_screening_questions_5_exit_b
+        initial_screening_questions_5_important_note_b
         
     if not plaintiff_lives_in_vermont:
       defendant_lives_in_vermont
@@ -330,7 +327,7 @@ code: |
       elif defendant_lives_in_vermont is None:
         initial_screening_questions_5_important_note
       else:
-        initial_screening_questions_5_exit_a
+        initial_screening_questions_5_important_note_b
     nav.set_section("about")
     users.gather()
     set_parts(subtitle=str(users))
@@ -390,6 +387,8 @@ code: |
   hair
   set_progress(90)
   notify_served
+  trial_court
+  docket_number
   nav.set_section("review_RFApackage")
   RFApackage_preview_question
   nav.set_section('sign')
@@ -740,7 +739,12 @@ question: |
 fields:
   - "Does the defendant live in Vermont?": defendant_lives_in_vermont
     datatype: yesnomaybe
-  - note: The "defendant" is the person who is abusing you or the child/children.
+  - note: |
+      % if who_needs_protection == 'order_obo_child':
+      The "defendant" is the person who is abusing the child or children.
+      % else:
+      The "defendant" is the person who is abusing you or the child/children.
+      % endif
 ---
 id: initial_screening_questions_5_continue
 question: |
