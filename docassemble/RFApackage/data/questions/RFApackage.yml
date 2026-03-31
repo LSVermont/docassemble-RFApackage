@@ -1532,7 +1532,8 @@ fields:
     
   - "Select all that apply": danger_more_abuse_who
     datatype: checkboxes
-    show if: danger_more_abuse
+    js show if: |
+      val('danger_more_abuse') == true
     none of the above: False
     minlength: 1
     choices:
@@ -3289,7 +3290,7 @@ review:
     - danger_more_abuse_OBO
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse_OBO) }**
-      % if danger_more_abuse_OBO and danger_abuse_other_children_affidavit:
+      % if danger_more_abuse_OBO:
       - There is danger of more abuse to these children in the household:
       % endif
       % for child in children:
