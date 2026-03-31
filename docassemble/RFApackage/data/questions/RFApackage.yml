@@ -2682,7 +2682,34 @@ review:
       - No children involved
       % endif
 
-      
+  - Edit: users1_relationship_to_children1
+    button: |
+      - Your relationship to the child or children: **${ users1_relationship_to_children1 }**
+
+  - Edit: parent_guardian
+    button: |
+      - Defendant's relationship to the child or children:
+      % if parent_guardian:
+      **Parent or guardian**
+      % endif
+      % if family_member:
+      **Family member** -- 
+      % endif
+      % if defined("family_member_description"):
+      **${ family_member_description }**
+      % endif
+      % if live_together:
+      **Person who lives or has lived in the household with the child**
+      % endif
+      % if dating:
+      **Child and defendant have or have had a dating relationship**
+      % endif
+      % if other_relationship:
+      Other -- 
+      % endif
+      % if defined("other_relationship_description"):
+      **${ other_relationship_description }**
+      % endif
   - note: | 
       ##About the defendant##
   - Edit: 
