@@ -3303,6 +3303,7 @@ review:
       % endif
 
   - Edit: 
+    - used_firearm
     - weapons.there_are_any
     - weapons.revisit
     button: |      
@@ -3325,6 +3326,30 @@ review:
       % endfor   
       % endif
 
+  - Edit: 
+    - used_firearm_OBO
+    - weapons.there_are_any
+    - weapons.revisit
+    button: |      
+      - The defendant has used, displayed or threatened to use a gun/firearm against the child/children or another family member?: **${ yesno(used_firearm_OBO) }**
+      - The defendant used, displayed or threatened to use a gun/firearm or another deadly weapon against the child/children or another family member?: **${ yesno(used_weapon_OBO) }**
+      % if defined('used_weapon_how'):
+      - This is how: **${ showifdef('used_weapon_how') }**
+      % endif
+      % if weapons.there_are_any == True:
+      - The defendant owns or has access to guns/firearms or other deadly weapons?: **${ yesno(weapons.there_are_any) }**
+      % endif
+      % if weapons.there_are_any == False:
+       - The defendant owns or has access to guns/firearms or other deadly weapons?: **${ yesno(weapons.there_are_any) }**  
+      % endif
+      % if weapons.there_are_any:
+      % for item in weapons:
+      
+      - **${ item.description }  --  ${ item.weapon_location }**
+      
+      % endfor   
+      % endif
+      
   - note: | 
       ##What you want in the RFA order##
   - Edit: 
