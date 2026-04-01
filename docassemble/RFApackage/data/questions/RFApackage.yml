@@ -2931,6 +2931,9 @@ review:
     button: |
       **Other places the defendant might be**
       
+      % if other_location_city == '':
+      - Unknown
+      % endif
       % if house2 != '':
       - The house or building number on the street (Example: Enter '10' if it's 10 Main Street.): **${ house2 }**
       % endif
@@ -2947,7 +2950,8 @@ review:
       - Phone number at that location: **${ showifdef('other_location_phone') }**
       % endif
       % if other_location2 == True:
-      - I have another place to list: **${ yesno(other_location2) }**
+      
+      Also:
       
       - The house or building number on the street (Example: Enter '10' if it's 10 Main Street.): **${ showifdef('house3') }**
       - Street or Town Road (Example: Enter 'Main Street'): **${ showifdef('other_location2_street_address') }**
