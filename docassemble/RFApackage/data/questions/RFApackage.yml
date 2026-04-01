@@ -2581,7 +2581,7 @@ review:
         - Birthday: **${ format_date(item.birthdate, format='M/d/yyyy') }**
         - Address: **${ item.address.on_one_line() }**
       % if users_mailing_address_different:
-        - Mailing: **${ item.mailing_address.on_one_line() }**
+        - Mailing address: **${ item.mailing_address.on_one_line() }**
       % endif
         
       % endfor      
@@ -2604,12 +2604,15 @@ review:
       % if users[0].email != '':
       - Email: **${ showifdef('users[0].email') }**
       % endif
+
   - Edit: 
     - share_contact
-    - users1_gets_reach_up
     button: |
       - You consent to the release of your address and contact information: **${ yesno(share_contact) }**
 
+  - Edit: 
+    - users1_gets_reach_up
+    button: |
       % if users1_gets_reach_up == True:
       - You get Reach Up benefits: **${ yesno(users1_gets_reach_up) }**
       % endif
@@ -2747,6 +2750,31 @@ review:
       **None**
       % endif
       
+  - Edit: parent_guardian
+    button: |
+      - Defendant's relationship to the child or children:
+      % if parent_guardian:
+      **Parent or guardian**
+      % endif
+      % if family_member:
+      **Family member** -- 
+      % endif
+      % if defined("family_member_description"):
+      **${ family_member_description }**
+      % endif
+      % if live_together:
+      **Person who lives or has lived in the household with the child**
+      % endif
+      % if dating:
+      **Child and defendant have or have had a dating relationship**
+      % endif
+      % if other_relationship:
+      Other -- 
+      % endif
+      % if defined("other_relationship_description"):
+      **${ other_relationship_description }**
+      % endif  
+      
   - Edit: other_parties[0].address.address
     button: |    
       % if defined('defendant_address_unknown') and defendant_address_unknown:
@@ -2834,7 +2862,7 @@ review:
     button: |
       **Defendant's vehicle**
       
-      - Defendant has a car or truck: **${ word(yesno(vehicle)) }**
+      - Defendant has a car or truck: **${ word(yesno(showifdef('vehicle'))) }**
       % if vehicle:
       % if vehicle_make != '':
       - Brand of the car or truck they drive: **${ showifdef('vehicle_make') }**
@@ -2845,14 +2873,13 @@ review:
       % if vehicle_year != '':
       - Vehicle year: **${ showifdef('vehicle_year') }**
       % endif
-      % endif
       % if vehicle_color != '':
       - Color: **${ showifdef('vehicle_color') }**
       % endif
       % if vehicle_plate != '':
       - Plate number: **${ showifdef('vehicle_plate') }**
       % endif      
-
+      % endif
   - Edit: employed
     button: |
       **Defendant's work**
@@ -3057,30 +3084,6 @@ review:
       - Other identifying marks: **${ word(yesno(other_marks)) } - ${ showifdef('marks_location') }**
       % endif
 
-  - Edit: parent_guardian
-    button: |
-      - Defendant's relationship to the child or children:
-      % if parent_guardian:
-      **Parent or guardian**
-      % endif
-      % if family_member:
-      **Family member** -- 
-      % endif
-      % if defined("family_member_description"):
-      **${ family_member_description }**
-      % endif
-      % if live_together:
-      **Person who lives or has lived in the household with the child**
-      % endif
-      % if dating:
-      **Child and defendant have or have had a dating relationship**
-      % endif
-      % if other_relationship:
-      Other -- 
-      % endif
-      % if defined("other_relationship_description"):
-      **${ other_relationship_description }**
-      % endif  
   - note: | 
       ##Your relationship to the defendant##
       
@@ -3226,7 +3229,9 @@ review:
       % if not defined("recent_incident_state") and defined("other_recent_incident_state"):
       - Province/state/country of the most recent incident if outside of the U.S.: **${other_recent_incident_state}**
       % endif
-
+      % if defined("recent_incident_description"):
+      - Most recent incident description: **${ recent_incident_description }**
+      % endif
       
   - Edit:
     - recent_incident_most_serious
@@ -3276,9 +3281,6 @@ review:
       % endif
       % if serious_incident_fear_OBO:
       - The defendant placed the child/children in fear of imminent serious physical harm.
-      % endif
-      % if defined("recent_incident_description"):
-      - Your description of most recent incident: **${ recent_incident_description }**
       % endif
 
       
@@ -3346,9 +3348,7 @@ review:
       % endif
       % if weapons.there_are_any:
       % for item in weapons:
-      
       - **${ item.description }  --  ${ item.weapon_location }**
-      
       % endfor   
       % endif
 
@@ -3370,9 +3370,7 @@ review:
       % endif
       % if weapons.there_are_any:
       % for item in weapons:
-      
       - **${ item.description }  --  ${ item.weapon_location }**
-      
       % endfor   
       % endif
       
