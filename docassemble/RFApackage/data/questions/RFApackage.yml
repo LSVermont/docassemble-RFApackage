@@ -2635,7 +2635,6 @@ review:
       % elif defined('A_new_residence_shared_address'):
       ${ A_new_residence_shared_address }
       % endif
-
       % if rent_or_own == "residence_rented":
       - **The home is rented**
       % endif
@@ -2675,15 +2674,15 @@ review:
       % for child in children:
       **${ child.name }**
       
-      - Born: ${ child.birthdate }
-      - In further danger: ${ word(yesno(child.in_danger)) }
+      - Born: **${ child.birthdate }**
+      - In further danger: **${ word(yesno(child.in_danger)) }**
       % if child.attribute_defined('in_danger') and child.in_danger == True:
-      - Their relationship to you: ${ child.relationship_users1 }
-      - Their relationship to the defendant: ${ child.relationship_OP }
+      - Their relationship to you: **${ child.relationship_users1 }**
+      - Their relationship to the defendant: **${ child.relationship_OP }**
       % endif
       % endfor
       % else:
-      - No children involved
+      - **No children involved**
       % endif
 
   - Edit: 
@@ -2703,7 +2702,6 @@ review:
       % elif defined('A_new_residence_shared_address'):
       - **${ A_new_residence_shared_address }**
       % endif
-
       % if rent_or_own == "residence_rented":
       - **The home is rented**
       % endif
@@ -3274,10 +3272,10 @@ review:
       - The defendant sexually assaulted the child/children. 
       % endif
       % if recent_incident_harm_OBO:
-      - The defendant caused or attempted to cause physical harm to the child/children.: 
+      - The defendant caused or attempted to cause physical harm to the child/children.
       % endif
       % if serious_incident_fear_OBO:
-      - The defendant placed the child/children in fear of imminent serious physical harm.: 
+      - The defendant placed the child/children in fear of imminent serious physical harm.
       % endif
       % if defined("recent_incident_description"):
       - Your description of most recent incident: **${ recent_incident_description }**
@@ -3397,7 +3395,7 @@ review:
       - Order the defendant to complete a domestic violence accountability program approved by the Council on Domestic Violence: **${ word(yesno(request_DV_program_OBO)) }**
       - Order the defendant to stay a certain distance away from the child/children: **${ word(yesno(request_stay_away_OBO)) }**
       % if defined("request_stay_away_feet_OBO"):
-      **${ request_stay_away_feet_OBO } feet**
+       **(${ request_stay_away_feet_OBO } feet)**
       % endif
       - Order the defendant to not contact the child/children in any way: **${ word(yesno(request_no_contact_OBO)) }**
       - Award temporary Parental Rights and Responsibilities (custody) of our child/children to me. (For child/children of you and the defendant.): **${ word(yesno(request_temp_PRR_OBO)) }**
@@ -3414,7 +3412,7 @@ review:
       - Order defendant not to take any regulated drug unless it is prescribed by a physician, or drink alcohol, for at least 8 hours prior to a scheduled contact with the child/children, or during contact with the child/children). And if defendant appears to be under the influence of drugs or alcohol, allow me to cancel the scheduled visit with the child/children.: **${ word(yesno(request_no_drugs_alcohol_OBO)) }**
       - Order the defendant to not physically punish the child/children named above in any way:  **${ word(yesno(request_no_punishment_OBO)) }**
       - Order the defendant to pay temporary child support for the child/children: **${ word(yesno(request_child_support_OBO)) }**
-      - I want to ask for something else. (You can write what you want on an upcoming screen.):  **${ word(yesno(other_request_OBO)) }** --- **${ request_other_description }**
+      - I want to ask for something else:  **${ word(yesno(other_request_OBO)) }** --- **${ request_other_description }**
     
   - Edit: 
     - request_not_abuse
@@ -3504,14 +3502,18 @@ review:
       % if showifdef("request_no_pet_children"):
       - You want the order to protect the pets owned by your child/children: **${ word(yesno(request_no_pet_children)) }**
       % endif
+      % endif
       
       % if showifdef("request_control_of_pet"):
       Order you to get temporary possession and control of the pet(s): **${ word(yesno(request_control_of_pet)) }**
       % endif
-      % endif
+      
       
       % if showifdef("request_stay_away"):
-      Order the defendant to stay a certain distance away: **${ word(yesno(request_stay_away)) }**, **${ request_stay_away_feet } feet**
+      Order the defendant to stay a certain distance away: **${ word(yesno(request_stay_away)) }**
+      % if showifdef("request_stay_away_feet"):
+       **(${ request_stay_away_feet } feet)**
+      % endif
       
       % if showifdef("request_stay_away_users1"):
       - You want the order to protect you from this: **${ word(yesno(request_stay_away_users1)) }**
