@@ -388,7 +388,6 @@ code: |
   set_progress(90)
   notify_served
   trial_court
-  docket_number
   nav.set_section("review_RFApackage")
   RFApackage_preview_question
   nav.set_section('sign')
@@ -1328,7 +1327,7 @@ fields:
   - "When was the most recent incident?": recent_incident_date
     maxlength: 28
   - note: |
-      If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something short like “December 20XX.”
+      If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something short like “December 20XX.” If it's a date range, enter the start and end dates as best you can.
     
   - "What was the time of the most recent incident? You can estimate if you don't know for sure.": recent_incident_time
     required: False
@@ -1399,7 +1398,7 @@ fields:
   - "When was the most recent incident?": recent_incident_date_OBO
     maxlength: 28
   - note: |
-      If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something short like “December 20XX.”
+      If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something short like “December 20XX.” If it's a date range, enter the start and end dates as best you can.
   - "What was the time of the most recent incident? You can estimate if you don't know for sure.": recent_incident_time
     required: False
     maxlength: 16
@@ -1444,7 +1443,7 @@ fields:
   - "When was the most serious incident?": serious_incident_date
     maxlength: 28
   - note: |
-      If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something like “late December 20XX.”
+      If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something like “late December 20XX.” If it's a date range, enter the start and end dates as best you can.
   - "What was the time of the most serious incident?": serious_incident_time
     required: False
     maxlength: 13
@@ -2683,6 +2682,7 @@ review:
       - Their relationship to you: **${ child.relationship_users1 }**
       - Their relationship to the defendant: **${ child.relationship_OP }**
       % endif
+      
       % endfor
       % else:
       - **No children involved**
