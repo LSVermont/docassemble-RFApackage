@@ -516,13 +516,6 @@ fields:
       We'll ask you about that home on the next screen.
     show if: children1_no_shelter
 ---
-#code: |
-#  for child in children: 
-#    child.in_danger
-#    child.relationship_users1
-#    child.relationship_OP
-#  get_kids_in_danger = True
----
 id: OBO danger of more abuse
 question: |
   Immediate danger of more abuse
@@ -2634,7 +2627,7 @@ review:
       Do you need the defendant removed from your home in order to be safe?: **${ word(yesno(users1_no_shelter)) }**
 
       % if users1_no_shelter:
-      **Details about your shared home**
+      **Details about that home**
       % endif
       
       % if defined('residence_shared_address'):
@@ -2693,6 +2686,49 @@ review:
       - No children involved
       % endif
 
+  - Edit: 
+    - children1_no_shelter
+    button: |
+      - The child/children will be forced to leave their home unless defendant is ordered to leave: **${yesno(children1_no_shelter)}**
+
+  - Edit: 
+    - residence_shared_address
+    button: |
+      % if children1_no_shelter:
+      Details about that home:
+      % endif
+      
+      % if defined('residence_shared_address'):
+      - **${ residence_shared_address }**
+      % elif defined('A_new_residence_shared_address'):
+      - **${ A_new_residence_shared_address }**
+      % endif
+
+      % if rent_or_own == "residence_rented":
+      - **The home is rented**
+      % endif
+      % if rent_or_own == "residence_owned":
+      - **The home is owned**
+      % endif    
+      % if rent_or_own == "i_dont_know":
+      - **You don't know if the home is owned or rented**
+      % endif    
+      % if whose_name == "residence_of_both":
+      - **The home is rented or owned by ${ users[0] } and ${ other_parties[0] }** 
+      % endif    
+      % if whose_name == "residence_of_users1":
+      - **The home is rented or owned by ${ users[0] }** 
+      % endif   
+      % if whose_name == "residence_of_OP":
+      - **The home is rented or owned by ${ other_parties[0] }** 
+      % endif  
+      % if whose_name == "residence_of_other":
+      - **The home is rented or owned by someone else** 
+      % endif  
+      % if whose_name == "i_donnot_know":
+      - **You don't know who rents or owns the home** 
+      % endif
+    
 
   - note: | 
       ##About the defendant##
