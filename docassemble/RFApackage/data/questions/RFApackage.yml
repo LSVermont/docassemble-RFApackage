@@ -2583,7 +2583,8 @@ review:
       % if users.there_are_any:
       % for item in users:
       
-        - **${ item }**
+        **${ item }**
+      
         - Birthday: **${ format_date(item.birthdate, format='M/d/yyyy') }**
         - Address: **${ item.address.on_one_line() }**
       % if users_mailing_address_different:
@@ -2667,49 +2668,32 @@ review:
       - **You don't know who rents or owns the home** 
       % endif        
 
-  - note: |
-      ###About children
-    show if: children.there_are_any
-  - Edit: children.revisit
+  - Edit: users1_relationship_to_children1
     button: |
-      **Children involved in this case**
+      - Your relationship to the child or children: **${ users1_relationship_to_children1 }**
       
+  - note: |
+      ##About children involved in this case
+    show if: children.there_are_any
+    
+  - Edit: children.revisit
+    button: |      
       % if children.there_are_any:
-      % for item in children:
-      - **${ item }**; Born: ${ item.birthdate }; In further danger: ${ word(yesno(item.in_danger)) }
+      % for child in children:
+      **${ child.name }**
+      
+      - Born: ${ child.birthdate }
+      - In further danger: ${ word(yesno(child.in_danger)) }
+      % if child.attribute_defined('in_danger') and child.in_danger == True:
+      - Their relationship to you: ${ child.relationship_users1 }
+      - Their relationship to the defendant: ${ child.relationship_OP }
+      % endif
       % endfor
       % else:
       - No children involved
       % endif
 
-  - Edit: users1_relationship_to_children1
-    button: |
-      - Your relationship to the child or children: **${ users1_relationship_to_children1 }**
 
-  - Edit: parent_guardian
-    button: |
-      - Defendant's relationship to the child or children:
-      % if parent_guardian:
-      **Parent or guardian**
-      % endif
-      % if family_member:
-      **Family member** -- 
-      % endif
-      % if defined("family_member_description"):
-      **${ family_member_description }**
-      % endif
-      % if live_together:
-      **Person who lives or has lived in the household with the child**
-      % endif
-      % if dating:
-      **Child and defendant have or have had a dating relationship**
-      % endif
-      % if other_relationship:
-      Other -- 
-      % endif
-      % if defined("other_relationship_description"):
-      **${ other_relationship_description }**
-      % endif
   - note: | 
       ##About the defendant##
   - Edit: 
@@ -2717,7 +2701,7 @@ review:
     button: |
       % for item in other_parties:
       
-      - **${ item }**
+      **${ item }**
       
       % endfor
   - Edit: other_parties1_aliases
@@ -3039,6 +3023,30 @@ review:
       - Other identifying marks: **${ word(yesno(other_marks)) } - ${ showifdef('marks_location') }**
       % endif
 
+  - Edit: parent_guardian
+    button: |
+      - Defendant's relationship to the child or children:
+      % if parent_guardian:
+      **Parent or guardian**
+      % endif
+      % if family_member:
+      **Family member** -- 
+      % endif
+      % if defined("family_member_description"):
+      **${ family_member_description }**
+      % endif
+      % if live_together:
+      **Person who lives or has lived in the household with the child**
+      % endif
+      % if dating:
+      **Child and defendant have or have had a dating relationship**
+      % endif
+      % if other_relationship:
+      Other -- 
+      % endif
+      % if defined("other_relationship_description"):
+      **${ other_relationship_description }**
+      % endif  
   - note: | 
       ##Your relationship to the defendant##
       
@@ -3271,6 +3279,7 @@ review:
 
   - Edit: 
     - danger_more_abuse_OBO
+    - children.revisit
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse_OBO) }**
       % if danger_more_abuse_OBO:
@@ -3356,6 +3365,14 @@ review:
       % endif
       - Order the defendant to not contact the child/children in any way: **${ word(yesno(request_no_contact_OBO)) }**
       - Award temporary Parental Rights and Responsibilities (custody) of our child/children to me. (For child/children of you and the defendant.): **${ word(yesno(request_temp_PRR_OBO)) }**
+      % if request_temp_PRR_OBO:
+      -- These children:
+      % for child in children:
+      % if child.custody_wanted:
+      * **${ child }**
+      % endif
+      % endfor
+      % endif
       - Order the defendant to have supervised contact with the child/children: **${ word(yesno(request_supervised_contact_OBO)) }**
       - Order that the child/children will be picked up and dropped off at a certain supervised location: **${ word(yesno(request_supervised_exchange_OBO)) }**
       - Order defendant not to take any regulated drug unless it is prescribed by a physician, or drink alcohol, for at least 8 hours prior to a scheduled contact with the child/children, or during contact with the child/children). And if defendant appears to be under the influence of drugs or alcohol, allow me to cancel the scheduled visit with the child/children.: **${ word(yesno(request_no_drugs_alcohol_OBO)) }**
