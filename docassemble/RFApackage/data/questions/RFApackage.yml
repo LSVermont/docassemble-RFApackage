@@ -1326,7 +1326,7 @@ fields:
     show if: recent_incident_coercive  
     
   - "When was the most recent incident?": recent_incident_date
-    maxlength: 14
+    maxlength: 28
   - note: |
       If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something short like “December 20XX.”
     
@@ -1397,7 +1397,7 @@ subquestion: |
   Note: **The defendant will get a copy of the affidavit** if the judge gives you a temporary order or if the case goes to a hearing.
 fields:
   - "When was the most recent incident?": recent_incident_date_OBO
-    maxlength: 14
+    maxlength: 28
   - note: |
       If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something short like “December 20XX.”
   - "What was the time of the most recent incident? You can estimate if you don't know for sure.": recent_incident_time
@@ -1442,7 +1442,7 @@ subquestion: |
   Describe the **most serious** incident of abuse. Again, be as detailed as possible. The judge needs to know exactly what happened.
 fields:
   - "When was the most serious incident?": serious_incident_date
-    maxlength: 16
+    maxlength: 28
   - note: |
       If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something like “late December 20XX.”
   - "What was the time of the most serious incident?": serious_incident_time
@@ -2949,7 +2949,7 @@ review:
       % if other_location_phone != '':
       - Phone number at that location: **${ showifdef('other_location_phone') }**
       % endif
-      % if other_location2 == True:
+      % if house2 != '':
       
       Also:
       
@@ -3253,10 +3253,10 @@ review:
       - Time of the most serious incident: **${ showifdef('serious_incident_time') }**
       - Town of the most serious incident: **${ showifdef('serious_incident_town') }**
        % if serious_incident_state:
-      - State of the most serious incident: **${ serious_incident_state }**
+      - State of the most serious incident: **${ showifdef('serious_incident_state') }**
       % endif
-       % if other_serious_incident_state:
-      - Province/state/country of the most recent incident if outside of the U.S.: **${ other_serious_incident_state }**
+       % if showifdef('other_serious_incident_state'):
+      - Province/state/country of the most recent incident if outside of the U.S.: **${ showifdef('other_serious_incident_state') }**
       % endif
       - Your description of most serious incident: **${ showifdef('serious_incident_description') }**
       % endif
