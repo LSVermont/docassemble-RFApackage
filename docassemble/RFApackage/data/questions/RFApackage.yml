@@ -3235,8 +3235,6 @@ review:
       % endif
       % if serious_incident_stalked_OBO:
       - The defendant stalked the child/children.
-      - First stalking: **${ showifdef('recent_incident_stalked_date1') }**
-      - Second stalking: **${ showifdef('recent_incident_stalked_date2') }**
       % endif
       % if serious_incident_assault_OBO:
       - The defendant sexually assaulted the child/children. 
