@@ -341,6 +341,7 @@ code: |
     share_contact
     children.gather()
     set_progress(24)
+  
     nav.set_section('defendant')
     ex_spouse
     other_parties.gather()
@@ -348,7 +349,7 @@ code: |
     other_parties_estimated_age
     ask_defendant_address
     other_parties[0].phone_number
-    more_about_defendant
+    other_parties1_incarcerated
     nav.set_section('incidents')
     recent_incident_date
     set_progress(40)
@@ -1045,8 +1046,6 @@ subquestion: |
 fields:
   - "${ other_parties[0].name } gets Reach Up benefits from the state": other_parties1_gets_reach_up
     datatype: yesno
-    hide if: |
-      who_needs_protection == 'order_obo_child'
   - "${ other_parties[0].name } is a current member of the military": other_parties1_military
     datatype: yesno
   - "${ other_parties[0].name } is incarcerated (in jail) and has been convicted of one of the crimes specified in this Vermont law: 15 V.S.A. 1103 (c)(1)(B) ${ display_template(list_of_crimes, scrollable=True, collapse=True) }": other_parties1_incarcerated
@@ -2808,13 +2807,14 @@ review:
   - Edit: 
     - other_parties1_gets_reach_up
     button: |
-      % if other_parties1_gets_reach_up:
       - Defendant gets Reach Up benefits: **${ yesno(other_parties1_gets_reach_up) }**
-      % endif
+  - Edit: 
+    - other_parties1_military
+    button: |
+      - Is current member of the military: **${ yesno(other_parties1_military) }**
   - Edit: 
     - other_parties1_incarcerated
     button: |
-      - Is current member of the military: **${ yesno(other_parties1_military) }**
       - Is incarcerated (in jail) and has been convicted of one of the crimes specified in 15 V.S.A. 1103 (c)(1)(B): **${ yesno(other_parties1_incarcerated) }**
       
   - Edit: other_parties[0].phone_number
@@ -4364,10 +4364,7 @@ attachment:
       - "residence_of_OP": ${ whose_name == "residence_of_OP" }
       - "residence_of_other": ${ whose_name == "residence_of_other" }
       - "residence_of_both": ${ whose_name == "residence_of_both" }
-      - "reach_up_users1": |
-          % if defined('users1_gets_reach_up'):
-          ${ users1_gets_reach_up }
-          % endif
+      - "reach_up_users1": ${ users1_gets_reach_up }
       - "reach_up_OP": ${ other_parties1_gets_reach_up }
       - "request_not_abuse_children": ${ request_not_abuse_children }
       - "request_not_abuse_users1": ${ request_not_abuse_users1 }
