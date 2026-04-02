@@ -1292,7 +1292,7 @@ fields:
   - note: |
       ---
     show if: recent_incident_stalked
-  - "The defendant sexually assaulted you and/or the child/children. Sexual assault is defined in Vermont law here: [15 V.S.A 5131(5)] (https://legislature.vermont.gov/statutes/section/12/178/05131)": recent_incident_assault
+  - "The defendant sexually assaulted you and/or the child/children. Sexual assault is defined in Vermont law here: [15 V.S.A 5131(5)](https://legislature.vermont.gov/statutes/section/12/178/05131)": recent_incident_assault
     datatype: yesno
   - "The defendant sexually assault you": recent_incident_assault_users1
     datatype: yesnoradio
@@ -1316,17 +1316,16 @@ fields:
     datatype: yesnoradio
     css class: indent-me
     show if: recent_incident_coercive
-  - note: |
-      ---
-    show if: recent_incident_assault
   - "When did this abusive behavior first start?": recent_incident_coercive_start_date
     maxlength: 14
     show if: recent_incident_coercive  
-    
-  - "When was the most recent incident?": recent_incident_date
+  - note: |
+      ---
+    show if: recent_incident_coercive
+  - "When was the most recent incident of abuse?": recent_incident_date
     maxlength: 28
   - note: |
-      If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something short like “December 20XX.” If it's a date range, enter the start and end dates as best you can.
+      If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something short like “December 20XX.”
     
   - "What was the time of the most recent incident? You can estimate if you don't know for sure.": recent_incident_time
     required: False
@@ -1394,7 +1393,7 @@ subquestion: |
   
   Note: **The defendant will get a copy of the affidavit** if the judge gives you a temporary order or if the case goes to a hearing.
 fields:
-  - "When was the most recent incident?": recent_incident_date_OBO
+  - "When was the most recent incident of abuse?": recent_incident_date_OBO
     maxlength: 28
   - note: |
       If you know the exact date, use this date format mm/dd/yyyy. If you don’t, it’s OK to type something short like “December 20XX.” If it's a date range, enter the start and end dates as best you can.
@@ -1536,43 +1535,6 @@ fields:
     show if: danger_more_abuse
     maxlength: 310
     required: False
----
-
----
-#id: Danger of more abuse
-#question: |
-#  Danger of more abuse
-#subquestion: |
-#  If you want to get a court order that starts right way, answer **Yes** to this question.
-#fields:
-#  - "Is there immediate danger of more abuse from the defendant?": danger_more_abuse
-#    datatype: yesnoradio
-#    
-#  - "Select all that apply": danger_more_abuse_who
-#    datatype: checkboxes
-#    show if: danger_more_abuse
-#    none of the above: False
-#    minlength: 1
-#    choices:
-#      - "There is danger of more abuse to you": users1
-#      - "There is danger of more abuse to the child/children": children
-#    
-#  - "Include any information not already described before. Be as specific as possible.": danger_more_abuse_why
-#    input type: area
-#    show if: danger_more_abuse
-#    maxlength: 310
-#    required: False
----
-#id: Gather weapons
-#question: |
-#  Gather list of weapons
-#fields:
-#  - Does the defendant own or have access to guns/firearms or other deadly weapons?: weapons.there_are_any
-#    input type: radio
-#    choices:
-#      - Yes: True
-#      - No: False
-#      - I don't know: None
 ---
 id: Weapons
 question: |
@@ -2632,9 +2594,9 @@ review:
       % endif
       
       % if defined('residence_shared_address'):
-      ${ residence_shared_address }
+      - **${ residence_shared_address }**
       % elif defined('A_new_residence_shared_address'):
-      ${ A_new_residence_shared_address }
+      - **${ A_new_residence_shared_address }**
       % endif
       % if rent_or_own == "residence_rented":
       - **The home is rented**
@@ -2932,7 +2894,7 @@ review:
       **Other places the defendant might be**
       
       % if other_location_city == '':
-      - Unknown
+      - **Unknown**
       % endif
       % if house2 != '':
       - The house or building number on the street (Example: Enter '10' if it's 10 Main Street.): **${ house2 }**
@@ -3149,7 +3111,6 @@ review:
       % if defined("recent_incident_time"):
       - Time of the most recent incident: **${ recent_incident_time }**
       % endif
-      
       % if defined("recent_incident_town"):
       - Location of the most recent incident: **${ recent_incident_town }**, 
       % endif
@@ -3159,10 +3120,10 @@ review:
       % if other_recent_incident_state != '':
       **${other_recent_incident_state}**
       % endif
-      
       % if defined("recent_incident_description"):
       - Most recent incident description: **${ recent_incident_description }**
       % endif
+      ---
       % if defined("recent_incident_users1"):
       - You were the target of the recent abuse: **${ yesno(recent_incident_users1) }**
       % endif
@@ -3176,19 +3137,22 @@ review:
       **, ${ showifdef('recent_incident_other_children') }**
       % endif
       % endif
+      ---
       
       % if recent_incident_harm:
       - The defendant caused or attempted to cause physical harm: **${ yesno(recent_incident_harm) }**
       % endif
-      
       % if recent_incident_fear:
       - The defendant placed you and/or them in fear of imminent serious physical harm: **${ yesno(recent_incident_fear) }**
       % endif
-      
       % if recent_incident_abused:
       - The defendant abused the child/children: **${ yesno(recent_incident_abused) }**
       % endif
-
+      % if defined("recent_incident_coercive") and recent_incident_coercive:
+      - The defendant coercively controlled you and/or the child/children: **${ yesno(recent_incident_coercive) }**
+      - The defendant coercively controlled you: **${ yesno(recent_incident_coercive_users1) }**
+      - The defendant coercively controlled the child/children: **${ yesno(recent_incident_coercive_children) }**
+      % endif
       % if recent_incident_stalked:
       - The defendant stalked you and/or the child/children: **${ yesno(recent_incident_stalked) }**
       - The defendant stalked you: **${ yesno(recent_incident_stalked_users1) }**
@@ -3196,19 +3160,12 @@ review:
       - First stalking: **${ showifdef('recent_incident_stalked_date1') }**
       - Second stalking: **${ showifdef('recent_incident_stalked_date2') }**
       % endif
-      
       % if recent_incident_assault:
       - The defendant sexually assaulted you and/or the child/children: **${ yesno(recent_incident_assault) }**
       - The defendant sexually assaulted you: **${ yesno(recent_incident_assault_users1) }**
       - The defendant sexually assaulted the child/children: **${ yesno(recent_incident_assault_children) }**
       % endif
 
-      % if defined("recent_incident_coercive") and recent_incident_coercive:
-      - The defendant coercively controlled you and/or the child/children: **${ yesno(recent_incident_coercive) }**
-      - The defendant coercively controlled you: **${ yesno(recent_incident_coercive_users1) }**
-      - The defendant coercively controlled the child/children: **${ yesno(recent_incident_coercive_children) }**
-      
-      % endif
 
   - Edit: 
     - recent_incident_date_OBO
@@ -3275,7 +3232,9 @@ review:
       - The defendant coercively controlled the child/children.
       % endif
       % if serious_incident_stalked_OBO:
-      - The defendant stalked the child/children. 
+      - The defendant stalked the child/children.
+      - First stalking: **${ showifdef('recent_incident_stalked_date1') }**
+      - Second stalking: **${ showifdef('recent_incident_stalked_date2') }**
       % endif
       % if serious_incident_assault_OBO:
       - The defendant sexually assaulted the child/children. 
@@ -3305,10 +3264,10 @@ review:
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse) }**
       % if danger_more_abuse:
       % if danger_more_abuse_who["users1"]:
-      - There is danger of more abuse to you.
+      - There is danger of more abuse to you: **${ yesno(danger_more_abuse_who["users1"]) }**
       % endif
       % if danger_more_abuse_who["children"]:
-      - There is danger of more abuse to the child/children.
+      - There is danger of more abuse to the child/children: **${ yesno(danger_more_abuse_who["children"]) }**
       % endif
       % if danger_more_abuse_why != ' ':
       - Information not already described before: **${ danger_more_abuse_why }**
@@ -3459,6 +3418,10 @@ review:
       Order the defendant to surrender immediately to law enforcement all guns/firearms that they own, possess or control: **${ word(yesno(request_surrender_firearms)) }**
       % endif
 
+      % if showifdef("request_living_expenses"):
+      Order the defendant to pay your temporary living expenses: **${ word(yesno(request_living_expenses)) }**
+      % endif
+      
       % if showifdef("surrender_plaintiffs_documents"):
       Order the defendant to return any personal documents in their possession that pertain to me and/or my children. (Examples: immigration documents, birth certificates and identification cards.): **${ word(yesno(surrender_plaintiffs_documents)) }**
       % endif
@@ -3486,9 +3449,9 @@ review:
       % if showifdef("surrender_vehicle_restricted_from_use"):
       - I have been restricted from using the vehicle by the defendant.: **${ word(yesno(surrender_vehicle_restricted_from_use)) }**
       % endif
-      
-      % if showifdef("request_living_expenses"):
-      Order the defendant to pay your temporary living expenses: **${ word(yesno(request_living_expenses)) }**
+
+      % if showifdef("request_DV_program"):
+      Order the defendant to complete a domestic violence accountability program approved by the Council on Domestic Violence: **${ word(yesno(request_DV_program)) }**
       % endif
       
       % if showifdef("request_child_support"):
@@ -3509,7 +3472,6 @@ review:
       % if showifdef("request_control_of_pet"):
       Order you to get temporary possession and control of the pet(s): **${ word(yesno(request_control_of_pet)) }**
       % endif
-      
       
       % if showifdef("request_stay_away"):
       Order the defendant to stay a certain distance away: **${ word(yesno(request_stay_away)) }**
@@ -3534,10 +3496,6 @@ review:
       % if showifdef("request_no_contact_children"):
       - You want the order to protect your child/children from this: **${ word(yesno(request_no_contact_children)) }**
       % endif
-      % endif
-
-      % if showifdef("request_DV_program"):
-      Order the defendant to complete a domestic violence accountability program approved by the Council on Domestic Violence: **${ word(yesno(request_DV_program)) }**
       % endif
       
       % if showifdef("other_request"):
@@ -3929,6 +3887,12 @@ attachment:
       - "existing_order_county": ${ existing_order_county }
       - "existing_order_users_attorney": ${ existing_order_users_attorney }
       - "existing_order_OP_attorney": ${ existing_order_OP_attorney }
+      - "recent_incident_date": |
+          % if defined('recent_incident_coercive_start_date'):
+          ${ recent_incident_coercive_start_date } - ${ recent_incident_date }
+          % else:
+          ${ recent_incident_date }
+          % endif 
       - "serious_incident_date": |
           % if not recent_incident_most_serious:
           ${ serious_incident_date.format() }
