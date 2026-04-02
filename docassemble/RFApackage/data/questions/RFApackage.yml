@@ -3952,27 +3952,60 @@ attachment:
           % endif
       - "danger_more_abuse_other_children": |
           % if children.number_gathered() > 1:
-          % if children[1].in_danger or children[2].in_danger:
+          % if children[1].in_danger or children[2].in_danger or children[3].in_danger:
           True
           % else:
           False
           % endif
           % endif
-      - "children1_name__2": ${ children[0].name }
-      - "children1_birthdate__2": ${ format_date(children[0].birthdate, format='M/d/yyyy') }
-      - "children1_relationship_users1__2": |
-          % if children[0].in_danger:
-          ${ children[0].relationship_users1 }
+      - "children1_name__2": |
+          % if children[1].in_danger:
+          ${ children[1].name }
           % endif
-      - "children1_relationship_OP__2": ${ children[0].relationship_OP }
-      - "children2_name__1": ${ children[1] }
-      - "children2_birthdate__1": ${ format_date(children[1].birthdate, format='M/d/yyyy') }
-      - "children2_relationship_users1__1": ${ children[1].relationship_users1 }
-      - "children2_relationship_OP__1": ${ children[1].relationship_OP }
-      - "children3_name__1": ${ children[2] }
-      - "children3_birthdate__1": ${ format_date(children[2].birthdate, format='M/d/yyyy') }
-      - "children3_relationship_users1__1": ${ children[2].relationship_users1 }
-      - "children3_relationship_OP__1": ${ children[2].relationship_OP }
+      - "children1_birthdate__2": |
+          % if children[1].in_danger:
+          ${ format_date(children[1].birthdate, format='M/d/yyyy') }
+          % endif
+      - "children1_relationship_users1__2": |
+          % if children[1].in_danger:
+          ${ children[1].relationship_users1 }
+          % endif
+      - "children1_relationship_OP__2": |
+          % if children[1].in_danger:
+          ${ children[1].relationship_OP }
+          % endif
+      - "children2_name__1": |
+          % if children[2].in_danger:
+          ${ children[2] }
+          % endif
+      - "children2_birthdate__1": |
+          % if children[2].in_danger:
+          ${ format_date(children[2].birthdate, format='M/d/yyyy') }
+          % endif
+      - "children2_relationship_users1__1": |
+          % if children[2].in_danger:
+          ${ children[2].relationship_users1 }
+          % endif
+      - "children2_relationship_OP__1": |
+          % if children[2].in_danger:
+          ${ children[2].relationship_OP }
+          % endif
+      - "children3_name__1": |
+          % if children[3].in_danger:
+          ${ children[3] }
+          % endif
+      - "children3_birthdate__1": |
+          % if children[3].in_danger:
+          ${ format_date(children[3].birthdate, format='M/d/yyyy') }
+          % endif
+      - "children3_relationship_users1__1": |
+          % if children[3].in_danger:
+          ${ children[3].relationship_users1 }
+          % endif
+      - "children3_relationship_OP__1": |
+          % if children[3].in_danger:
+          ${ children[3].relationship_OP }
+          % endif
       - "used_firearm": ${ used_firearm_OBO }
       - "incarcerated": ${ other_parties1_incarcerated }
       - "children1_no_shelter": ${ children1_no_shelter }
