@@ -3196,6 +3196,8 @@ review:
       
   - Edit:
     - recent_incident_most_serious
+    - follow up:
+        - serious_incident_date
     button: |
       **Most serious incident**
       
@@ -3203,7 +3205,7 @@ review:
 
   
   - Edit:
-    - serious_incident_description
+    - serious_incident_date
     button: |
       % if recent_incident_most_serious == False:
       - Date of the most serious incident: **${ showifdef('serious_incident_date') }** 
@@ -3298,16 +3300,16 @@ review:
     - weapons.there_are_any
     - weapons.revisit
     button: |      
-      - The defendant has used, displayed or threatened to use a gun/firearm against you or against another family member?: **${ yesno(used_firearm) }**
-      - The defendant used, displayed or threatened to use a gun/firearm or another deadly weapon against you or another family member?: **${ yesno(used_weapon) }**
+      - The defendant has used, displayed or threatened to use a gun/firearm against you or against another family member: **${ yesno(used_firearm) }**
+      - The defendant used, displayed or threatened to use a gun/firearm or another deadly weapon against you or another family member: **${ yesno(used_weapon) }**
       % if defined('used_weapon_how'):
       - This is how: **${ showifdef('used_weapon_how') }**
       % endif
       % if weapons.there_are_any == True:
-      - The defendant owns or has access to guns/firearms or other deadly weapons?: **${ yesno(weapons.there_are_any) }**
+      - The defendant owns or has access to guns/firearms or other deadly weapons: **${ yesno(weapons.there_are_any) }**
       % endif
       % if weapons.there_are_any == False:
-       - The defendant owns or has access to guns/firearms or other deadly weapons?: **${ yesno(weapons.there_are_any) }**  
+       - The defendant owns or has access to guns/firearms or other deadly weapons: **${ yesno(weapons.there_are_any) }**  
       % endif
       % if weapons.there_are_any:
       % for item in weapons:
