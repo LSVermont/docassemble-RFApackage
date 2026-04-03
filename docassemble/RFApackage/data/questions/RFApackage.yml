@@ -6,21 +6,36 @@ include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.ALToolbox:phone-number-validation.yml
   - docassemble.ALToolbox:display_template.yml
+  - docassemble.VTSharedYMLFile:VTSharedYMLFile.yml
 ---
-#This interview uses the style sheet that's included in this package
-features:
-  css: style.css
+
+
+
+
+---
+#Delete this when sharedyml is working
+#features:
+#  css: style.css
+---
+#Delete this when sharedyml is working
+#objects:
+#  - all_courts: ALCourtLoader.using(file_name='courts_list.xlsx')
 ---
 # customized feedback form
 code: |   
   feedback_form = "docassemble.VTFeedback:VTfeedback.yml"
 ---
 objects:
-  - all_courts: ALCourtLoader.using(file_name='courts_list.xlsx')
+  - all_courts: ALCourtLoader.using(file_name='docassemble.VTSharedYMLFile:data/sources/courts_list_full.xlsx')
 ---
 code: |
-  trial_court = all_courts.as_court('trial_court', trial_court_index)
-  trial_court.geolocate()  
+  trial_court_index = all_courts.matching_courts_in_county(county_name=user_selected_county,search_columns=['division_abbr'],search_string=trial_court_division)[0][0]
+---
+
+
+
+
+
 ---
 metadata:
   title: |
