@@ -374,8 +374,9 @@ code: |
     set_progress(70)
   
   request_all_emergency  
-  
+  trial_court
   existing_order
+  
   nav.set_section('service')
   details_for_law_enforcement
   location_of_home
@@ -388,7 +389,7 @@ code: |
   hair
   set_progress(90)
   notify_served
-  trial_court
+
   nav.set_section("review_RFApackage")
   RFApackage_preview_question
   nav.set_section('sign')
@@ -505,13 +506,9 @@ id: OBO more about the situation
 continue button field: more_about_situation
 question: |
   More about the situation
-fields:    
-  - note: |
-      Select all that apply to this situation.
-#  - "Defendant has used, displayed, or threatened to use a firearm against the children or against a family member.": used_firearm
-#    datatype: yesno
+fields:
   - "The child or children will be forced to leave their current home and will be without shelter unless defendant is ordered to leave the residence.": children1_no_shelter
-    datatype: yesno
+    datatype: yesnoradio
   - note: |
       We'll ask you about that home on the next screen.
     show if: children1_no_shelter
@@ -553,8 +550,9 @@ id: OBO danger of more abuse to other children in household
 question: |
   Danger of abuse to children in the household
 fields:
-  - "Why do you think the children are in danger?": danger_abuse_other_children_affidavit_why
+  - "Why do you think the children are in further danger?": danger_abuse_other_children_affidavit_why
     input type: area
+    max: 600
 ---
 id: basic questions intro screen
 question: |
@@ -573,7 +571,7 @@ subquestion: |
   
   <i class="fas fa-file-text fa-2x"></i> This tool will produce a complete package of 4 forms needed to ask the court for a Relief from Abuse (RFA) order in Vermont: the Complaint, Affidavit, Confidential Notification form and Protection Order Service Information form. Learn more about RFA orders and this tool on the next screen.
   
-  <i class="fas fa-clock fa-2x"></i> It may take you over 1 hour to complete this. Make sure you are in a safe place.
+  <i class="fas fa-clock fa-2x"></i> It may take you 40 minutes to over 1 hour to complete this. Make sure you are in a safe place.
   
   <i class="fas fa-circle-info fa-2x"></i> It is free to use this program. This site is not a lawyer. Visit our [VTLawHelp.org website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-1) for more information about Relief from Abuse orders.
   
@@ -609,11 +607,22 @@ fields:
   - note: |
       Next, let’s make sure this is the right tool for your situation.
 ---
+id: who needs protecton from abuse
+question: |
+  Who needs protection
+subquestion: |
+  ${ collapse_template(asterisk) }
+fields:
+  - "Who needs protection from abuse?": who_needs_protection
+    input type: radio
+    choices:
+      - "I need this order to protect **me only**": order_for_me
+      - "I need this order to protect **me and my child or children**": order_for_both
+      - "I’m asking for an RFA order **only on behalf of a child or children** under the age of 18": order_obo_child
+---
 id: initial_screening_questions_1
 question: |
   See if this tool is right for your situation
-subquestion: |
-  ${ collapse_template(asterisk) }
   
 fields:
   - What do you want to do?: what_want_to_do
@@ -693,17 +702,6 @@ subquestion: |
 continue button field: initial_screening_questions_2_exit_a
 buttons:
   - DELETE your answers: restart
----
-id: who needs protecton from abuse
-question: |
-  Who needs protection
-fields:
-  - "Who needs protection from abuse?": who_needs_protection
-    input type: radio
-    choices:
-      - "I need this order to protect **me only**": order_for_me
-      - "I need this order to protect **me and my child or children**": order_for_both
-      - "I’m asking for an RFA order **only on behalf of a child or children** under the age of 18": order_obo_child
 ---
 id: initial_screening_questions_3_exit
 question: |
@@ -2631,7 +2629,10 @@ review:
       ##About children involved in this case
     show if: children.there_are_any
     
-  - Edit: children.revisit
+  - Edit:
+    - children.revisit
+    - recompute:
+      - define_danger_abuse_other_children_affidavit
     button: |      
       % if children.there_are_any:
       % for child in children:
@@ -3256,6 +3257,8 @@ review:
       % if other_incident:     
       - Other incident(s) description: **${ showifdef('other_incident_description') }**
       % endif
+
+      
   - note: | 
       ##Safety and weapons##
   - Edit: 
@@ -3279,18 +3282,24 @@ review:
   - Edit: 
     - danger_more_abuse_OBO
     - children.revisit
+    - recompute:
+      - define_danger_abuse_other_children_affidavit
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse_OBO) }**
       % if danger_more_abuse_OBO:
       - There is danger of more abuse to these children in the household:
-      % endif
       % for child in children:
       % if child.in_danger:
       - **${ child }**
       % endif
       % endfor
-      % if defined("danger_abuse_other_children_affidavit_why"):
-      - Why: **${ danger_abuse_other_children_affidavit_why }**
+      % endif
+
+  - Edit: 
+    - danger_abuse_other_children_affidavit_why
+    button: |
+      % if danger_more_abuse_OBO and danger_abuse_other_children_affidavit:
+      - Why the children in danger of more abuse: **${ danger_abuse_other_children_affidavit_why }**
       % endif
 
   - Edit: 
@@ -3598,43 +3607,21 @@ review:
     button: |
       Filing for an RFA order in the Family Court of this county in Vermont: **${ trial_court.address.county }**
 
+      
+
   - Edit: 
     - existing_order
     button: |
       **Existing orders or court proceedings**
-      
-       % if existing_order["existing_order_divorce"]:
-       For divorce or separation: **${ yesno(existing_order["existing_order_divorce"]) }**
-       % endif
-       
-       % if existing_order["dissolution"]:
-       For a civil union dissolution: **${ word(yesno(existing_order["dissolution"])) }**
-       % endif
-       
-       % if existing_order["existing_order_RFA"]:
-       For Relief from Abuse: **${ word(yesno(existing_order["existing_order_RFA"])) }**
-       % endif
-       
-       % if existing_order["criminal_proceeding"]:
-       For a criminal matter: **${ word(yesno(existing_order["criminal_proceeding"])) }**
-       % endif
-       
-       % if existing_order["parentage_order"]:
-       For parentage: **${ word(yesno(existing_order["parentage_order"])) }**
-       % endif
-       
-       % if existing_order["guardianship_order"]:
-       For guardianship: **${ word(yesno(existing_order["guardianship_order"])) }**
-       % endif
-       
-       % if existing_order["juvenile_order"]:
-       For a juvenile (DCF) matter: **${ word(yesno(existing_order["juvenile_order"])) }**
-       % endif
-       
-       % if existing_order["child_support_order"]:
-       For child support: **${ word(yesno(existing_order["child_support_order"])) }**
-       % endif
-       
+
+      - For divorce or separation: **${ yesno(showifdef('existing_order["existing_order_divorce"]')) }**
+      - For a civil union dissolution: **${ word(yesno(existing_order["dissolution"])) }**
+      - For Relief from Abuse: **${ word(yesno(existing_order["existing_order_RFA"])) }**
+      - For a criminal matter: **${ word(yesno(existing_order["criminal_proceeding"])) }**
+      - For parentage: **${ word(yesno(existing_order["parentage_order"])) }**
+      - For guardianship: **${ word(yesno(existing_order["guardianship_order"])) }**
+      - For a juvenile (DCF) matter: **${ word(yesno(existing_order["juvenile_order"])) }**
+      - For child support: **${ word(yesno(existing_order["child_support_order"])) }**
        % if existing_order_county != '':
        - In this county: **${ showifdef('existing_order_county') }**
        % endif
