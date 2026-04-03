@@ -146,12 +146,6 @@ code: |
 code: |
   AL_ORGANIZATION_HOMEPAGE = "https://vtlawhelp.org/vtcourtforms"
 ---
-objects:
-  - al_logo: DAStaticFile.using(filename="LSV_bug.png")
----
-images:
-  big_logo: LSV_logo.png 
----
 code: |
   interview_metadata['main_interview_key'] =  'RFApackage'
 ---
@@ -181,14 +175,6 @@ code: |
 ---
 code: |
   al_form_type = "starts_case" 
----
-# customized the error message people get when they encounter a bug in the interview
-code: |
-  al_custom_error_options = [
-    "Use the [original PDF versions](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3) of these forms instead.",
-    "Visit [VTLawHelp.org](https://vtlawhelp.org) to find legal help.",
-    "Get court forms and basic info about court forms and the court process. Reach out to the [Vermont Judiciary's ARC.](https://www.vermontjudiciary.org/self-help/ARC)",
-  ]
 ---
 objects:
   - users: ALPeopleList.using(ask_number=True,target_number=1)
@@ -388,6 +374,9 @@ code: |
   set_progress(90)
   notify_served
 
+  if defined("user_selected_county"):
+    trial_court.address.county
+  
   nav.set_section("review_RFApackage")
   RFApackage_preview_question
   nav.set_section('sign')
@@ -559,15 +548,7 @@ question: |
   **${interview_short_title} in Vermont**
 subquestion: |  
   
-  <div class="border-around-text">
-  
-  <p>${ AL_ORGANIZATION_TITLE } can help you complete and download forms in 3 steps:</p>
-  <ul><li><b>Step 1:</b> Answer simple questions. Your answers will be filled into the forms for you.</li>
-  <li><b>Step 2:</b> Preview the completed forms and edit your answers, if needed.</li>
-  <li><b>Step 3:</b> Download, save, print or email the final forms.</li></ul>
-  
-  <p>You will need to mail, email, efile or deliver them to the court on your own. VTCourtForms will give you instructions.</p>
-  </div>
+  <p>${ intro_vtcourtforms_3_steps }</p>
   
   <i class="fas fa-file-text fa-2x"></i> This tool will produce a complete package of 4 forms needed to ask the court for a Relief from Abuse (RFA) order in Vermont: the Complaint, Affidavit, Confidential Notification form and Protection Order Service Information form. Learn more about RFA orders and this tool on the next screen.
   
@@ -575,9 +556,8 @@ subquestion: |
   
   <i class="fas fa-circle-info fa-2x"></i> It is free to use this program. This site is not a lawyer. Visit our [VTLawHelp.org website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-1) for more information about Relief from Abuse orders.
   
-  VTCourtForms was created by Legal Services Vermont with support from the Legal Services Corporation and assistance from the Suffolk University Legal Innovation and Technology (LIT) Lab Document Assembly Line Project. We also had help from Vermont Legal Aid, Vermont Judiciary and other Vermont organizations.
-  
-  [FILE big_logo, 30%, Legal Services Vermont]
+  <p>${ intro_vtcourtforms_created_by }</p>
+
 continue button field: al_intro_screen   
 ---
 id: RFApackage_intro
@@ -630,12 +610,6 @@ fields:
     choices:
       - "Ask the court for a new Relief from Abuse order": new_order
       - "Extend or change an existing RFA order": extend_or_change
----
-template: asterisk
-subject: |
-  Required fields <span style="color:#e11717;">*</span><br/>
-content: |
-  A red star / asterisk <span style="color:#e11717;">*</span> means you need to answer this question before you can move on.
 ---
 id: initial_screening_questions_1_exit
 question: |
@@ -818,31 +792,6 @@ fields:
   - County: user_selected_county
     code: sorted(all_courts.unique_column_values('branch') - {"Environmental", "Judicial Bureau"} )
     required: False
-    
- #% if al_form_type == 'starts_case':
-  #What court do you want to file in?
-  #% elif al_form_type == 'appeal':
-  #What is the name of the trial court your case was originally filed in?
-  #% else:
-  #What court is your case in?
-  #% endif
-  #subquestion: |
-  #% if not al_form_type == 'starts_case':
-  #Look at your court paperwork. Match the name listed there.
-  #% endif
-  ##${ collapse_template(how_to_pick_court_help_template) }
-  
-  #- Address: trial_court_address.address
-  #  address autocomplete: True
-  #  required: False
-  #- Suite: trial_court_address.unit
-  #  required: False
-  #- City: trial_court_address.city
-  #  required: False
-  #- State: trial_court_address.state
-  #  required: False
-  #- Postal code: trial_court_address.zip    
-  #  required: False
 ---
 id: you birthdate question
 question: |
@@ -1977,7 +1926,7 @@ id: Existing orders or court proceedings
 question: |
   Existing orders or court proceedings
 subquestion: |
-  Is there an existing court order or a pending court proceeding involving you, the defendant, and/or the child or children? 
+  Is there an existing court order or a pending court proceeding involving you, the defendant, and/or your child or children? 
   
   Don't include things you plan to do. Only include things that have been submitted to the court already.
 fields:  
@@ -2514,17 +2463,16 @@ code: |
   [user.address.address for user in users.complete_elements()]
   addresses_to_search = [user.address for user in users.complete_elements()]
 ---
-#needs:
-#  - existing_order_text
-#  - race_text
+
 #####################################################################
 ######################### REVIEW SCREEN ######################
+---
 id: RFApackage review screen
 event: review_RFApackage
 question: |
   Review your answers
 subquestion: |
-  Edit your answers here. Choose the section(s) that you want to edit. When you are done, scroll to the bottom and select "Resume."
+  ${ review_screen_instructions }
 review:
   - note: | 
       ##About you##
@@ -3098,6 +3046,7 @@ review:
       % if relationship_for_LE["plaintiffs_child"]:
       - You are the child of a person who currently or has in the past lived with the defendant while having a sexual relationship together, **or** you are  filing on behalf of that person: **${ word(yesno(relationship_for_LE["plaintiffs_child"])) }**
       % endif
+      
   - note: | 
       ##What happened##
   - Edit: 
@@ -3617,23 +3566,23 @@ review:
       **Existing orders or court proceedings**
 
       - For divorce or separation: **${ yesno(showifdef('existing_order["existing_order_divorce"]')) }**
-      - For a civil union dissolution: **${ word(yesno(existing_order["dissolution"])) }**
-      - For Relief from Abuse: **${ word(yesno(existing_order["existing_order_RFA"])) }**
-      - For a criminal matter: **${ word(yesno(existing_order["criminal_proceeding"])) }**
-      - For parentage: **${ word(yesno(existing_order["parentage_order"])) }**
-      - For guardianship: **${ word(yesno(existing_order["guardianship_order"])) }**
-      - For a juvenile (DCF) matter: **${ word(yesno(existing_order["juvenile_order"])) }**
-      - For child support: **${ word(yesno(existing_order["child_support_order"])) }**
-       % if existing_order_county != '':
+      - For a civil union dissolution: **${ yesno(showifdef('existing_order["dissolution"]')) }**
+      - For Relief from Abuse: **${ yesno(showifdef('existing_order["existing_order_RFA"]')) }**
+      - For a criminal matter: **${ yesno(showifdef('existing_order["criminal_proceeding"]')) }**
+      - For parentage: **${ yesno(showifdef('existing_order["parentage_order"]')) }**
+      - For guardianship: **${ yesno(showifdef('existing_order["guardianship_order"]')) }**
+      - For a juvenile (DCF) matter: **${ yesno(showifdef('existing_order["juvenile_order"]')) }**
+      - For child support: **${ yesno(showifdef('existing_order["child_support_order"]')) }**
+       % if showifdef('existing_order_county') != '':
        - In this county: **${ showifdef('existing_order_county') }**
        % endif
-       % if existing_order_state != '':
+       % if showifdef('existing_order_state') != '':
        - In this state: **${ showifdef('existing_order_state') }**
        % endif
-       % if existing_order_users_attorney != '':
+       % if showifdef('existing_order_users_attorney') != '':
        - Your attorney for that proceeding: **${ showifdef('existing_order_users_attorney') }**
        % endif
-       % if existing_order_OP_attorney != '':
+       % if showifdef('existing_order_OP_attorney') != '':
        - Defendant's attorney for that proceeding: **${ showifdef('existing_order_OP_attorney') }**
        % endif
   - note: | 
@@ -3660,10 +3609,11 @@ review:
     - signature_date
     button: |
       Signature date to put on forms: **${ (format_date(signature_date, format='M/d/yyyy')) }**
-  - note: |       
-      Required attestation on your affidavit: "I declare that my statements are true and accurate to the best of my knowledge and belief. I understand that if my statements are false, I will be subject to the penalty of perjury or to other sanctions in the discretion of the court."
       
-      **Select Resume, below, when you are done. It will take a moment to generate your forms again.**
+  - note: |
+      ${ review_screen_attestation_reminder }
+      
+      ${ review_screen_select_resume_will_take_moment }
      
 ---
 continue button field: users.revisit
@@ -3754,54 +3704,33 @@ confirm: True
 id: download RFApackage
 event: RFApackage_download
 question: |
-  Review your forms and download and/or print them
-subquestion: |
-  You have completed all the questions. Your forms are ready to view.
-  
-  Select the "Edit your answers" button to fix any mistakes. Then, **download your forms and the instructions sheet** for the next steps to take. You can also **print them** or **email them** to yourself or someone else, too.
-  
-  Consider:
-  
-  * creating a free account so you can save your answers and come back later. At any time choose "sign up" in the Menu above, or "register" below.
-  
-  * using the Share feature to share a link to your answers with a trusted person. **Important**: If you use the Share feature, that person will be able to see AND change your answers.
-  
-  * working with an advocate from the [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get advice and support during the RFA process.
-  
+  ${ download_screen_instructions_headline }
+subquestion: |  
+  ${ download_screen_instructions }
+
+  - working with an advocate from [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get advice and support during the RFA process.
+
   ${ action_button_html(url_action('review_RFApackage'), label='<i class="fa-solid fa-pencil"></i> Edit your answers', color='info') }
+
   <hr>
   
   <h4 style="margin-bottom: 18px;">Documents to download</h4>
   
   ${ al_user_bundle.download_list_html() }
-  
+
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
 
-  <hr>
+  <hr>  
   
-  IMPORTANT: Now is the time to download the documents, email or print them, or make a free account to save them. **This tool does not send your forms to the court.** Please download the Next Steps document to learn how to get them to the court at any time of the day or night.
+  ${ download_screen_bottom_instructions }
+
+  - The NEXT STEPS document will tell you how to get your forms to the court at **any time of the day or night.**
   
   ${ collapse_template(not_seeing_email) }
   ${ collapse_template(log_out_when_done) }
-progress: 100
----
-template: not_seeing_email
-subject: |
-  Not seeing the email?<br/>
-content: |
-  Check your junk folder and consider marking the email as "not spam" when you find it.
----  
-template: log_out_when_done
-subject: |
-  Keep your information safe: How to log out when you are done<br/>
-content: |
-  * If you have an account, choose "Sign out" from the Menu and then close your web browser. 
-  
-  * Or choose "Exit and Delete My Answers" from the Menu to erase your answers completely. Then close your web browser. 
-  
-  * You might also consider clearing your browsing history. [Learn more about online safety.](https://vtlawhelp.org/vtcourtforms#safety)
----
 
+progress: 100
+---  
 # ALDocument objects specify the metadata for each template
 objects:
   - RFApackage_Post_interview_instructions: ALDocument.using(title="NEXT STEPS - Instructions for filing these forms with the court", filename="RFApackage_next_steps.docx", enabled=True, has_addendum=False)
@@ -4743,146 +4672,4 @@ code:  |
   RFAserviceinfo.overflow_fields.gathered = True
   RFAconfidentialcontactinfo.overflow_fields.gathered = True
   RFAcomplaint.overflow_fields.gathered = True
----
-# customized About this form screen accessed from footer
-template: about_this_interview_version_info
-content: |
-  % if all_variables(special='metadata').get('help_page_title','').rstrip() and all_variables(special='metadata').get('help_page_url','').rstrip():
-  Learn more: [${ all_variables(special='metadata').get('help_page_title','').rstrip() }](${ all_variables(special='metadata').get('help_page_url','').rstrip() }).
-  % endif
-
-  "${all_variables(special='metadata').get('title','').rstrip()}" version 
-  `${ package_version_number }`; AssemblyLine version `${ al_version }`.
-
-  % if interview_metadata.get("main_interview_key"):
-    <%
-      MAIN_METADATA = interview_metadata[interview_metadata["main_interview_key"]]
-    %>
-  % elif len(interview_metadata) > 1:    
-    <% 
-      del(interview_metadata["main_interview_key"]) # DADict creates the key on lookup above
-      MAIN_METADATA = next(iter(interview_metadata.values())) 
-    %>
-  % else:
-    <% MAIN_METADATA = all_variables(special='metadata') %>
-  % endif
-  <% ORIGINAL_FORMS = MAIN_METADATA.get("original_form", []) if isinstance(MAIN_METADATA.get("original_form"), list) else ([MAIN_METADATA.get("original_form", "")] if MAIN_METADATA.get("original_form") else []) %>
-  
-  % if package_updated_on:
-  Last updated on ${ package_updated_on }. 
-  % endif
-
-  % if len(ORIGINAL_FORMS) > 1:
-  View the paper version of this form or these forms at the links below:
-
-  % for url in [url for url in ORIGINAL_FORMS if url.strip() != "None" and url.startswith("http")]:
-  * [${ url }](${ url })
-  % endfor
-  % elif len(ORIGINAL_FORMS) == 1:
-  [View the paper version of this form or these forms](${ ORIGINAL_FORMS[0] }).
-  % endif
-  
-  
-  This VTCourtForms tool was created by Legal Services Vermont, a nonprofit legal aid organization serving the state of Vermont. We had support from the Legal Services Corporation and assistance from the Suffolk University Legal Innovation and Technology (LIT) Lab Document Assembly Line Project. We also had help from Vermont Legal Aid, Vermont Judiciary and other Vermont organizations.
-  
-  Learn more about [VTCourtForms](https://vtlawhelp.org/vtcourtforms), including the terms of use and privacy information.
-  
-  Keep your information safe. How to log out when you are done:
-  
-  * If you have an account, choose "Sign Out" from the Menu and then close your web browser. 
-  
-  * Or choose "Exit and Delete My Answers" from the Menu to erase your answers completely. Then close your web browser. 
-  
-  * You might also consider clearing your browsing history. [Learn more about online safety.](https://vtlawhelp.org/vtcourtforms#safety)
-  
-  This tool was built with docassemble and includes code from the [Document Assembly Line project](https://suffolklitlab.org/docassemble-AssemblyLine-documentation/docs/).
-  
-    [:fab-fa-github: View the code on GitHub](https://github.com/LSVermont).  
----
-# customized screen for share feature
-continue button field: al_share_form_screen
-id: al share form screen
-question: |
-  Share VTCourtForms
-fields:
-  - What do you want to do?: al_sharing_type
-    datatype: radio
-    choices:
-      - Tell a friend about VTCourtForms: tell_friend
-      - Share my answers and progress with a trusted person, who will be able to edit the answers: share_answers
-  -  How do you want to share the link?: al_how_share_link
-     datatype: radio
-     choices:
-       - Email: email_or_sms
-       - Just show me the link. I will share it myself.: link_only
-       - Export my answers to a file: download_json
-     js show if: |
-       val("al_sharing_type") === "tell_friend" || val("al_sharing_type") === "share_answers" 
-  - note: |
-      **Note**: the person you share this link with will be able to see and
-      edit your answers on this form.
-    js show if: |
-      val("al_sharing_type") === "share_answers" &&  ( val("al_how_share_link") === "email_or_sms" || val("al_how_share_link") === "link_only" )
-  - note: |
-      You can copy and share this link
-      
-      ${ copy_button_html(  interview_url(i=user_info().filename, style="short", new_session=1), label=al_copy_button_label.show(), tooltip_inert_text=al_copy_button_tooltip_inert_text.show(), tooltip_copied_text = al_copy_button_tooltip_copied_text.show() ) }
-    js show if: |
-      val("al_sharing_type") === "tell_friend" && val("al_how_share_link") === "link_only"      
-  - note: |
-      You can copy and share this link (expires in 48 hours)
-      ${ copy_button_html( interview_url(temporary=48), label=al_copy_button_label.show(), tooltip_inert_text=al_copy_button_tooltip_inert_text.show(), tooltip_copied_text = al_copy_button_tooltip_copied_text.show()) }
-    js show if: |
-      val("al_sharing_type") === "share_answers" && val("al_how_share_link") === "link_only"
-  - Email you want to send this to: share_interview_contact_method
-    validate: is_phone_or_email
-    show if:
-      variable: al_how_share_link
-      is: email_or_sms
-  - Message: tell_a_friend_message
-    datatype: area
-    default: |
-      Hi, I wanted to let you know about a free website that I learned about:
-      "${single_paragraph(all_variables(special='metadata').get('title', AL_ORGANIZATION_TITLE))}". 
-      
-      Check it out at the link in this message:       
-    js show if: |
-      val("al_how_share_link") === "email_or_sms" && val("al_sharing_type") === "tell_friend"
-  - Message: share_interview_answers_message
-    datatype: area
-    default: |
-      Hi, I wanted to share my progress on a form on "${ AL_ORGANIZATION_TITLE }".
-      
-      If you follow this link, you can follow along or finish the form for me.
-    js show if: |
-      val("al_how_share_link") === "email_or_sms" && val("al_sharing_type") === "share_answers"      
-  - Your name: al_share_form_from_name
-    default: ${ str(users[0]) if defined('users[0].name.first') else '' } 
-    show if:
-      variable: al_how_share_link
-      is: email_or_sms
-  - note: |
-      <a class="btn btn-primary btn-sm btn-secondary" href="${ export_interview_variables().url_for(attachment=True) }" role="button"><i class="far fa-file-code"></i> Export in JSON format</a>  
-    show if:
-      variable: al_how_share_link
-      is: download_json
-back button label: |
-  Back to your form
----
-id: customized emails sent with attachments
-generic object: ALDocumentBundle
-template: x.send_email_template
-subject: |
- % if len(x) > 1:
- Documents from ${ al_app_name } are attached
- % else:
- A document from ${ al_app_name } is attached
- % endif
-content: |
-  <p style="font-size:18px;font-family:arial,helvetica neue,helvetica,sans-serif;">Your document(s) are attached.</p>
-
-  <p style="font-size:18px;font-family:arial,helvetica neue,helvetica,sans-serif;">Visit <a href="https://vtlawhelp.org/vtcourtforms">https://vtlawhelp.org/vtcourtforms</a> to learn more about VTCourtForms.</p>
-
-  <p style="font-size:18px;font-family:arial,helvetica neue,helvetica,sans-serif;">Note: Please do not reply to this email address. It does not accept emails.</p>
-
 ---
