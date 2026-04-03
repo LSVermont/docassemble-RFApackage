@@ -1,6 +1,5 @@
-#THIS IS THE VERSION where I have pulled the current, active RFA package and I am incorporating the changes I made elsewhere to include RFA on behalf of a minor.
+#THIS IS THE VERSION where I have pulled the current, active RFA package and I am incorporating the changes I made elsewhere to include RFA on behalf of a minor. I am also incorporating the VTSharedYMLFile.
 # This version reflects July 1, 2025, law changes and Judiciary form changes.
-# This interview does not make use of VTSharedYMLFile because that shared file was made after this interview went live.
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -8,18 +7,6 @@ include:
   - docassemble.ALToolbox:display_template.yml
   - docassemble.VTSharedYMLFile:VTSharedYMLFile.yml
 ---
-
-
-
-
----
-#Delete this when sharedyml is working
-#features:
-#  css: style.css
----
-#Delete this when sharedyml is working
-#objects:
-#  - all_courts: ALCourtLoader.using(file_name='courts_list.xlsx')
 ---
 # customized feedback form
 code: |   
@@ -28,12 +15,10 @@ code: |
 objects:
   - all_courts: ALCourtLoader.using(file_name='docassemble.VTSharedYMLFile:data/sources/courts_list_full.xlsx')
 ---
+id: trial_court_index
 code: |
-  trial_court_index = all_courts.matching_courts_in_county(county_name=user_selected_county,search_columns=['division_abbr'],search_string=trial_court_division)[0][0]
+  trial_court_index = all_courts.matching_courts_in_county(county_name=user_selected_county,search_columns=['division_abbr'],search_string="Family")[0][0]
 ---
-
-
-
 
 
 ---
@@ -220,12 +205,10 @@ comment: |
   Controls order and branching logic for questions specific to this form
 id: interview_order_RFApackage
 code: |
-  # Set the allowed courts for this interview
-  allowed_courts = interview_metadata["RFApackage"]["allowed courts"]
   user_role = "plaintiff"
   user_ask_role = "plaintiff"
   set_progress(4)
-
+  
   nav.set_section("screening")
   who_needs_protection  
   
@@ -389,7 +372,7 @@ code: |
     set_progress(70)
   
   request_all_emergency  
-  trial_court
+  user_selected_county
   existing_order
   
   nav.set_section('service')
@@ -427,16 +410,10 @@ sections:
   - sign: Signature
   - get_docs: Get your documents
 progressive: False
-##################
----
-code: |
-  children[i].name.first
-  children[i].birthdate
-  children[i].in_danger
-  children[i].complete=True
 ---
 #####################################################################
 ###################### Main order ######################
+---
 comment: |
   This block includes the logic for standalone interviews.
   Delete mandatory: True to include in another interview
@@ -459,6 +436,8 @@ code: |
       },
   )
   nav.set_section('get_docs')
+  if defined("user_selected_county"):
+    trial_court.address.county
   RFApackage_download
 ---
 
@@ -536,6 +515,12 @@ subquestion: |
 fields:
   - "Is there immediate danger of more abuse from the defendant?": danger_more_abuse_OBO
     datatype: yesnoradio
+---
+code: |
+  children[i].name.first
+  children[i].birthdate
+  children[i].in_danger
+  children[i].complete=True
 ---
 id: OBO children in danger relationships
 generic object: Individual     
@@ -829,8 +814,10 @@ fields:
       While a RFA order is in effect, it is good **anywhere** in Vermont and the United States.
       
       Not sure what county? [Check this list of cities and towns to find the county.](https://en.m.wikipedia.org/wiki/List_of_municipalities_in_Vermont#Cities)
-  - County: trial_court_index
-    code: all_courts._load_courts()['address_county'].items()
+
+  - County: user_selected_county
+    code: sorted(all_courts.unique_column_values('branch') - {"Environmental", "Judicial Bureau"} )
+    required: False
     
  #% if al_form_type == 'starts_case':
   #What court do you want to file in?
@@ -3616,11 +3603,11 @@ review:
   - note: | 
       ##Filing##
   - Edit: 
-    - trial_court_index
+    - user_selected_county
     - recompute:
       - trial_court
     button: |
-      Filing for an RFA order in the Family Court of this county in Vermont: **${ trial_court.address.county }**
+      Filing for an RFA order in the Family Court of this county in Vermont: **${ user_selected_county }**
 
       
 
@@ -3848,7 +3835,12 @@ attachment:
   skip undefined: True
   pdf template file: 5_RFA-complaint-on-behalf-of-minor.pdf
   fields:
-      - "trial_court_county": ${ trial_court.address.county }
+      - "trial_court_county": |
+          % if defined("user_selected_county"):
+          ${ user_selected_county }
+          % else:
+          ${ }
+          % endif
       - "docket_number": ${ docket_number }
       - "children1_name__1": ${ children[0].name }
       - "children1_birthdate__1": ${ format_date(children[0].birthdate, format='M/d/yyyy') }
@@ -4081,7 +4073,12 @@ attachment:
   pdf template file: 6_RFA-affidavit-on-behalf-of-minor.pdf
   fields:
       - "docket_number": ${ docket_number }
-      - "trial_court_county": ${ trial_court.address.county }
+      - "trial_court_county": |
+          % if defined("user_selected_county"):
+          ${ user_selected_county }
+          % else:
+          ${ }
+          % endif
       - "children1_name": ${ children[0] }
       - "children1_birthdate": ${ format_date(children[0].birthdate, format='M/d/yyyy') }
       - "other_parties1_name__1": ${ other_parties[0] }
@@ -4223,7 +4220,12 @@ attachment:
   pdf template file: 1_RFA-complaint.pdf
   fields:
       - "docket_number": ${ docket_number }
-      - "trial_court_county": ${ trial_court.address.county }
+      - "trial_court_county": |
+          % if defined("user_selected_county"):
+          ${ user_selected_county }
+          % else:
+          ${ }
+          % endif
       - "users1_name": ${ users[0] }
       - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
       - "other_parties1_name": ${ other_parties[0] }
@@ -4431,7 +4433,12 @@ attachment:
   #editable: False
   fields:
       - "docket_number": ${ docket_number }
-      - "trial_court_county": ${ trial_court.address.county }
+      - "trial_court_county": |
+          % if defined("user_selected_county"):
+          ${ user_selected_county }
+          % else:
+          ${ }
+          % endif
       - "users1_name": ${ users[0] }
       - "users1_birthdate": ${ format_date(users[0].birthdate, format='M/d/yyyy') }
       - "other_parties1_name__1": ${ other_parties[0] }
@@ -4545,7 +4552,12 @@ attachment:
   pdf template file: 4_RFA-confidential-contact-info.pdf
   fields:
       - "docket_number": ${ docket_number }
-      - "trial_court_county": ${ trial_court.address.county }
+      - "trial_court_county": |
+          % if defined("user_selected_county"):
+          ${ user_selected_county }
+          % else:
+          ${ }
+          % endif
       - "users1_name": ${ users[0] }
       - "users1_address_address": ${ users[0].address.line_one() }
       - "users1_address_mailing": ${ users[0].mailing_address.on_one_line() }
