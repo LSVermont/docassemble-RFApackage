@@ -1175,16 +1175,33 @@ fields:
 
   - "The defendant caused or attempted to cause physical harm": recent_incident_harm
     datatype: yesno
-  - "The defendant placed you and/or the child/children in fear of imminent serious physical harm": recent_incident_fear
+
+
+  - label: |
+      % if children.number_gathered() > 0:
+      The defendant placed you and/or the child/children in fear of imminent serious physical harm
+      % else:
+      The defendant placed you in fear of imminent serious physical harm
+      % endif
+    field: recent_incident_fear
     datatype: yesno
+    
   - "The defendant abused the child/children -- meaning they physically injured or otherwise treated the child(ren) in a manner which placed child(ren's) life, health, development or welfare in jeopardy. See the definition of child abuse in Vermont law: [33 V.S.A. § 4912(1).](https://legislature.vermont.gov/statutes/section/33/049/04912)": recent_incident_abused
     datatype: yesno
-  - "The defendant stalked you and/or the child/children. Stalking is defined in Vermont law here: [12 V.S.A 5131(6)](https://legislature.vermont.gov/statutes/section/12/178/05131)": recent_incident_stalked
+
+  - label: |
+      % if children.number_gathered() > 0:
+      The defendant stalked you and/or the child/children. Stalking is defined in Vermont law here: [12 V.S.A 5131(6)](https://legislature.vermont.gov/statutes/section/12/178/05131)
+      % else:
+      The defendant stalked you. Stalking is defined in Vermont law here: [12 V.S.A 5131(6)](https://legislature.vermont.gov/statutes/section/12/178/05131)
+      % endif
+    field: recent_incident_stalked
     datatype: yesno
   - note: |
       Stalking is very complicated. Ask a lawyer about this.
     css class: indent-me
     show if: recent_incident_stalked
+    
   - "The defendant stalked you": recent_incident_stalked_users1
     datatype: yesnoradio
     css class: indent-me
@@ -1204,7 +1221,14 @@ fields:
   - note: |
       ---
     show if: recent_incident_stalked
-  - "The defendant sexually assaulted you and/or the child/children. Sexual assault is defined in Vermont law here: [15 V.S.A 5131(5)](https://legislature.vermont.gov/statutes/section/12/178/05131)": recent_incident_assault
+
+  - label: |
+      % if children.number_gathered() > 0:
+      The defendant sexually assaulted you and/or the child/children. Sexual assault is defined in Vermont law here: [15 V.S.A 5131(5)](https://legislature.vermont.gov/statutes/section/12/178/05131)
+      % else:
+      The defendant sexually assaulted you. Sexual assault is defined in Vermont law here: [15 V.S.A 5131(5)](https://legislature.vermont.gov/statutes/section/12/178/05131)
+      % endif
+    field: recent_incident_stalked
     datatype: yesno
   - "The defendant sexually assault you": recent_incident_assault_users1
     datatype: yesnoradio
@@ -1218,8 +1242,15 @@ fields:
       ---
     show if: recent_incident_assault
 
-  - "The defendant coercively controlled you and/or the child/children. Coercive control is defined in Vermont law here: [15 V.S.A. § 1101(2)](https://legislature.vermont.gov/statutes/section/15/021/01101). A summary is found [here](https://legislature.vermont.gov/Documents/2024/Docs/ACTS/ACT103/ACT103%20Act%20Summary.pdf).": recent_incident_coercive
+  - label: |
+      % if children.number_gathered() > 0:
+      The defendant coercively controlled you and/or the child/children. Coercive control is defined in Vermont law here: [15 V.S.A. § 1101(2)](https://legislature.vermont.gov/statutes/section/15/021/01101). A summary is found [here](https://legislature.vermont.gov/Documents/2024/Docs/ACTS/ACT103/ACT103%20Act%20Summary.pdf).
+      % else:
+      The defendant coercively controlled you. Coercive control is defined in Vermont law here: [15 V.S.A. § 1101(2)](https://legislature.vermont.gov/statutes/section/15/021/01101). A summary is found [here](https://legislature.vermont.gov/Documents/2024/Docs/ACTS/ACT103/ACT103%20Act%20Summary.pdf).
+      % endif
+    field: recent_incident_coercive
     datatype: yesno
+    
   - "The defendant coercively controlled you": recent_incident_coercive_users1
     datatype: yesnoradio
     css class: indent-me
