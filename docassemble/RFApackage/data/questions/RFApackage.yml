@@ -253,11 +253,8 @@ code: |
     nav.set_section('incidents')
     recent_incident_date_OBO
     set_progress(40)
-    if not recent_incident_most_serious:
-      serious_incident_date
-      serious_incident_checkboxes_OBO
-    else:
-      serious_incident_checkboxes_OBO
+    recent_or_serious
+    serious_incident_checkboxes_OBO
     other_incident
     set_progress(60)
 
@@ -338,8 +335,7 @@ code: |
     nav.set_section('incidents')
     recent_incident_date
     set_progress(40)
-    if not recent_incident_most_serious:
-      serious_incident_date
+    recent_or_serious
     other_incident
     set_progress(50)
     danger_more_abuse
@@ -385,6 +381,15 @@ code: |
   al_form_requires_digital_signature = False
   basic_questions_signature_flow    
   interview_order_RFApackage = True
+---
+question: Test
+continue button field: test
+---
+code: |
+  if not recent_incident_most_serious:
+    serious_incident_date
+  test
+  recent_or_serious = True
 ---
 sections:
   - intro: Introduction
@@ -511,6 +516,8 @@ code: |
   children[i].name.first
   children[i].birthdate
   children[i].in_danger
+  if (defined('request_temp_PRR') and request_temp_PRR) or (defined('request_temp_PRR_OBO') and request_temp_PRR_OBO):
+    children[i].custody_wanted
   children[i].complete=True
 ---
 id: OBO children in danger relationships
@@ -529,10 +536,10 @@ fields:
 ---
 code: |
   if children.number_gathered() > 1:
-    if children[1].in_danger or children[2].in_danger or children[3].in_danger:
-      danger_abuse_other_children_affidavit = True
-    else:
-      danger_abuse_other_children_affidavit = False
+    danger_abuse_other_children_affidavit = False
+    for child_index in range(1, len(children)):
+      if children[child_index].in_danger: 
+        danger_abuse_other_children_affidavit = True
   else:
     danger_abuse_other_children_affidavit = False
   define_danger_abuse_other_children_affidavit = True
@@ -898,6 +905,7 @@ fields:
 
 
 ---
+
 #code: |
 #  if who_needs_protection == 'order_obo_child':
 #    children.there_are_any == True
@@ -922,10 +930,24 @@ fields:
     datatype: yesnoradio
   - How many children are involved in this case?: children.target_number
     datatype: integer
+    min: 1
     show if: children.there_are_any
 validation code: |
   if not children.there_are_any:
     children.target_number = 0
+---
+comment: 
+if: who_needs_protection in ['order_for_both','order_obo_child']
+id: how many children if obo or both
+question: |
+  Number of children involved in this case
+subquestion: |
+  Include children under 18 who have been affected by abuse. Also include children who you would like to ask for temporary custody of
+fields:
+  - How many children are involved in this case?: children.target_number
+    datatype: integer
+    min: 1
+
 ---
 id: Relationship to defendant
 question: |
@@ -1597,31 +1619,16 @@ fields:
   - "I want to ask for something else. (You can write what you want on an upcoming screen.)": other_request_OBO
     datatype: yesno
     
-#validation code: |
-#  
-#  if request_not_abuse_OBO and not (request_not_abuse_users1 or request_not_abuse_children ):
-#        validation_error("Please select at least one of the options.")
-#        
-#  if request_no_stalking_assault and not (request_no_stalking or request_no_assault or request_no_assault_users1 or request_no_assault_children):
-#        validation_error("Please select at least one of the options.")
-#
-#  if surrender_plaintiffs_documents and not (surrender_plaintiffs_documents_users1 or surrender_plaintiffs_documents_children):
-#        validation_error("Please select at least one of the options.")
-#
-#  if surrender_vehicle and not (surrender_vehicle_owner or surrender_vehicle_pays_loan or surrender_vehicle_has_possession or surrender_vehicle_restricted_from_use):
-#        validation_error("Please select at least one of the options.")
-#  
-#  if request_no_pet_harm and not (request_no_pet_users1 or request_no_pet_children or request_control_of_pet):
-#        validation_error("Please select at least one of the options.") 
-#        
-#  if request_stay_away and request_stay_away_feet and not (request_stay_away_users1 or request_stay_away_children):
-#        validation_error("Please select at least one of the options.")
-#        
-#  if request_no_contact and not (request_no_contact_users1 or request_no_contact_children):
-#        validation_error("Please select at least one of the options.") 
-#        
-#  if not (request_not_abuse or request_no_stalking_assault or request_leave or request_no_firearms or request_surrender_firearms or request_living_expenses or request_child_support or surrender_plaintiffs_documents or surrender_vehicle or request_no_pet_harm or request_stay_away or request_no_contact or other_request or request_temp_PRR or request_DV_program):
-#    validation_error("Please select at least one option.")
+validation code: |
+  
+  if surrender_plaintiffs_documents_OBO and not (surrender_plaintiffs_documents_users1_OBO or surrender_plaintiffs_documents_children_OBO):
+    validation_error("Please select at least one of the options.")
+
+  if surrender_vehicle_OBO and not (surrender_vehicle_owner_OBO or surrender_vehicle_pays_loan_OBO or surrender_vehicle_has_possession_OBO or surrender_vehicle_restricted_from_use_OBO):
+    validation_error("Please select at least one of the options.")
+        
+  if not (request_not_abuse_OBO or request_no_stalking_assault_OBO or request_leave_OBO or request_no_firearms_OBO or request_surrender_firearms_OBO or request_no_pet_harm_OBO or request_control_of_pet_OBO or request_DV_program_OBO or request_no_contact_OBO or request_no_drugs_alcohol_OBO or request_no_punishment_OBO or request_child_support_OBO or other_request_OBO or surrender_plaintiffs_documents_OBO or surrender_vehicle_OBO or request_stay_away_OBO or request_temp_PRR_OBO or request_supervised_contact_OBO or request_supervised_exchange_OBO):
+    validation_error("Please select at least one option.")
 ---
 id: What you want to ask for in the RFA order
 question: |
@@ -2377,7 +2384,7 @@ question: |
 subquestion: |
   Tap the button below to see a preview of your documents in a new tab. **Remember to come back to this screen to edit the forms and/or finish the forms.**
   
-  ${ action_button_html(al_user_bundle.as_pdf(key='preview').url_for(), label="Preview the PDF", color="secondary") }
+  ${ action_button_html(al_court_bundle.as_pdf(key='preview').url_for(), label="Preview the PDF", color="secondary") }
 
   Tap the "Edit your answers" button to make changes.
 
@@ -2511,14 +2518,14 @@ review:
       
   - note: |
       ##About children involved in this case
-    show if: children.there_are_any
+    show if: children.target_number > 0
     
   - Edit:
     - children.revisit
     - recompute:
       - define_danger_abuse_other_children_affidavit
     button: |      
-      % if children.there_are_any:
+      % if children.target_number > 0:
       % for child in children:
       **${ child.name }**
       
@@ -3016,7 +3023,7 @@ review:
       % if defined("recent_incident_children"):
       - Your children were the target of the recent abuse: **${ yesno(recent_incident_children) }**
       % endif
-      % if defined("recent_incident_children"):
+      % if children.target_number > 0 and defined("recent_incident_children"):
       - The children who were the target of the recent abuse: 
       **${ showifdef('recent_incident_children_names') }** 
       % if defined('recent_incident_other_children'):
@@ -3080,10 +3087,13 @@ review:
       - Most recent incident description: **${ recent_incident_description }**
       % endif
       
-  - Edit:
-    - recent_incident_most_serious
-    - follow up:
-        - serious_incident_date
+  - label: Edit
+    fields:
+      - recent_incident_most_serious
+      - invalidate:
+          - serious_incident_date
+      - recompute:
+          - recent_or_serious
     button: |
       **Most serious incident**
       
@@ -3235,6 +3245,8 @@ review:
       ##What you want in the RFA order##
   - Edit: 
     - request_not_abuse_OBO
+    - recompute:
+      - get_kids_relationships
     button: |      
       The things you would like (and would not like) included in the Relief from Abuse order. Select Edit on the right to edit the details.
       
@@ -3257,7 +3269,7 @@ review:
       % if request_temp_PRR_OBO:
       -- These children:
       % for child in children:
-      % if child.custody_wanted:
+      % if defined ('child.custody_wanted') and child.custody_wanted:
       * **${ child }**
       % endif
       % endfor
@@ -3267,7 +3279,7 @@ review:
       - Order defendant not to take any regulated drug unless it is prescribed by a physician, or drink alcohol, for at least 8 hours prior to a scheduled contact with the child/children, or during contact with the child/children). And if defendant appears to be under the influence of drugs or alcohol, allow me to cancel the scheduled visit with the child/children.: **${ word(yesno(request_no_drugs_alcohol_OBO)) }**
       - Order the defendant to not physically punish the child/children named above in any way:  **${ word(yesno(request_no_punishment_OBO)) }**
       - Order the defendant to pay temporary child support for the child/children: **${ word(yesno(request_child_support_OBO)) }**
-      - I want to ask for something else:  **${ word(yesno(other_request_OBO)) }** --- **${ request_other_description }**
+      - I want to ask for something else:  **${ word(yesno(other_request_OBO)) }** --- **${ request_other_description if other_request_OBO else "" }**
     
   - Edit: 
     - request_not_abuse
@@ -3679,7 +3691,7 @@ objects:
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
 objects:
   - al_user_bundle: ALDocumentBundle.using(elements=[RFApackage_Post_interview_instructions, RFAcomplaint, RFAcomplaintonbehalfofminor, RFAaffidavit, RFAaffidavitonbehalfofminor, RFAconfidentialcontactinfo, RFAserviceinfo], filename="RFApackage", title="Download all forms", enabled=True)
-  #- al_court_bundle: ALDocumentBundle.using(elements=[RFAcomplaint, RFAcomplaintonbehalfofminor, RFAaffidavit, RFAaffidavitonbehalfofminor, RFAconfidentialcontactinfo, RFAserviceinfo],  filename="RFApackage", title="All forms to deliver to court", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[RFAcomplaint, RFAcomplaintonbehalfofminor, RFAaffidavit, RFAaffidavitonbehalfofminor, RFAconfidentialcontactinfo, RFAserviceinfo],  filename="RFApackage", title="All forms to deliver to court", enabled=True)
 ---
 attachment:
   variable name: RFAaffidavit.addendum
