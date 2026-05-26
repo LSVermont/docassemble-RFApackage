@@ -374,12 +374,7 @@ code: |
   if defined("user_selected_county"):
     trial_court.address.county
   
-  nav.set_section("review_RFApackage")
-  RFApackage_preview_question
-  nav.set_section('sign')
-  printed_signature
-  al_form_requires_digital_signature = False
-  basic_questions_signature_flow    
+  
   interview_order_RFApackage = True
 ---
 question: Test
@@ -418,6 +413,12 @@ code: |
   al_intro_screen
   RFApackage_intro
   interview_order_RFApackage
+  nav.set_section("review_RFApackage")
+  RFApackage_preview_question
+  nav.set_section('sign')
+  printed_signature
+  al_form_requires_digital_signature = False
+  basic_questions_signature_flow  
 
   # Store anonymous data for analytics / statistics
   store_variables_snapshot(
@@ -935,6 +936,12 @@ fields:
 validation code: |
   if not children.there_are_any:
     children.target_number = 0
+---
+comment: 
+id: set children to zero if order for self
+if: who_needs_protection in ['order_for_me']
+code: |
+  children.target_number = 0
 ---
 comment: 
 if: who_needs_protection in ['order_for_both','order_obo_child']
@@ -1925,6 +1932,7 @@ fields:
     datatype: object_radio
     choices:
       - users[0].address
+      - other_parties[0].address
     none of the above: A different address
     default: users[0].address
   - "Include the street address, apt./unit number, town, and state abbreviation": A_new_residence_shared_address
