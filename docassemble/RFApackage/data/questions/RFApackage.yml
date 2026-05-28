@@ -1205,11 +1205,16 @@ fields:
   - "The defendant stalked you": recent_incident_stalked_users1
     datatype: yesnoradio
     css class: indent-me
-    show if: recent_incident_stalked
+    hide if:
+      code: |
+        len(children) == 0
   - "The defendant stalked the child/children": recent_incident_stalked_children
     datatype: yesnoradio
     css class: indent-me
     show if: recent_incident_stalked
+    hide if:
+      code: |
+        len(children) == 0
   - "Vermont law says it is stalking if it has happened two times or more. When did they first stalk you?": recent_incident_stalked_date1
     maxlength: 10
     css class: indent-me
@@ -1233,11 +1238,15 @@ fields:
   - "The defendant sexually assault you": recent_incident_assault_users1
     datatype: yesnoradio
     css class: indent-me
-    show if: recent_incident_assault
+    hide if:
+      code: |
+        len(children) == 0
   - "The defendant sexually assault the child/children": recent_incident_assault_children
     datatype: yesnoradio
     css class: indent-me
-    show if: recent_incident_assault
+    hide if:
+      code: |
+        len(children) == 0
   - note: |
       ---
     show if: recent_incident_assault
@@ -1254,11 +1263,15 @@ fields:
   - "The defendant coercively controlled you": recent_incident_coercive_users1
     datatype: yesnoradio
     css class: indent-me
-    show if: recent_incident_coercive
+    hide if:
+      code: |
+        len(children) == 0
   - "The defendant coercively controlled the child/children": recent_incident_coercive_children
     datatype: yesnoradio
     css class: indent-me
-    show if: recent_incident_coercive
+    hide if:
+      code: |
+        len(children) == 0
   - "When did this abusive behavior first start?": recent_incident_coercive_start_date
     maxlength: 11
     show if: recent_incident_coercive  
@@ -1469,7 +1482,7 @@ fields:
   - "Select all that apply": danger_more_abuse_who
     datatype: checkboxes
     js show if: |
-      val('danger_more_abuse') == true
+      val('danger_more_abuse') == true and val(children.number_gathered()) > 0)
     none of the above: False
     minlength: 1
     choices:
@@ -2567,7 +2580,7 @@ review:
     - recompute:
       - define_danger_abuse_other_children_affidavit
     button: |      
-      % if children.target_number > 0:
+      % if children.number_gathered() > 0:
       % for child in children:
       **${ child.name }**
       
@@ -2580,7 +2593,7 @@ review:
       
       % endfor
       % else:
-      - **No children involved**
+      - **No children involved in this matter.** (If you want to add children to this protection order, please start over.)
       % endif
 
   - Edit: 
@@ -3058,7 +3071,6 @@ review:
       % if defined("recent_incident_description"):
       - Most recent incident description: **${ recent_incident_description }**
       % endif
-      ---
       % if defined("recent_incident_users1"):
       - You were the target of the recent abuse: **${ yesno(recent_incident_users1) }**
       % endif
@@ -3078,27 +3090,21 @@ review:
       - The defendant caused or attempted to cause physical harm: **${ yesno(recent_incident_harm) }**
       % endif
       % if recent_incident_fear:
-      - The defendant placed you and/or them in fear of imminent serious physical harm: **${ yesno(recent_incident_fear) }**
+      - The defendant placed you and/or the child/children in fear of imminent serious physical harm: **${ yesno(recent_incident_fear) }**
       % endif
-      % if recent_incident_abused:
+      % if len(children) > 0 and recent_incident_abused:
       - The defendant abused the child/children: **${ yesno(recent_incident_abused) }**
       % endif
       % if defined("recent_incident_coercive") and recent_incident_coercive:
       - The defendant coercively controlled you and/or the child/children: **${ yesno(recent_incident_coercive) }**
-      - The defendant coercively controlled you: **${ yesno(recent_incident_coercive_users1) }**
-      - The defendant coercively controlled the child/children: **${ yesno(recent_incident_coercive_children) }**
       % endif
       % if recent_incident_stalked:
       - The defendant stalked you and/or the child/children: **${ yesno(recent_incident_stalked) }**
-      - The defendant stalked you: **${ yesno(recent_incident_stalked_users1) }**
-      - The defendant stalked the child/children: **${ yesno(recent_incident_stalked_children) }**
       - First stalking: **${ showifdef('recent_incident_stalked_date1') }**
       - Second stalking: **${ showifdef('recent_incident_stalked_date2') }**
       % endif
       % if recent_incident_assault:
       - The defendant sexually assaulted you and/or the child/children: **${ yesno(recent_incident_assault) }**
-      - The defendant sexually assaulted you: **${ yesno(recent_incident_assault_users1) }**
-      - The defendant sexually assaulted the child/children: **${ yesno(recent_incident_assault_children) }**
       % endif
 
 
@@ -4225,20 +4231,43 @@ attachment:
       - "recent_incident_harm": ${ recent_incident_harm }
       - "recent_incident_fear": ${ recent_incident_fear }
       - "recent_incident_abused": ${ recent_incident_abused }
-      - "recent_incident_stalked_users1": ${ recent_incident_stalked_users1 }
-      - "recent_incident_stalked_children": ${ recent_incident_stalked_children }
       - "recent_incident_stalked": ${ recent_incident_stalked }
+      - "recent_incident_stalked_users1": |
+          % if recent_incident_stalked and children.number_gathered() == 0:
+          ${ True }
+          % else:
+          ${ recent_incident_stalked_users1 }
+          % endif
+      - "recent_incident_stalked_children": |
+          ${ showifdef("recent_incident_stalked_children") }
       - "recent_incident_stalked_date1": ${ recent_incident_stalked_date1 }
       - "recent_incident_stalked_date2": ${ recent_incident_stalked_date2 }
-      - "recent_incident_assault_children": ${ recent_incident_assault_children }
+      - "recent_incident_assault_children": |
+          ${ showifdef("recent_incident_assault_children") }
       - "recent_incident_assault": ${ recent_incident_assault }
-      - "recent_incident_assault_users1": ${ recent_incident_assault_users1 }
+      - "recent_incident_assault_users1": |
+          % if recent_incident_assault and children.number_gathered() == 0:
+          ${ True }
+          % else:
+          ${ recent_incident_assault_users1 }
+          % endif
       - "recent_incident_coercive": ${ recent_incident_coercive }
-      - "recent_incident_coercive_users1": ${ recent_incident_coercive_users1 }
-      - "recent_incident_coercive_children": ${ recent_incident_coercive_children }
+      - "recent_incident_coercive_users1": |
+          % if recent_incident_coercive and children.number_gathered() == 0:
+          ${ True }
+          % else:
+          ${ recent_incident_coercive_users1 }
+          % endif
+      - "recent_incident_coercive_children": |
+          ${ showifdef("recent_incident_coercive_children") }
       - "danger_more_abuse": ${ danger_more_abuse }
+      - "danger_more_abuse_users1": |
+          % if danger_more_abuse and children.number_gathered() == 0:
+          ${ True }
+          % else:
+          ${ danger_more_abuse_who["users1"] }
+          % endif
       - "danger_more_abuse_children": ${ danger_more_abuse_who["children"] }
-      - "danger_more_abuse_users1": ${ danger_more_abuse_who["users1"] }
       - "used_firearm": ${ used_firearm }
       - "incarcerated": ${ other_parties1_incarcerated }
       - "users1_no_shelter": ${ users1_no_shelter }
