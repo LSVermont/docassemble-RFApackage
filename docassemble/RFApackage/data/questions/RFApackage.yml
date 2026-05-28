@@ -376,14 +376,11 @@ code: |
   
   
   interview_order_RFApackage = True
----
-question: Test
-continue button field: test
+
 ---
 code: |
   if not recent_incident_most_serious:
     serious_incident_date
-  test
   recent_or_serious = True
 ---
 sections:
@@ -1188,6 +1185,9 @@ fields:
     
   - "The defendant abused the child/children -- meaning they physically injured or otherwise treated the child(ren) in a manner which placed child(ren's) life, health, development or welfare in jeopardy. See the definition of child abuse in Vermont law: [33 V.S.A. § 4912(1).](https://legislature.vermont.gov/statutes/section/33/049/04912)": recent_incident_abused
     datatype: yesno
+    show if:
+      code: |
+        len(children) > 0
 
   - label: |
       % if children.number_gathered() > 0:
@@ -1228,7 +1228,7 @@ fields:
       % else:
       The defendant sexually assaulted you. Sexual assault is defined in Vermont law here: [15 V.S.A 5131(5)](https://legislature.vermont.gov/statutes/section/12/178/05131)
       % endif
-    field: recent_incident_stalked
+    field: recent_incident_assault
     datatype: yesno
   - "The defendant sexually assault you": recent_incident_assault_users1
     datatype: yesnoradio
@@ -1294,7 +1294,10 @@ fields:
   - You were the target of the recent abuse: recent_incident_users1
     datatype: yesnoradio  
   - Your children were the target of the recent abuse: recent_incident_children
-    datatype: yesnoradio   
+    datatype: yesnoradio  
+    show if:
+      code: |
+        len(children) > 0
   - Which of the children were the target of the recent abuse?: recent_incident_children_names 
     datatype: object_checkboxes
     required: False
@@ -1321,7 +1324,7 @@ fields:
 validation code: |
   if (recent_incident_state == "") and (other_recent_incident_state == ""):
     validation_error("You must enter a state in the United States, or an area outside of the United States")
-  if not recent_incident_harm and not recent_incident_fear and not recent_incident_abused and not recent_incident_stalked and not recent_incident_assault and not recent_incident_coercive:
+  if not recent_incident_harm and not recent_incident_fear and not (len(children) > 0 and not recent_incident_abused) and not recent_incident_stalked and not recent_incident_assault and not recent_incident_coercive:
     validation_error("Select at least one incident")
 ---
 
@@ -1835,16 +1838,16 @@ fields:
 validation code: |
   
   if request_not_abuse and not (request_not_abuse_users1 or request_not_abuse_children ):
-        validation_error("Please select at least one of the options.")
+        validation_error("Please complete the information about who was abused.")
         
   if request_no_stalking_assault and not (request_no_stalking or request_no_assault or request_no_assault_users1 or request_no_assault_children):
-        validation_error("Please select at least one of the options.")
+        validation_error("Please complete the information about the stalking incident.")
 
   if surrender_plaintiffs_documents and not (surrender_plaintiffs_documents_users1 or surrender_plaintiffs_documents_children):
-        validation_error("Please select at least one of the options.")
+        validation_error("Please complete the information about your documents.")
 
   if surrender_vehicle and not (surrender_vehicle_owner or surrender_vehicle_pays_loan or surrender_vehicle_has_possession or surrender_vehicle_restricted_from_use):
-        validation_error("Please select at least one of the options.")
+        validation_error("Please complete the information about your vehicle.")
   
   if request_no_pet_harm and not (request_no_pet_users1 or request_no_pet_children or request_control_of_pet):
         validation_error("Please select at least one of the options.") 
