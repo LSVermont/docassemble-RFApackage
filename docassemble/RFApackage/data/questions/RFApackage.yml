@@ -1205,16 +1205,11 @@ fields:
   - "The defendant stalked you": recent_incident_stalked_users1
     datatype: yesnoradio
     css class: indent-me
-    hide if:
-      code: |
-        len(children) == 0
-  - "The defendant stalked the child/children": recent_incident_stalked_children
+    show if: recent_incident_stalked
+  - "The defendant stalked the child/children. If no children, say No.": recent_incident_stalked_children
     datatype: yesnoradio
     css class: indent-me
     show if: recent_incident_stalked
-    hide if:
-      code: |
-        len(children) == 0
   - "Vermont law says it is stalking if it has happened two times or more. When did they first stalk you?": recent_incident_stalked_date1
     maxlength: 10
     css class: indent-me
@@ -1238,15 +1233,11 @@ fields:
   - "The defendant sexually assault you": recent_incident_assault_users1
     datatype: yesnoradio
     css class: indent-me
-    hide if:
-      code: |
-        len(children) == 0
-  - "The defendant sexually assault the child/children": recent_incident_assault_children
+    show if: recent_incident_assault
+  - "The defendant sexually assault the child/children. If no children, say No.": recent_incident_assault_children
     datatype: yesnoradio
     css class: indent-me
-    hide if:
-      code: |
-        len(children) == 0
+    show if: recent_incident_assault
   - note: |
       ---
     show if: recent_incident_assault
@@ -1263,15 +1254,11 @@ fields:
   - "The defendant coercively controlled you": recent_incident_coercive_users1
     datatype: yesnoradio
     css class: indent-me
-    hide if:
-      code: |
-        len(children) == 0
-  - "The defendant coercively controlled the child/children": recent_incident_coercive_children
+    show if: recent_incident_coercive
+  - "The defendant coercively controlled the child/children. If no children, say No.": recent_incident_coercive_children
     datatype: yesnoradio
     css class: indent-me
-    hide if:
-      code: |
-        len(children) == 0
+    show if: recent_incident_coercive
   - "When did this abusive behavior first start?": recent_incident_coercive_start_date
     maxlength: 11
     show if: recent_incident_coercive  
@@ -1481,14 +1468,13 @@ fields:
     
   - "Select all that apply": danger_more_abuse_who
     datatype: checkboxes
-    js show if: |
-      val('danger_more_abuse') == true and val(children.number_gathered()) > 0)
     none of the above: False
     minlength: 1
     choices:
       - "There is danger of more abuse to you": users1
       - "There is danger of more abuse to the child/children": children
-    
+    js show if: |
+      val('danger_more_abuse') === true
   - "Include any information not already described before. Be as specific as possible.": danger_more_abuse_why
     input type: area
     show if: danger_more_abuse
