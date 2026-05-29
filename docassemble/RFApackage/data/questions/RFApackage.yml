@@ -3363,28 +3363,17 @@ review:
             
       % if request_not_abuse:
       Order the defendant to not abuse you or your children, and not interfere with your personal liberty: **${ word(yesno(showifdef('request_not_abuse'))) }**
-      
-      % if request_not_abuse_users1:
-      - You want the order to protect you from this: **${ word(yesno(request_not_abuse_users1)) }**
-      % endif
-      % if request_not_abuse_children:
-      - You want the order to protect your child/children from this: **${ word(yesno(request_not_abuse_children)) }**
-      % endif
       % endif
       
       % if defined("request_no_stalking_assault") and request_no_stalking_assault or defined("request_no_assault") and request_no_assault:
       Order the defendant to not stalk or sexually assault you or your child/children: **${ word(yesno(request_no_stalking_assault)) }**
+      % endif
       
       % if request_no_stalking:
       - You want the order to stop stalking: **${ word(yesno(request_no_stalking)) }**
       % endif
       % if request_no_assault:
       - You want the order to stop sexual assault: **${ word(yesno(request_no_assault)) }**
-      % endif
-      % if request_no_stalking or request_no_assault:
-      - You want the order to protect you from this: **${ word(yesno(request_no_assault_users1)) }**
-      - You want the order to protect your child/children from this: **${ word(yesno(request_no_assault_children)) }**
-      % endif
       % endif
       
       % if showifdef("request_leave"):
@@ -3406,29 +3395,9 @@ review:
       % if showifdef("surrender_plaintiffs_documents"):
       Order the defendant to return any personal documents in their possession that pertain to me and/or my children. (Examples: immigration documents, birth certificates and identification cards.): **${ word(yesno(surrender_plaintiffs_documents)) }**
       % endif
-      
-      % if showifdef("surrender_plaintiffs_documents_users1"):
-      - You want your documents.: **${ word(yesno(surrender_plaintiffs_documents_users1)) }**
-      % endif
-      % if showifdef("surrender_plaintiffs_documents_children"):
-      - You want the child's or children's documents.: **${ word(yesno(surrender_plaintiffs_documents_children)) }**
-      % endif
 
       % if showifdef("surrender_vehicle"):
       Order temporary possession of a car/truck/vehicle to you: **${ word(yesno(surrender_vehicle)) }**
-      % endif
-
-      % if showifdef("surrender_vehicle_owner"):
-      - I am the owner or joint owner of the vehicle.: **${ word(yesno(surrender_vehicle_owner)) }**
-      % endif
-      % if showifdef("surrender_vehicle_pays_loan"):
-      - I am the primary payor on the vehicle loan.: **${ word(yesno(surrender_vehicle_pays_loan)) }**
-      % endif
-      % if showifdef("surrender_vehicle_has_possession"):
-      - I have primary possession or control of vehicle.": **${ word(yesno(surrender_vehicle_has_possession)) }**
-      % endif
-      % if showifdef("surrender_vehicle_restricted_from_use"):
-      - I have been restricted from using the vehicle by the defendant.: **${ word(yesno(surrender_vehicle_restricted_from_use)) }**
       % endif
 
       % if showifdef("request_DV_program"):
@@ -3441,13 +3410,6 @@ review:
       
       % if showifdef("request_no_pet_harm"):
       Order the defendant to stop cruelly treating pets: **${ word(yesno(request_no_pet_harm)) }**
-      
-      % if showifdef("request_no_pet_users1"):
-      - You want the order to protect the pets owned by you or the defendant: **${ word(yesno(request_no_pet_users1)) }**
-      % endif
-      % if showifdef("request_no_pet_children"):
-      - You want the order to protect the pets owned by your child/children: **${ word(yesno(request_no_pet_children)) }**
-      % endif
       % endif
       
       % if showifdef("request_control_of_pet"):
@@ -3456,27 +3418,13 @@ review:
       
       % if showifdef("request_stay_away"):
       Order the defendant to stay a certain distance away: **${ word(yesno(request_stay_away)) }**
+      % endif
       % if showifdef("request_stay_away_feet"):
        **(${ request_stay_away_feet } feet)**
       % endif
       
-      % if showifdef("request_stay_away_users1"):
-      - You want the order to protect you from this: **${ word(yesno(request_stay_away_users1)) }**
-      % endif
-      % if showifdef("request_stay_away_children"):
-      - You want the order to protect your child/children from this: **${ word(yesno(request_stay_away_children)) }**
-      % endif
-      % endif
-      
       % if showifdef("request_no_contact"):
       Order the defendant to not contact you or your child/children in any way: **${ word(yesno(request_no_contact)) }**
-      
-      % if showifdef("request_no_contact_users1"):
-      - You want the order to protect you from this: **${ word(yesno(request_no_contact_users1)) }**
-      % endif
-      % if showifdef("request_no_contact_children"):
-      - You want the order to protect your child/children from this: **${ word(yesno(request_no_contact_children)) }**
-      % endif
       % endif
       
       % if showifdef("other_request"):
