@@ -1465,16 +1465,14 @@ subquestion: |
 fields:
   - "Is there immediate danger of more abuse from the defendant?": danger_more_abuse
     datatype: yesnoradio
-    
-  - "Select all that apply": danger_more_abuse_who
-    datatype: checkboxes
-    none of the above: False
-    minlength: 1
-    choices:
-      - "There is danger of more abuse to you": users1
-      - "There is danger of more abuse to the child/children": children
+  - "There is danger of more abuse to you": danger_more_abuse_users1
+    datatype: yesnoradio
     js show if: |
-      val('danger_more_abuse') === true
+      val("danger_more_abuse") && (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')})
+  - "There is danger of more abuse to the child/children": danger_more_abuse_kids
+    datatype: yesnoradio
+    js show if: |
+      val("danger_more_abuse") && (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')})
   - "Include any information not already described before. Be as specific as possible.": danger_more_abuse_why
     input type: area
     show if: danger_more_abuse
@@ -3195,11 +3193,11 @@ review:
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse) }**
       % if danger_more_abuse:
-      % if danger_more_abuse_who["users1"]:
-      - There is danger of more abuse to you: **${ yesno(danger_more_abuse_who["users1"]) }**
+      % if showifdef("danger_more_abuse_users1"):
+      - There is danger of more abuse to you: **${ yesno(danger_more_abuse_users1) }**
       % endif
-      % if danger_more_abuse_who["children"]:
-      - There is danger of more abuse to the child/children: **${ yesno(danger_more_abuse_who["children"]) }**
+      % if showifdef("danger_more_abuse_kids"):
+      - There is danger of more abuse to the child/children: **${ yesno(danger_more_abuse_kids) }**
       % endif
       % if danger_more_abuse_why != ' ':
       - Information not already described before: **${ danger_more_abuse_why }**
@@ -4251,9 +4249,9 @@ attachment:
           % if danger_more_abuse and children.number_gathered() == 0:
           ${ True }
           % else:
-          ${ danger_more_abuse_who["users1"] }
+          ${ danger_more_abuse_users1 }
           % endif
-      - "danger_more_abuse_children": ${ danger_more_abuse_who["children"] }
+      - "danger_more_abuse_children": ${ danger_more_abuse_kids }
       - "used_firearm": ${ used_firearm }
       - "incarcerated": ${ other_parties1_incarcerated }
       - "users1_no_shelter": ${ users1_no_shelter }
