@@ -3330,7 +3330,7 @@ review:
       - get_kids_relationships
     button: |      
       The things you would like (and would not like) included in the Relief from Abuse order. Select Edit on the right to edit the details.
-      
+
       - Order the defendant to not abuse the child/children and not interfere with their personal liberty: **${ word(yesno(request_not_abuse_OBO)) }**
       - Order the defendant to not stalk or sexually abuse the child/children: **${ word(yesno(request_no_stalking_assault_OBO)) }**
       - Order the defendant to immediately leave the residence (home), and order sole possession of the residence to me as I care for the child/children: **${ word(yesno(request_leave_OBO)) }**
@@ -3367,18 +3367,26 @@ review:
     button: | 
       The things you would like (and would not like) included in the Relief from Abuse order. Select Edit on the right to edit the details.
             
-      % if request_not_abuse:
+      % if showifdef("request_not_abuse"):
+      % if children.target_number == 0:
+      Order the defendant to not abuse you, and not interfere with your personal liberty: **${ word(yesno(showifdef('request_not_abuse'))) }**
+      % else:
       Order the defendant to not abuse you or your children, and not interfere with your personal liberty: **${ word(yesno(showifdef('request_not_abuse'))) }**
       % endif
+      % endif
       
-      % if defined("request_no_stalking_assault") and request_no_stalking_assault or defined("request_no_assault") and request_no_assault:
+      % if showifdef("request_no_stalking_assault") or showifdef("request_no_assault"):
+      % if children.target_number == 0:
+      Order the defendant to not stalk or sexually assault you: **${ word(yesno(request_no_stalking_assault)) }**
+      % else:
       Order the defendant to not stalk or sexually assault you or your child/children: **${ word(yesno(request_no_stalking_assault)) }**
       % endif
+      % endif
       
-      % if request_no_stalking:
+      % if showifdef("request_no_stalking"):
       - You want the order to stop stalking: **${ word(yesno(request_no_stalking)) }**
       % endif
-      % if request_no_assault:
+      % if showifdef("request_no_assault"):
       - You want the order to stop sexual assault: **${ word(yesno(request_no_assault)) }**
       % endif
       
@@ -3399,7 +3407,11 @@ review:
       % endif
       
       % if showifdef("surrender_plaintiffs_documents"):
-      Order the defendant to return any personal documents in their possession that pertain to me and/or my children. (Examples: immigration documents, birth certificates and identification cards.): **${ word(yesno(surrender_plaintiffs_documents)) }**
+      % if children.target_number == 0:
+      Order the defendant to return any personal documents in their possession that pertain to you. (Examples: immigration documents, birth certificates and identification cards.): **${ word(yesno(surrender_plaintiffs_documents)) }**
+      % else:
+      Order the defendant to return any personal documents in their possession that pertain to you and/or your children. (Examples: immigration documents, birth certificates and identification cards.): **${ word(yesno(surrender_plaintiffs_documents)) }**
+      % endif
       % endif
 
       % if showifdef("surrender_vehicle"):
@@ -3430,7 +3442,11 @@ review:
       % endif
       
       % if showifdef("request_no_contact"):
+      % if children.target_number == 0:
+      Order the defendant to not contact you in any way: **${ word(yesno(request_no_contact)) }**
+      % else:
       Order the defendant to not contact you or your child/children in any way: **${ word(yesno(request_no_contact)) }**
+      % endif
       % endif
       
       % if showifdef("other_request"):
@@ -4267,12 +4283,22 @@ attachment:
       - "reach_up_users1": ${ users1_gets_reach_up }
       - "reach_up_OP": ${ other_parties1_gets_reach_up }
       - "request_not_abuse_children": ${ request_not_abuse_children }
-      - "request_not_abuse_users1": ${ request_not_abuse_users1 }
+      - "request_not_abuse_users1": |
+          % if request_not_abuse and children.number_gathered() == 0:
+          ${ True }
+          % else:
+          ${ recent_incident_stalked_users1 }
+          % endif
       - "request_not_abuse": ${ request_not_abuse }
       - "request_no_stalking_assault": ${ request_no_stalking_assault }
       - "request_no_stalking": ${ request_no_stalking }
       - "request_no_assault": ${ request_no_assault }
-      - "request_no_assault_users1": ${ request_no_assault_users1 }
+      - "request_no_assault_users1": |
+          % if (request_no_stalking or request_no_assault) and children.number_gathered() == 0:
+          ${ True }
+          % else:
+          ${ request_no_assault_users1 }
+          % endif
       - "request_no_assault_children": ${ request_no_assault_children }
       - "request_leave": ${ request_leave }
       - "request_no_firearms": ${ request_no_firearms }
@@ -4281,13 +4307,28 @@ attachment:
       - "request_child_support": ${ request_child_support }
       - "request_no_pet_children": ${ request_no_pet_children }
       - "request_no_pet_harm": ${ request_no_pet_harm }
-      - "request_no_pet_users1": ${ request_no_pet_users1 }
+      - "request_no_pet_users1": |
+          % if request_no_pet_harm and children.number_gathered() == 0:
+          ${ True }
+          % else:
+          ${ request_no_pet_users1 }
+          % endif
       - "request_control_of_pet": ${ request_control_of_pet }
       - "request_stay_away_children": ${ request_stay_away_children }
       - "request_stay_away_feet": ${ request_stay_away_feet }
-      - "request_stay_away_users1": ${ request_stay_away_users1 }
+      - "request_stay_away_users1": |
+          % if request_stay_away and children.number_gathered() == 0:
+          ${ True }
+          % else:
+          ${ request_stay_away_users1 }
+          % endif
       - "request_stay_away": ${ request_stay_away }
-      - "request_no_contact_users1": ${ request_no_contact_users1 }
+      - "request_no_contact_users1": |
+          % if request_no_contact and children.number_gathered() == 0:
+          ${ True }
+          % else:
+          ${ request_no_contact_users1 }
+          % endif
       - "request_no_contact_children": ${ request_no_contact_children }
       - "request_no_contact": ${ request_no_contact }
       - "request_temp_PRR": ${ request_temp_PRR }
@@ -4340,7 +4381,12 @@ attachment:
           ${ children[2].relationship_OP }
           % endif
       - "surrender_plaintiffs_documents": ${ surrender_plaintiffs_documents }
-      - "surrender_plaintiffs_documents_users1": ${ surrender_plaintiffs_documents_users1 }
+      - "surrender_plaintiffs_documents_users1":  |
+          % if surrender_plaintiffs_documents and children.number_gathered() == 0:
+          ${ True }
+          % else:
+          ${ surrender_plaintiffs_documents_users1 }
+          % endif
       - "surrender_plaintiffs_documents_children": ${ surrender_plaintiffs_documents_children }
       - "surrender_vehicle": ${ surrender_vehicle }
       - "surrender_vehicle_owner": ${ surrender_vehicle_owner }
