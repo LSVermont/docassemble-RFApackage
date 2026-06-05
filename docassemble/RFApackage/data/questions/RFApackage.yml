@@ -1205,11 +1205,13 @@ fields:
   - "The defendant stalked you": recent_incident_stalked_users1
     datatype: yesnoradio
     css class: indent-me
-    show if: recent_incident_stalked
-  - "The defendant stalked the child/children. If no children, say No.": recent_incident_stalked_children
+    js show if: |
+      val("recent_incident_stalked") && (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')})
+  - "The defendant stalked the child/children.": recent_incident_stalked_children
     datatype: yesnoradio
     css class: indent-me
-    show if: recent_incident_stalked
+    js show if: |
+      val("recent_incident_stalked") && (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')})
   - "Vermont law says it is stalking if it has happened two times or more. When did they first stalk you?": recent_incident_stalked_date1
     maxlength: 10
     css class: indent-me
@@ -1233,11 +1235,13 @@ fields:
   - "The defendant sexually assault you": recent_incident_assault_users1
     datatype: yesnoradio
     css class: indent-me
-    show if: recent_incident_assault
-  - "The defendant sexually assault the child/children. If no children, say No.": recent_incident_assault_children
+    js show if: |
+      val("recent_incident_assault") && (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')})
+  - "The defendant sexually assault the child/children.": recent_incident_assault_children
     datatype: yesnoradio
     css class: indent-me
-    show if: recent_incident_assault
+    js show if: |
+      val("recent_incident_assault") && (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')})
   - note: |
       ---
     show if: recent_incident_assault
@@ -1254,11 +1258,13 @@ fields:
   - "The defendant coercively controlled you": recent_incident_coercive_users1
     datatype: yesnoradio
     css class: indent-me
-    show if: recent_incident_coercive
-  - "The defendant coercively controlled the child/children. If no children, say No.": recent_incident_coercive_children
+    js show if: |
+      val("recent_incident_coercive") && (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')})
+  - "The defendant coercively controlled the child/children.": recent_incident_coercive_children
     datatype: yesnoradio
     css class: indent-me
-    show if: recent_incident_coercive
+    js show if: |
+      val("recent_incident_coercive") && (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')})
   - "When did this abusive behavior first start?": recent_incident_coercive_start_date
     maxlength: 11
     show if: recent_incident_coercive  
@@ -2561,7 +2567,7 @@ review:
       Do you need the defendant removed from your home in order to be safe?: **${ word(yesno(users1_no_shelter)) }**
 
       % if users1_no_shelter:
-      **Details about that home**
+      Details about that home:
       % endif
       
       % if defined('residence_shared_address'):
@@ -3112,26 +3118,26 @@ review:
       % endif
       % endif
       ---
+
+      What the defendant did:
       
       % if recent_incident_harm:
-      - The defendant caused or attempted to cause physical harm: **${ yesno(recent_incident_harm) }**
+      - Caused or attempted to cause physical harm: **${ yesno(recent_incident_harm) }**
       % endif
       % if recent_incident_fear:
-      - The defendant placed you and/or the child/children in fear of imminent serious physical harm: **${ yesno(recent_incident_fear) }**
+      - Placed in fear of imminent serious physical harm: **${ yesno(recent_incident_fear) }**
       % endif
       % if len(children) > 0 and recent_incident_abused:
       - The defendant abused the child/children: **${ yesno(recent_incident_abused) }**
       % endif
       % if defined("recent_incident_coercive") and recent_incident_coercive:
-      - The defendant coercively controlled you and/or the child/children: **${ yesno(recent_incident_coercive) }**
+      - Coercively controlled: **${ yesno(recent_incident_coercive) }**
       % endif
       % if recent_incident_stalked:
-      - The defendant stalked you and/or the child/children: **${ yesno(recent_incident_stalked) }**
-      - First stalking: **${ showifdef('recent_incident_stalked_date1') }**
-      - Second stalking: **${ showifdef('recent_incident_stalked_date2') }**
+      - Stalked: **${ yesno(recent_incident_stalked) }**
       % endif
       % if recent_incident_assault:
-      - The defendant sexually assaulted you and/or the child/children: **${ yesno(recent_incident_assault) }**
+      - Sexually assaulted: **${ yesno(recent_incident_assault) }**
       % endif
 
 
