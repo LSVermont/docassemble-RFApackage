@@ -12,6 +12,14 @@ include:
 code: |   
   feedback_form = "docassemble.VTFeedback:VTfeedback.yml"
 ---
+#####Feedback review widget - thumbs up, thumbs down#####
+---
+include:
+  - docassemble.GithubFeedbackForm:embedded_review.yml
+---
+code: |
+  thumbs_up_thumbs_down_review = only_once_review_widget(thumbs_display="Did this tool help you?", review_display="Thank you for your feedback. OPTIONAL: Let us know what we could do better.", submit_review_button="Submit", post_review_display="Thank you!")
+---
 objects:
   - all_courts: ALCourtLoader.using(file_name='docassemble.VTSharedYMLFile:data/sources/courts_list_full.xlsx')
 ---
@@ -3719,6 +3727,7 @@ subquestion: |
   
   ${ collapse_template(not_seeing_email) }
   ${ collapse_template(log_out_when_done) }
+  ${ thumbs_up_thumbs_down_review }
 
 progress: 100
 ---  
@@ -4287,7 +4296,7 @@ attachment:
           % if request_not_abuse and children.number_gathered() == 0:
           ${ True }
           % else:
-          ${ recent_incident_stalked_users1 }
+          ${ request_not_abuse_users1 }
           % endif
       - "request_not_abuse": ${ request_not_abuse }
       - "request_no_stalking_assault": ${ request_no_stalking_assault }
