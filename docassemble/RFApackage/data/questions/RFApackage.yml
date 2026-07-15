@@ -3742,8 +3742,12 @@ objects:
   - RFAserviceinfo: ALDocument.using(title="Protection Order Service Info", filename="2_RFA-service-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 attachment:
-  variable name: RFAaffidavit.addendum
-  docx template file: RFAaffidavit_addendum.docx
+  variable name: 1_RFA-complaint.addendum
+  docx template file: RFAcomplaint_addendum.docx
+---
+attachment:
+  variable name: 5_RFA_complaint_on_behalf_of_minor.addendum
+  docx template file: RFAcomplaint_addendum.docx
 ---
 code: |
   RFAcomplaint.overflow_fields["children"].label = "Additional children"
@@ -3754,6 +3758,14 @@ code: |
   RFAcomplaintonbehalfofminor.overflow_fields["children"].label = "Additional children"
   RFAcomplaintonbehalfofminor.overflow_fields["children"].overflow_trigger = 4
   RFAcomplaintonbehalfofminor.overflow_fields.gathered = True
+---
+attachment:
+  variable name: 3_RFA-affidavit.addendum
+  docx template file: RFAaffidavit_addendum.docx
+---
+attachment:
+  variable name: 6_RFA-affidavit-on-behalf-of-minor.addendum
+  docx template file: RFAaffidavit_addendum.docx
 ---
 code: |
   RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
@@ -3781,15 +3793,15 @@ code: |
   RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].label = "Describe in detail how they used or threatened to use weapon?"
   RFAaffidavitonbehalfofminor.overflow_fields.gathered = True
 ---
-code:  |
-  RFAserviceinfo.overflow_fields["location_of_home"].overflow_trigger = 850
-  RFAserviceinfo.overflow_fields["location_of_home"].label = "Describe location of the home"
-  RFAserviceinfo.overflow_fields["best_contact_time"].overflow_trigger = 170
-  RFAserviceinfo.overflow_fields["best_contact_time"].label = "Best days and times to contact the defendant at home"
-  RFAserviceinfo.overflow_fields["danger_for_officer_why"].overflow_trigger = 255
-  RFAserviceinfo.overflow_fields["danger_for_officer_why"].label = "Why the officer will be in danger"
-  RFAserviceinfo.overflow_fields.gathered = True
-  RFAconfidentialcontactinfo.overflow_fields.gathered = True
+#code:  |
+#  RFAserviceinfo.overflow_fields["location_of_home"].overflow_trigger = 850
+#  RFAserviceinfo.overflow_fields["location_of_home"].label = "Describe location of the home"
+#  RFAserviceinfo.overflow_fields["best_contact_time"].overflow_trigger = 170
+#  RFAserviceinfo.overflow_fields["best_contact_time"].label = "Best days and times to contact the defendant at home"
+#  RFAserviceinfo.overflow_fields["danger_for_officer_why"].overflow_trigger = 255
+#  RFAserviceinfo.overflow_fields["danger_for_officer_why"].label = "Why the officer will be in danger"
+#  RFAserviceinfo.overflow_fields.gathered = True
+#  RFAconfidentialcontactinfo.overflow_fields.gathered = True
 ---
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
 objects:
