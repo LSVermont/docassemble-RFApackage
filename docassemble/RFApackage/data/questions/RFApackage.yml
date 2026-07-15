@@ -3738,8 +3738,8 @@ objects:
   - RFAcomplaintonbehalfofminor: ALDocument.using(title="RFA Complaint on behalf of a child or children", filename="5_RFA_complaint_on_behalf_of_minor", has_addendum=True, )
   - RFAaffidavit: ALDocument.using(title="RFA Affidavit", filename="3_RFA-affidavit", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFAaffidavitonbehalfofminor: ALDocument.using(title="RFA Affidavit on behalf of a child or children", filename="6_RFA-affidavit-on-behalf-of-minor", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)    
-  - RFAconfidentialcontactinfo: ALDocument.using(title="Address for Notification", filename="4_RFA-confidential-contact-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - RFAserviceinfo: ALDocument.using(title="Protection Order Service Info", filename="2_RFA-service-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - RFAconfidentialcontactinfo: ALDocument.using(title="Address for Notification", filename="4_RFA-confidential-contact-info", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - RFAserviceinfo: ALDocument.using(title="Protection Order Service Info", filename="2_RFA-service-info", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 attachment:
   variable name: 1_RFA-complaint.addendum
