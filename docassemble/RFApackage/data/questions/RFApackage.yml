@@ -3742,11 +3742,11 @@ objects:
   - RFAserviceinfo: ALDocument.using(title="Protection Order Service Info", filename="2_RFA-service-info", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 attachment:
-  variable name: 1_RFA-complaint.addendum
+  variable name: RFAcomplaint.addendum
   docx template file: RFAcomplaint_addendum.docx
 ---
 attachment:
-  variable name: 5_RFA_complaint_on_behalf_of_minor.addendum
+  variable name: RFAcomplaintonbehalfofminor.addendum
   docx template file: RFAcomplaint_addendum.docx
 ---
 code: |
@@ -3760,11 +3760,11 @@ code: |
   RFAcomplaintonbehalfofminor.overflow_fields.gathered = True
 ---
 attachment:
-  variable name: 3_RFA-affidavit.addendum
+  variable name: RFAaffidavit.addendum
   docx template file: RFAaffidavit_addendum.docx
 ---
 attachment:
-  variable name: 6_RFA-affidavit-on-behalf-of-minor.addendum
+  variable name: RFAaffidavitonbehalfofminor.addendum
   docx template file: RFAaffidavit_addendum.docx
 ---
 code: |
