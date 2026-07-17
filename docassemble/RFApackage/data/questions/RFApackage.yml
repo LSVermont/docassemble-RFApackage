@@ -395,7 +395,7 @@ sections:
   - intro: Introduction
   - screening: Is this tool right for you
   - about: About you
-  - kids: About the children
+  - kids: About any children
   - defendant: About the defendant
   - incidents: What happened
   - ask_weapons: Weapons
@@ -3735,22 +3735,80 @@ progress: 100
 objects:
   - RFApackage_Post_interview_instructions: ALDocument.using(title="NEXT STEPS - Instructions for filing these forms with the court", filename="RFApackage_next_steps.docx", enabled=True, has_addendum=False)
   - RFAcomplaint: ALDocument.using(title="RFA Complaint", filename="1_RFA-complaint", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - RFAcomplaintonbehalfofminor: ALDocument.using(title="RFA Complaint on behalf of a child or children", filename="5_RFA_complaint_on_behalf_of_minor", has_addendum=False, )
+  - RFAcomplaintonbehalfofminor: ALDocument.using(title="RFA Complaint on behalf of a child or children", filename="5_RFA_complaint_on_behalf_of_minor", has_addendum=True, )
   - RFAaffidavit: ALDocument.using(title="RFA Affidavit", filename="3_RFA-affidavit", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - RFAaffidavitonbehalfofminor: ALDocument.using(title="RFA Affidavit on behalf of a child or children", filename="6_RFA-affidavit-on-behalf-of-minor", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)    
-  - RFAconfidentialcontactinfo: ALDocument.using(title="Address for Notification", filename="4_RFA-confidential-contact-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - RFAserviceinfo: ALDocument.using(title="Protection Order Service Info", filename="2_RFA-service-info", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-
+  - RFAconfidentialcontactinfo: ALDocument.using(title="Address for Notification", filename="4_RFA-confidential-contact-info", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - RFAserviceinfo: ALDocument.using(title="Protection Order Service Info", filename="2_RFA-service-info", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+---
+attachment:
+  variable name: RFAcomplaint.addendum
+  docx template file: RFAcomplaint_addendum.docx
+---
+attachment:
+  variable name: RFAcomplaintonbehalfofminor.addendum
+  docx template file: RFAcomplaint_addendum.docx
+---
+code: |
+  RFAcomplaint.overflow_fields["children"].label = "Additional children"
+  RFAcomplaint.overflow_fields["children"].overflow_trigger = 4
+  RFAcomplaint.overflow_fields.gathered = True
+---
+code: |
+  RFAcomplaintonbehalfofminor.overflow_fields["children"].label = "Additional children"
+  RFAcomplaintonbehalfofminor.overflow_fields["children"].overflow_trigger = 4
+  RFAcomplaintonbehalfofminor.overflow_fields.gathered = True
+---
+attachment:
+  variable name: RFAaffidavit.addendum
+  docx template file: RFAaffidavit_addendum.docx
+---
+attachment:
+  variable name: RFAaffidavitonbehalfofminor.addendum
+  docx template file: RFAaffidavit_addendum.docx
+---
+code: |
+  RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
+  RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
+  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1143
+  RFAaffidavit.overflow_fields["recent_incident_description"].label = "The most recent incident"
+  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
+  RFAaffidavit.overflow_fields["serious_incident_description"].label = "The most serious incident"
+  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1838
+  RFAaffidavit.overflow_fields["other_incident_description"].label = "Other incident(s)"
+  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
+  RFAaffidavit.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
+  RFAaffidavit.overflow_fields.gathered = True
+---
+code: |
+  RFAaffidavitonbehalfofminor.overflow_fields["weapons"].label = "Additional weapons"
+  RFAaffidavitonbehalfofminor.overflow_fields["weapons"].overflow_trigger = 8
+  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 1143
+  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].label = "The most recent incident"
+  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 752
+  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].label = "The most serious incident"
+  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1838
+  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].label = "Other incident(s)"
+  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 590
+  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
+  RFAaffidavitonbehalfofminor.overflow_fields.gathered = True
+---
+#code:  |
+#  RFAserviceinfo.overflow_fields["location_of_home"].overflow_trigger = 850
+#  RFAserviceinfo.overflow_fields["location_of_home"].label = "Describe location of the home"
+#  RFAserviceinfo.overflow_fields["best_contact_time"].overflow_trigger = 170
+#  RFAserviceinfo.overflow_fields["best_contact_time"].label = "Best days and times to contact the defendant at home"
+#  RFAserviceinfo.overflow_fields["danger_for_officer_why"].overflow_trigger = 255
+#  RFAserviceinfo.overflow_fields["danger_for_officer_why"].label = "Why the officer will be in danger"
+#  RFAserviceinfo.overflow_fields.gathered = True
+#  RFAconfidentialcontactinfo.overflow_fields.gathered = True
 ---
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
 objects:
   - al_user_bundle: ALDocumentBundle.using(elements=[RFApackage_Post_interview_instructions, RFAcomplaint, RFAcomplaintonbehalfofminor, RFAaffidavit, RFAaffidavitonbehalfofminor, RFAconfidentialcontactinfo, RFAserviceinfo], filename="RFApackage", title="Download all forms", enabled=True)
   - al_court_bundle: ALDocumentBundle.using(elements=[RFAcomplaint, RFAcomplaintonbehalfofminor, RFAaffidavit, RFAaffidavitonbehalfofminor, RFAconfidentialcontactinfo, RFAserviceinfo],  filename="RFApackage", title="All forms to deliver to court", enabled=True)
 ---
-attachment:
-  variable name: RFAaffidavit.addendum
-  docx template file: RFAaffidavit_addendum.docx
----
+
 #####################################################################
 ######################### ATTACHMENTS ###########################
 # Each attachment defines a key in an ALDocument. We use `i` as the placeholder here so the same template is 
@@ -4695,6 +4753,16 @@ attachment:
       - "danger_for_officer_why": ${ RFAserviceinfo.safe_value("danger_for_officer_why") }
 ---
 code: |
+  RFAcomplaint.overflow_fields["children"].label = "Additional children"
+  RFAcomplaint.overflow_fields["children"].overflow_trigger = 4
+  RFAcomplaint.overflow_fields.gathered = True
+---
+code: |
+  RFAcomplaintonbehalfofminor.overflow_fields["children"].label = "Additional children"
+  RFAcomplaintonbehalfofminor.overflow_fields["children"].overflow_trigger = 4
+  RFAcomplaintonbehalfofminor.overflow_fields.gathered = True
+---
+code: |
   RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
   RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
   RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1143
@@ -4729,5 +4797,4 @@ code:  |
   RFAserviceinfo.overflow_fields["danger_for_officer_why"].label = "Why the officer will be in danger"
   RFAserviceinfo.overflow_fields.gathered = True
   RFAconfidentialcontactinfo.overflow_fields.gathered = True
-  RFAcomplaint.overflow_fields.gathered = True
 ---
