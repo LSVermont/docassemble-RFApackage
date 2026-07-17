@@ -556,7 +556,7 @@ question: |
 fields:
   - "Why do you think the children are in further danger?": danger_abuse_other_children_affidavit_why
     input type: area
-    max: 600
+    maxlength: 879
 ---
 id: basic questions intro screen
 question: |
@@ -3115,7 +3115,7 @@ review:
       % if defined("recent_incident_users1"):
       - You were the target of the recent abuse: **${ yesno(recent_incident_users1) }**
       % endif
-      % if defined("recent_incident_children"):
+      % if children.target_number > 0 and defined("recent_incident_children"):
       - Your children were the target of the recent abuse: **${ yesno(recent_incident_children) }**
       % endif
       % if children.target_number > 0 and defined("recent_incident_children"):
@@ -3277,14 +3277,17 @@ review:
       - **${ child }**
       % endif
       % endfor
+      % if danger_more_abuse_OBO and danger_abuse_other_children_affidavit:
+      - Why the children are in danger of more abuse: **${ danger_abuse_other_children_affidavit_why }**
+      % endif
       % endif
 
-  - Edit: 
-    - danger_abuse_other_children_affidavit_why
-    button: |
-      % if danger_more_abuse_OBO and danger_abuse_other_children_affidavit:
-      - Why the children in danger of more abuse: **${ danger_abuse_other_children_affidavit_why }**
-      % endif
+#  - Edit: 
+#    - danger_abuse_other_children_affidavit_why
+#    button: |
+#      % if danger_more_abuse_OBO and danger_abuse_other_children_affidavit:
+#      - Why the children in danger of more abuse: **${ danger_abuse_other_children_affidavit_why }**
+#      % endif
 
   - Edit: 
     - used_firearm
@@ -3337,7 +3340,7 @@ review:
     - recompute:
       - get_kids_relationships
     button: |      
-      The things you would like (and would not like) included in the Relief from Abuse order. Select Edit on the right to edit the details.
+      The things you would like included in the Relief from Abuse order. Select Edit on the right to edit your choices.
 
       - Order the defendant to not abuse the child/children and not interfere with their personal liberty: **${ word(yesno(request_not_abuse_OBO)) }**
       - Order the defendant to not stalk or sexually abuse the child/children: **${ word(yesno(request_no_stalking_assault_OBO)) }**
@@ -3783,13 +3786,13 @@ code: |
 code: |
   RFAaffidavitonbehalfofminor.overflow_fields["weapons"].label = "Additional weapons"
   RFAaffidavitonbehalfofminor.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 1143
+  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 543
   RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].label = "The most recent incident"
-  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 752
+  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 524
   RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].label = "The most serious incident"
-  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1838
+  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 2000
   RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].label = "Other incident(s)"
-  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 590
+  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 399
   RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
   RFAaffidavitonbehalfofminor.overflow_fields.gathered = True
 ---
@@ -4166,7 +4169,7 @@ attachment:
       - "used_weapon_how": ${ RFAaffidavitonbehalfofminor.safe_value("used_weapon_how") }
       - "danger_abuse_other_children_affidavit_yes": |
           % if children.number_gathered() > 1:
-          % if children[1].in_danger or children[2].in_danger or children[3].in_danger:
+          % if children[1].in_danger or children[2].in_danger or children[3].in_danger or children[4].in_danger or children[5].in_danger or children[6].in_danger:
           True
           % else:
           False
