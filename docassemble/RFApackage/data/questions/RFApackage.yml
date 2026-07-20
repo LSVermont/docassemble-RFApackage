@@ -556,7 +556,7 @@ question: |
 fields:
   - "Why do you think the children are in further danger?": danger_abuse_other_children_affidavit_why
     input type: area
-    maxlength: 879
+    maxlength: 890
 ---
 id: basic questions intro screen
 question: |
@@ -3247,6 +3247,7 @@ review:
       ##Safety and weapons##
   - Edit: 
     - danger_more_abuse
+    - danger_more_abuse_why
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse) }**
       % if danger_more_abuse:
@@ -3268,6 +3269,7 @@ review:
     - children.revisit
     - recompute:
       - define_danger_abuse_other_children_affidavit
+      - danger_abuse_other_children_affidavit_why
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse_OBO) }**
       % if danger_more_abuse_OBO:
@@ -3781,6 +3783,46 @@ attachment:
   variable name: RFAcomplaintonbehalfofminor.addendum
   docx template file: RFAcomplaint_addendum.docx
 ---
+---
+#code: |
+#  RFAcomplaint.overflow_fields["children"].label = "Additional children"
+#  RFAcomplaint.overflow_fields["children"].overflow_trigger = 4
+#  RFAcomplaint.overflow_fields.gathered = True
+#---
+#code: |
+#  RFAcomplaintonbehalfofminor.overflow_fields["children"].label = "Additional children"
+#  RFAcomplaintonbehalfofminor.overflow_fields["children"].overflow_trigger = 4
+#  RFAcomplaintonbehalfofminor.overflow_fields.gathered = True
+#---
+#code: |
+#  RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
+#  RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
+#  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1143
+#  RFAaffidavit.overflow_fields["recent_incident_description"].label = "The most recent incident"
+#  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
+#  RFAaffidavit.overflow_fields["serious_incident_description"].label = "The most serious incident"
+#  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1838
+#  RFAaffidavit.overflow_fields["other_incident_description"].label = "Other incident(s)"
+#  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
+#  RFAaffidavit.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
+#  RFAaffidavit.overflow_fields.gathered = True
+#---
+#code: |
+#  RFAaffidavitonbehalfofminor.overflow_fields["weapons"].label = "Additional weapons"
+#  RFAaffidavitonbehalfofminor.overflow_fields["weapons"].overflow_trigger = 8
+#  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 1143
+#  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].label = "The most recent incident"
+#  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 752
+#  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].label = "The most serious incident"
+#  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1838
+#  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].label = "Other incident(s)"
+#  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 590
+#  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon(s)"
+#  RFAaffidavitonbehalfofminor.overflow_fields.gathered = True
+#
+#---
+#---
+---
 code: |
   RFAcomplaint.overflow_fields["children"].label = "Additional children"
   RFAcomplaint.overflow_fields["children"].overflow_trigger = 4
@@ -3802,11 +3844,11 @@ attachment:
 code: |
   RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
   RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1143
+  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1164
   RFAaffidavit.overflow_fields["recent_incident_description"].label = "The most recent incident"
-  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
+  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 880
   RFAaffidavit.overflow_fields["serious_incident_description"].label = "The most serious incident"
-  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1838
+  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 2050
   RFAaffidavit.overflow_fields["other_incident_description"].label = "Other incident(s)"
   RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
   RFAaffidavit.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
@@ -3815,11 +3857,11 @@ code: |
 code: |
   RFAaffidavitonbehalfofminor.overflow_fields["weapons"].label = "Additional weapons"
   RFAaffidavitonbehalfofminor.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 543
+  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 490
   RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].label = "The most recent incident"
-  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 524
+  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 500
   RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].label = "The most serious incident"
-  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 2000
+  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1910
   RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].label = "Other incident(s)"
   RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 399
   RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
@@ -4782,51 +4824,5 @@ attachment:
       - "under_infl_no": ${ not under_infl }
       - "danger_for_officer_yes": ${ danger_for_officer }
       - "danger_for_officer_no": ${ not danger_for_officer }
-      - "danger_for_officer_why": ${ RFAserviceinfo.safe_value("danger_for_officer_why") }
----
-code: |
-  RFAcomplaint.overflow_fields["children"].label = "Additional children"
-  RFAcomplaint.overflow_fields["children"].overflow_trigger = 4
-  RFAcomplaint.overflow_fields.gathered = True
----
-code: |
-  RFAcomplaintonbehalfofminor.overflow_fields["children"].label = "Additional children"
-  RFAcomplaintonbehalfofminor.overflow_fields["children"].overflow_trigger = 4
-  RFAcomplaintonbehalfofminor.overflow_fields.gathered = True
----
-code: |
-  RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
-  RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1143
-  RFAaffidavit.overflow_fields["recent_incident_description"].label = "The most recent incident"
-  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
-  RFAaffidavit.overflow_fields["serious_incident_description"].label = "The most serious incident"
-  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1838
-  RFAaffidavit.overflow_fields["other_incident_description"].label = "Other incident(s)"
-  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
-  RFAaffidavit.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
-  RFAaffidavit.overflow_fields.gathered = True
----
-code: |
-  RFAaffidavitonbehalfofminor.overflow_fields["weapons"].label = "Additional weapons"
-  RFAaffidavitonbehalfofminor.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 1143
-  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].label = "Please describe the most recent incident with as much detail as possible."
-  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 752
-  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].label = "Please describe the most serious incident with as much detail as possible."
-  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1838
-  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].label = "Please describe any other incident(s) with as much detail as possible."
-  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 590
-  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].label = "Describe in detail how they used or threatened to use weapon?"
-  RFAaffidavitonbehalfofminor.overflow_fields.gathered = True
----
-code:  |
-  RFAserviceinfo.overflow_fields["location_of_home"].overflow_trigger = 850
-  RFAserviceinfo.overflow_fields["location_of_home"].label = "Describe location of the home"
-  RFAserviceinfo.overflow_fields["best_contact_time"].overflow_trigger = 170
-  RFAserviceinfo.overflow_fields["best_contact_time"].label = "Best days and times to contact the defendant at home"
-  RFAserviceinfo.overflow_fields["danger_for_officer_why"].overflow_trigger = 255
-  RFAserviceinfo.overflow_fields["danger_for_officer_why"].label = "Why the officer will be in danger"
-  RFAserviceinfo.overflow_fields.gathered = True
-  RFAconfidentialcontactinfo.overflow_fields.gathered = True
+      - "danger_for_officer_why": ${ danger_for_officer_why }
 ---
