@@ -3269,7 +3269,6 @@ review:
     - children.revisit
     - recompute:
       - define_danger_abuse_other_children_affidavit
-      - danger_abuse_other_children_affidavit_why
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse_OBO) }**
       % if danger_more_abuse_OBO:
@@ -3279,18 +3278,12 @@ review:
       - **${ child }**
       % endif
       % endfor
-      % if danger_more_abuse_OBO and danger_abuse_other_children_affidavit:
-      - Why the children are in danger of more abuse: **${ danger_abuse_other_children_affidavit_why }**
       % endif
-      % endif
-
-#  - Edit: 
-#    - danger_abuse_other_children_affidavit_why
-#    button: |
-#      % if danger_more_abuse_OBO and danger_abuse_other_children_affidavit:
-#      - Why the children in danger of more abuse: **${ danger_abuse_other_children_affidavit_why }**
-#      % endif
-
+  - Edit: 
+    - danger_abuse_other_children_affidavit_why
+    button: |
+      - Why the children are in danger of more abuse: **${ showifdef("danger_abuse_other_children_affidavit_why") }**
+    show if: danger_more_abuse_OBO and danger_abuse_other_children_affidavit
   - Edit: 
     - used_firearm
     - weapons.there_are_any
@@ -3493,88 +3486,6 @@ review:
       % endif
     show if: children.target_number > 0 and request_temp_PRR_OBO
 
-  
-#  - Edit:
-#    - children[0].custody_wanted
-#    button: |
-#      % if request_temp_PRR:  
-#      % if children[0].custody_wanted:
-#      You want custody of:
-#      
-#      * **${ showifdef('children[0]') }**
-#        * Relationship to you: ${ children[0].relationship_users1 }
-#        * Relationship to defendant: ${ children[0].relationship_OP }
-#      % else:
-#      You do **not** want custody of:
-#  
-#      * **${ showifdef('children[0]') }**      
-#      % endif
-#      % endif
-#  - Edit:
-#    - children[1].custody_wanted
-#    button: |
-#      % if request_temp_PRR:
-#      % if children[1].custody_wanted:
-#      You want custody of:
-#      
-#      * **${ showifdef('children[1]') }**
-#        * Relationship to you: ${ children[1].relationship_users1 }
-#        * Relationship to defendant: ${ children[1].relationship_OP }
-#      % else:
-#      You do **not** want custody of:
-#      
-#      * **${ showifdef('children[1]') }**   
-#      % endif
-#      % endif   
-#  - Edit:
-#    - children[2].custody_wanted
-#    button: |
-#      % if request_temp_PRR:
-#      % if children[2].custody_wanted:
-#      You want custody of:
-#      
-#      * **${ showifdef('children[2]') }**
-#        * Relationship to you: ${ children[2].relationship_users1 }
-#        * Relationship to defendant: ${ children[2].relationship_OP }
-#      % else:
-#      You do **not** want custody of:
-#      
-#      * **${ showifdef('children[2]') }**   
-#      % endif
-#      % endif  
-#  - Edit:
-#    - children[3].custody_wanted
-#    button: |
-#      % if request_temp_PRR:
-#      % if children[3].custody_wanted:
-#      You want custody of:
-#      
-#      * **${ showifdef('children[3]') }**
-#        * Relationship to you: ${ children[3].relationship_users1 }
-#        * Relationship to defendant: ${ children[3].relationship_OP }
-#      % else:
-#      You do **not** want custody of:
-#      
-#      * **${ showifdef('children[3]') }**   
-#      % endif
-#      % endif  
-#
-#  - Edit:
-#    - children[4].custody_wanted
-#    button: |
-#      % if request_temp_PRR:
-#      % if children[2].custody_wanted:
-#      You want custody of:
-#      
-#      * **${ showifdef('children[4]') }**
-#        * Relationship to you: ${ children[4].relationship_users1 }
-#        * Relationship to defendant: ${ children[4].relationship_OP }
-#      % else:
-#      You do **not** want custody of:
-#      
-#      * **${ showifdef('children[4]') }**   
-#      % endif
-#      % endif  
   
   - Edit: request_all_emergency
     button: |
@@ -4239,20 +4150,23 @@ attachment:
       - "used_weapon_no": ${ not used_weapon_OBO }
       - "used_weapon_how": ${ RFAaffidavitonbehalfofminor.safe_value("used_weapon_how") }
       - "danger_abuse_other_children_affidavit_yes": |
-          % if children.number_gathered() > 1:
-          % if children[1].in_danger or children[2].in_danger or children[3].in_danger or children[4].in_danger or children[5].in_danger or children[6].in_danger:
+          % if children.number_gathered() > 1 and danger_abuse_other_children_affidavit:
           True
           % else:
-          False
-          % endif
+          ""
           % endif
       - "danger_abuse_other_children_affidavit_no": |
-          % if children.number_gathered() < 2:
+          % if children.number_gathered() > 1 and not danger_abuse_other_children_affidavit:
+          True
+          % elif children.number_gathered() == 1:
           True
           % else:
-          False
+          ""
           % endif
-      - "danger_abuse_other_children_affidavit_why": ${ danger_abuse_other_children_affidavit_why }
+      - "danger_abuse_other_children_affidavit_why": |
+          % if children.number_gathered() > 1 and danger_abuse_other_children_affidavit:
+          ${ danger_abuse_other_children_affidavit_why }
+          % endif
       - "other_parties1_military_yes": ${ other_parties1_military }
       - "other_parties1_military_no": ${ not other_parties1_military }
       - "printed_signature": ${ printed_signature }
