@@ -556,7 +556,7 @@ question: |
 fields:
   - "Why do you think the children are in further danger?": danger_abuse_other_children_affidavit_why
     input type: area
-    max: 600
+    maxlength: 890
 ---
 id: basic questions intro screen
 question: |
@@ -1674,10 +1674,10 @@ fields:
 validation code: |
   
   if surrender_plaintiffs_documents_OBO and not (surrender_plaintiffs_documents_users1_OBO or surrender_plaintiffs_documents_children_OBO):
-    validation_error("Please select at least one of the options.")
+    validation_error("Please select whose documents.")
 
   if surrender_vehicle_OBO and not (surrender_vehicle_owner_OBO or surrender_vehicle_pays_loan_OBO or surrender_vehicle_has_possession_OBO or surrender_vehicle_restricted_from_use_OBO):
-    validation_error("Please select at least one of the options.")
+    validation_error("Please select details about the vehicle.")
         
   if not (request_not_abuse_OBO or request_no_stalking_assault_OBO or request_leave_OBO or request_no_firearms_OBO or request_surrender_firearms_OBO or request_no_pet_harm_OBO or request_control_of_pet_OBO or request_DV_program_OBO or request_no_contact_OBO or request_no_drugs_alcohol_OBO or request_no_punishment_OBO or request_child_support_OBO or other_request_OBO or surrender_plaintiffs_documents_OBO or surrender_vehicle_OBO or request_stay_away_OBO or request_temp_PRR_OBO or request_supervised_contact_OBO or request_supervised_exchange_OBO):
     validation_error("Please select at least one option.")
@@ -3115,7 +3115,7 @@ review:
       % if defined("recent_incident_users1"):
       - You were the target of the recent abuse: **${ yesno(recent_incident_users1) }**
       % endif
-      % if defined("recent_incident_children"):
+      % if children.target_number > 0 and defined("recent_incident_children"):
       - Your children were the target of the recent abuse: **${ yesno(recent_incident_children) }**
       % endif
       % if children.target_number > 0 and defined("recent_incident_children"):
@@ -3247,6 +3247,7 @@ review:
       ##Safety and weapons##
   - Edit: 
     - danger_more_abuse
+    - danger_more_abuse_why
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse) }**
       % if danger_more_abuse:
@@ -3278,14 +3279,11 @@ review:
       % endif
       % endfor
       % endif
-
   - Edit: 
     - danger_abuse_other_children_affidavit_why
     button: |
-      % if danger_more_abuse_OBO and danger_abuse_other_children_affidavit:
-      - Why the children in danger of more abuse: **${ danger_abuse_other_children_affidavit_why }**
-      % endif
-
+      - Why the children are in danger of more abuse: **${ showifdef("danger_abuse_other_children_affidavit_why") }**
+    show if: danger_more_abuse_OBO and danger_abuse_other_children_affidavit
   - Edit: 
     - used_firearm
     - weapons.there_are_any
@@ -3337,7 +3335,7 @@ review:
     - recompute:
       - get_kids_relationships
     button: |      
-      The things you would like (and would not like) included in the Relief from Abuse order. Select Edit on the right to edit the details.
+      The things you would like included in the Relief from Abuse order. Select Edit on the right to edit your choices.
 
       - Order the defendant to not abuse the child/children and not interfere with their personal liberty: **${ word(yesno(request_not_abuse_OBO)) }**
       - Order the defendant to not stalk or sexually abuse the child/children: **${ word(yesno(request_no_stalking_assault_OBO)) }**
@@ -3355,14 +3353,6 @@ review:
       % endif
       - Order the defendant to not contact the child/children in any way: **${ word(yesno(request_no_contact_OBO)) }**
       - Award temporary Parental Rights and Responsibilities (custody) of our child/children to me. (For child/children of you and the defendant.): **${ word(yesno(request_temp_PRR_OBO)) }**
-      % if request_temp_PRR_OBO:
-      -- These children:
-      % for child in children:
-      % if defined ('child.custody_wanted') and child.custody_wanted:
-      * **${ child }**
-      % endif
-      % endfor
-      % endif
       - Order the defendant to have supervised contact with the child/children: **${ word(yesno(request_supervised_contact_OBO)) }**
       - Order that the child/children will be picked up and dropped off at a certain supervised location: **${ word(yesno(request_supervised_exchange_OBO)) }**
       - Order defendant not to take any regulated drug unless it is prescribed by a physician, or drink alcohol, for at least 8 hours prior to a scheduled contact with the child/children, or during contact with the child/children). And if defendant appears to be under the influence of drugs or alcohol, allow me to cancel the scheduled visit with the child/children.: **${ word(yesno(request_no_drugs_alcohol_OBO)) }**
@@ -3373,7 +3363,7 @@ review:
   - Edit: 
     - request_not_abuse
     button: | 
-      The things you would like (and would not like) included in the Relief from Abuse order. Select Edit on the right to edit the details.
+      The things you would like included in the Relief from Abuse order. Select Edit on the right to edit your choices.
             
       % if showifdef("request_not_abuse"):
       % if children.target_number == 0:
@@ -3463,88 +3453,40 @@ review:
       
       % if showifdef("request_temp_PRR"):
       Award temporary Parental Rights and Responsibilities (custody) of your child/children to you or someone else: **${ word(yesno(request_temp_PRR)) }** 
+      
       % endif
-  - Edit:
-    - children[0].custody_wanted
-    button: |
-      % if request_temp_PRR:  
-      % if children[0].custody_wanted:
-      You want custody of:
-      
-      * **${ showifdef('children[0]') }**
-        * Relationship to you: ${ children[0].relationship_users1 }
-        * Relationship to defendant: ${ children[0].relationship_OP }
-      % else:
-      You do **not** want custody of:
-  
-      * **${ showifdef('children[0]') }**      
-      % endif
-      % endif
-  - Edit:
-    - children[1].custody_wanted
-    button: |
-      % if request_temp_PRR:
-      % if children[1].custody_wanted:
-      You want custody of:
-      
-      * **${ showifdef('children[1]') }**
-        * Relationship to you: ${ children[1].relationship_users1 }
-        * Relationship to defendant: ${ children[1].relationship_OP }
-      % else:
-      You do **not** want custody of:
-      
-      * **${ showifdef('children[1]') }**   
-      % endif
-      % endif   
-  - Edit:
-    - children[2].custody_wanted
-    button: |
-      % if request_temp_PRR:
-      % if children[2].custody_wanted:
-      You want custody of:
-      
-      * **${ showifdef('children[2]') }**
-        * Relationship to you: ${ children[2].relationship_users1 }
-        * Relationship to defendant: ${ children[2].relationship_OP }
-      % else:
-      You do **not** want custody of:
-      
-      * **${ showifdef('children[2]') }**   
-      % endif
-      % endif  
-  - Edit:
-    - children[3].custody_wanted
-    button: |
-      % if request_temp_PRR:
-      % if children[3].custody_wanted:
-      You want custody of:
-      
-      * **${ showifdef('children[3]') }**
-        * Relationship to you: ${ children[3].relationship_users1 }
-        * Relationship to defendant: ${ children[3].relationship_OP }
-      % else:
-      You do **not** want custody of:
-      
-      * **${ showifdef('children[3]') }**   
-      % endif
-      % endif  
 
-  - Edit:
-    - children[4].custody_wanted
-    button: |
-      % if request_temp_PRR:
-      % if children[2].custody_wanted:
-      You want custody of:
+  - Edit: children.revisit
+    button: | 
+      % if children.target_number > 0:
+      % if showifdef("request_temp_PRR"):
+      You want custody of these children:
+      % for child in children:
+      % if defined ('child.custody_wanted') and child.custody_wanted:
       
-      * **${ showifdef('children[4]') }**
-        * Relationship to you: ${ children[4].relationship_users1 }
-        * Relationship to defendant: ${ children[4].relationship_OP }
-      % else:
-      You do **not** want custody of:
-      
-      * **${ showifdef('children[4]') }**   
+      * **${ child }**
       % endif
-      % endif  
+      % endfor
+      % endif
+      % endif
+    show if: children.target_number > 0 and request_temp_PRR
+
+  - Edit: children.revisit
+    button: | 
+      % if children.target_number > 0:
+      % if showifdef("request_temp_PRR_OBO"):
+      You want custody of these children:
+      % for child in children:
+      % if defined ('child.custody_wanted') and child.custody_wanted:
+      
+      * **${ child }**
+      % endif
+      % endfor
+      % endif
+      % endif
+    show if: children.target_number > 0 and request_temp_PRR_OBO
+
+  
   - Edit: request_all_emergency
     button: |
       You request this RFA order on an emergency basis: **${ yesno(request_all_emergency) }** 
@@ -3675,10 +3617,13 @@ columns:
       row_item.birthdate if defined("row_item.birthdate") else ""
   - In further danger: |
       row_item.in_danger if defined("row_item.in_danger") else ""
+  - You want custody: |
+      row_item.custody_wanted if defined("row_item.custody_wanted") else ""
 edit:
   - name.first
   - birthdate
   - in_danger
+  - custody_wanted
 confirm: True
 ---
 continue button field: weapons.revisit
@@ -3749,6 +3694,46 @@ attachment:
   variable name: RFAcomplaintonbehalfofminor.addendum
   docx template file: RFAcomplaint_addendum.docx
 ---
+---
+#code: |
+#  RFAcomplaint.overflow_fields["children"].label = "Additional children"
+#  RFAcomplaint.overflow_fields["children"].overflow_trigger = 4
+#  RFAcomplaint.overflow_fields.gathered = True
+#---
+#code: |
+#  RFAcomplaintonbehalfofminor.overflow_fields["children"].label = "Additional children"
+#  RFAcomplaintonbehalfofminor.overflow_fields["children"].overflow_trigger = 4
+#  RFAcomplaintonbehalfofminor.overflow_fields.gathered = True
+#---
+#code: |
+#  RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
+#  RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
+#  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1143
+#  RFAaffidavit.overflow_fields["recent_incident_description"].label = "The most recent incident"
+#  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
+#  RFAaffidavit.overflow_fields["serious_incident_description"].label = "The most serious incident"
+#  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1838
+#  RFAaffidavit.overflow_fields["other_incident_description"].label = "Other incident(s)"
+#  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
+#  RFAaffidavit.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
+#  RFAaffidavit.overflow_fields.gathered = True
+#---
+#code: |
+#  RFAaffidavitonbehalfofminor.overflow_fields["weapons"].label = "Additional weapons"
+#  RFAaffidavitonbehalfofminor.overflow_fields["weapons"].overflow_trigger = 8
+#  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 1143
+#  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].label = "The most recent incident"
+#  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 752
+#  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].label = "The most serious incident"
+#  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1838
+#  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].label = "Other incident(s)"
+#  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 590
+#  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon(s)"
+#  RFAaffidavitonbehalfofminor.overflow_fields.gathered = True
+#
+#---
+#---
+---
 code: |
   RFAcomplaint.overflow_fields["children"].label = "Additional children"
   RFAcomplaint.overflow_fields["children"].overflow_trigger = 4
@@ -3770,11 +3755,11 @@ attachment:
 code: |
   RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
   RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1143
+  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1164
   RFAaffidavit.overflow_fields["recent_incident_description"].label = "The most recent incident"
-  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
+  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 880
   RFAaffidavit.overflow_fields["serious_incident_description"].label = "The most serious incident"
-  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1838
+  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 2050
   RFAaffidavit.overflow_fields["other_incident_description"].label = "Other incident(s)"
   RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
   RFAaffidavit.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
@@ -3783,13 +3768,13 @@ code: |
 code: |
   RFAaffidavitonbehalfofminor.overflow_fields["weapons"].label = "Additional weapons"
   RFAaffidavitonbehalfofminor.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 1143
+  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 490
   RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].label = "The most recent incident"
-  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 752
+  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 500
   RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].label = "The most serious incident"
-  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1838
+  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1910
   RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].label = "Other incident(s)"
-  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 590
+  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 399
   RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
   RFAaffidavitonbehalfofminor.overflow_fields.gathered = True
 ---
@@ -4165,20 +4150,23 @@ attachment:
       - "used_weapon_no": ${ not used_weapon_OBO }
       - "used_weapon_how": ${ RFAaffidavitonbehalfofminor.safe_value("used_weapon_how") }
       - "danger_abuse_other_children_affidavit_yes": |
-          % if children.number_gathered() > 1:
-          % if children[1].in_danger or children[2].in_danger or children[3].in_danger:
+          % if children.number_gathered() > 1 and danger_abuse_other_children_affidavit:
           True
           % else:
-          False
-          % endif
+          ""
           % endif
       - "danger_abuse_other_children_affidavit_no": |
-          % if children.number_gathered() < 2:
+          % if children.number_gathered() > 1 and not danger_abuse_other_children_affidavit:
+          True
+          % elif children.number_gathered() == 1:
           True
           % else:
-          False
+          ""
           % endif
-      - "danger_abuse_other_children_affidavit_why": ${ danger_abuse_other_children_affidavit_why }
+      - "danger_abuse_other_children_affidavit_why": |
+          % if children.number_gathered() > 1 and danger_abuse_other_children_affidavit:
+          ${ danger_abuse_other_children_affidavit_why }
+          % endif
       - "other_parties1_military_yes": ${ other_parties1_military }
       - "other_parties1_military_no": ${ not other_parties1_military }
       - "printed_signature": ${ printed_signature }
@@ -4750,51 +4738,5 @@ attachment:
       - "under_infl_no": ${ not under_infl }
       - "danger_for_officer_yes": ${ danger_for_officer }
       - "danger_for_officer_no": ${ not danger_for_officer }
-      - "danger_for_officer_why": ${ RFAserviceinfo.safe_value("danger_for_officer_why") }
----
-code: |
-  RFAcomplaint.overflow_fields["children"].label = "Additional children"
-  RFAcomplaint.overflow_fields["children"].overflow_trigger = 4
-  RFAcomplaint.overflow_fields.gathered = True
----
-code: |
-  RFAcomplaintonbehalfofminor.overflow_fields["children"].label = "Additional children"
-  RFAcomplaintonbehalfofminor.overflow_fields["children"].overflow_trigger = 4
-  RFAcomplaintonbehalfofminor.overflow_fields.gathered = True
----
-code: |
-  RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
-  RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1143
-  RFAaffidavit.overflow_fields["recent_incident_description"].label = "The most recent incident"
-  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
-  RFAaffidavit.overflow_fields["serious_incident_description"].label = "The most serious incident"
-  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1838
-  RFAaffidavit.overflow_fields["other_incident_description"].label = "Other incident(s)"
-  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
-  RFAaffidavit.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
-  RFAaffidavit.overflow_fields.gathered = True
----
-code: |
-  RFAaffidavitonbehalfofminor.overflow_fields["weapons"].label = "Additional weapons"
-  RFAaffidavitonbehalfofminor.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 1143
-  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].label = "Please describe the most recent incident with as much detail as possible."
-  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 752
-  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].label = "Please describe the most serious incident with as much detail as possible."
-  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1838
-  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].label = "Please describe any other incident(s) with as much detail as possible."
-  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 590
-  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].label = "Describe in detail how they used or threatened to use weapon?"
-  RFAaffidavitonbehalfofminor.overflow_fields.gathered = True
----
-code:  |
-  RFAserviceinfo.overflow_fields["location_of_home"].overflow_trigger = 850
-  RFAserviceinfo.overflow_fields["location_of_home"].label = "Describe location of the home"
-  RFAserviceinfo.overflow_fields["best_contact_time"].overflow_trigger = 170
-  RFAserviceinfo.overflow_fields["best_contact_time"].label = "Best days and times to contact the defendant at home"
-  RFAserviceinfo.overflow_fields["danger_for_officer_why"].overflow_trigger = 255
-  RFAserviceinfo.overflow_fields["danger_for_officer_why"].label = "Why the officer will be in danger"
-  RFAserviceinfo.overflow_fields.gathered = True
-  RFAconfidentialcontactinfo.overflow_fields.gathered = True
+      - "danger_for_officer_why": ${ danger_for_officer_why }
 ---
