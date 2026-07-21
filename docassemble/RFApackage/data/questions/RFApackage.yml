@@ -445,8 +445,6 @@ code: |
 
 
 #####QUESTIONS AND CODE####  
-
-###ADDITIONS TO MERGE IN OBO CHILD COMPLAINT###
 ---
 mandatory: True
 code: |
@@ -556,7 +554,8 @@ question: |
 fields:
   - "Why do you think the children are in further danger?": danger_abuse_other_children_affidavit_why
     input type: area
-    maxlength: 890
+    rows: 8
+    maxlength: 926
 ---
 id: basic questions intro screen
 question: |
@@ -909,17 +908,7 @@ fields:
     datatype: yesnoradio
 ---
 
-
 ---
-
-#code: |
-#  if who_needs_protection == 'order_obo_child':
-#    children.there_are_any == True
-#  if who_needs_protection == 'order_for_both':
-#    children.there_are_any == True
----
-
-
 id: how many children
 question: |
   Children involved in this case
@@ -954,7 +943,7 @@ id: how many children if obo or both
 question: |
   Number of children involved in this case
 subquestion: |
-  Include children under 18 who have been affected by abuse. Also include children who you would like to ask for temporary custody of
+  Include children under 18 who have been affected by abuse. Also include children who you would like to ask for temporary custody of.
 fields:
   - How many children are involved in this case?: children.target_number
     datatype: integer
@@ -1073,34 +1062,6 @@ fields:
     code: |
       range(1,100+1)
 ---
-#id: Gather defendants address
-#question: |
-#  What is the defendant's home address?
-#subquestion: |
-#  The court will need an address of some kind. Include what you can of the defendant's home address. Later in this interview you can give the address where they work or where they are staying. **You will need to provide at least one address.**
-#fields:
-#  - The same address as mine: defendant_lives_with_plaintiff
-#    datatype: yesno
-#    disable others: True
-#  - I don't know the defendant's home address: defendant_address_unknown
-#    datatype: yesno
-#    disable others: True
-#  - Street address: other_parties[0].address.address
-#    address autocomplete: True
-#    required: False
-#  - Unit: other_parties[0].address.unit
-#    required: False
-#  - City: other_parties[0].address.city
-#    required: False
-#  - State: other_parties[0].address.state
-#    code: |
-#      states_list()
-#    default: VT
-#    required: False
-#  - Zip: other_parties[0].address.zip
-#    required: False
----
-
 id: ask defendant address
 continue button field: ask_defendant_address
 question: |
@@ -1941,8 +1902,6 @@ id: Put something else in order
 question: |
   What else do you want to ask for in the RFA order
 fields:
-#  - "Do you want to ask the court for something else as part of the RFA order?": request_other
-#    datatype: yesnoradio
   - note: |
       Start with a phrase like: 'Order the defendant to ...' or 'Order me to get ...': 
   - "Explain what else you'd like the RFA order to do": request_other_description
@@ -2396,8 +2355,6 @@ fields:
     datatype: radio
     code: |
       [{item: phone_number_formatted(item) or item} for item in [users[0].phone_number, users1_work_phone_number] if item] + [{"other": "Other"}]
-    #js show if: |
-      #val('notify_served') == true
     show if:
       variable: notify_served
       is: True
@@ -2515,8 +2472,6 @@ review:
       ##About you##
   - Edit: 
     - users.revisit
-    #- users[0].address.address
-    #- users[0].mailing_address.address
     button: |
       % if users.there_are_any:
       % for item in users:
@@ -3499,7 +3454,6 @@ review:
     button: |
       Filing for an RFA order in the Family Court of this county in Vermont: **${ user_selected_county }**
 
-      
 
   - Edit: 
     - existing_order
@@ -3694,46 +3648,6 @@ attachment:
   variable name: RFAcomplaintonbehalfofminor.addendum
   docx template file: RFAcomplaint_addendum.docx
 ---
----
-#code: |
-#  RFAcomplaint.overflow_fields["children"].label = "Additional children"
-#  RFAcomplaint.overflow_fields["children"].overflow_trigger = 4
-#  RFAcomplaint.overflow_fields.gathered = True
-#---
-#code: |
-#  RFAcomplaintonbehalfofminor.overflow_fields["children"].label = "Additional children"
-#  RFAcomplaintonbehalfofminor.overflow_fields["children"].overflow_trigger = 4
-#  RFAcomplaintonbehalfofminor.overflow_fields.gathered = True
-#---
-#code: |
-#  RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
-#  RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
-#  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1143
-#  RFAaffidavit.overflow_fields["recent_incident_description"].label = "The most recent incident"
-#  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 752
-#  RFAaffidavit.overflow_fields["serious_incident_description"].label = "The most serious incident"
-#  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1838
-#  RFAaffidavit.overflow_fields["other_incident_description"].label = "Other incident(s)"
-#  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
-#  RFAaffidavit.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
-#  RFAaffidavit.overflow_fields.gathered = True
-#---
-#code: |
-#  RFAaffidavitonbehalfofminor.overflow_fields["weapons"].label = "Additional weapons"
-#  RFAaffidavitonbehalfofminor.overflow_fields["weapons"].overflow_trigger = 8
-#  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 1143
-#  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].label = "The most recent incident"
-#  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 752
-#  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].label = "The most serious incident"
-#  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1838
-#  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].label = "Other incident(s)"
-#  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 590
-#  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon(s)"
-#  RFAaffidavitonbehalfofminor.overflow_fields.gathered = True
-#
-#---
-#---
----
 code: |
   RFAcomplaint.overflow_fields["children"].label = "Additional children"
   RFAcomplaint.overflow_fields["children"].overflow_trigger = 4
@@ -3755,11 +3669,11 @@ attachment:
 code: |
   RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
   RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1164
+  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1218
   RFAaffidavit.overflow_fields["recent_incident_description"].label = "The most recent incident"
   RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 880
   RFAaffidavit.overflow_fields["serious_incident_description"].label = "The most serious incident"
-  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 2050
+  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 2110
   RFAaffidavit.overflow_fields["other_incident_description"].label = "Other incident(s)"
   RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
   RFAaffidavit.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
@@ -3768,25 +3682,15 @@ code: |
 code: |
   RFAaffidavitonbehalfofminor.overflow_fields["weapons"].label = "Additional weapons"
   RFAaffidavitonbehalfofminor.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 490
+  RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 510
   RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].label = "The most recent incident"
-  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 500
+  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 520
   RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].label = "The most serious incident"
-  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1910
+  RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1972
   RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].label = "Other incident(s)"
-  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 399
+  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 406
   RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
   RFAaffidavitonbehalfofminor.overflow_fields.gathered = True
----
-#code:  |
-#  RFAserviceinfo.overflow_fields["location_of_home"].overflow_trigger = 850
-#  RFAserviceinfo.overflow_fields["location_of_home"].label = "Describe location of the home"
-#  RFAserviceinfo.overflow_fields["best_contact_time"].overflow_trigger = 170
-#  RFAserviceinfo.overflow_fields["best_contact_time"].label = "Best days and times to contact the defendant at home"
-#  RFAserviceinfo.overflow_fields["danger_for_officer_why"].overflow_trigger = 255
-#  RFAserviceinfo.overflow_fields["danger_for_officer_why"].label = "Why the officer will be in danger"
-#  RFAserviceinfo.overflow_fields.gathered = True
-#  RFAconfidentialcontactinfo.overflow_fields.gathered = True
 ---
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
 objects:
@@ -4115,7 +4019,7 @@ attachment:
           ${ other_serious_incident_state }
           % endif
       - "serious_incident_description": ${ RFAaffidavitonbehalfofminor.safe_value("serious_incident_description") }
-      - "other_incident_description": ${ RFAaffidavitonbehalfofminor.safe_value("other_incident_description") }
+      - "other_incident_description": ${RFAaffidavitonbehalfofminor.safe_value("other_incident_description")}
       - "other_parties1_weapon_yes": ${ weapons.there_are_any == True}
       - "other_parties1_weapon_no": ${ weapons.there_are_any == False }
       - "other_parties1_weapon_DK": ${ weapons.there_are_any == None }
