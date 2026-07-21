@@ -943,7 +943,7 @@ id: how many children if obo or both
 question: |
   Number of children involved in this case
 subquestion: |
-  Include children under 18 who have been affected by abuse. Also include children who you would like to ask for temporary custody of
+  Include children under 18 who have been affected by abuse. Also include children who you would like to ask for temporary custody of.
 fields:
   - How many children are involved in this case?: children.target_number
     datatype: integer
