@@ -1927,7 +1927,7 @@ question: |
 subquestion: |
   Is there an existing court order or a pending court proceeding involving you, the defendant, and/or your child or children? 
   
-  Don't include things you plan to do. Only include things that have been submitted to the court already.
+  Don't include things you plan to do. **Only include things that have been submitted to the court already.**
 fields:  
   - "Select all that apply": existing_order
     datatype: checkboxes
@@ -3489,18 +3489,20 @@ review:
   - Edit: notify_served
     button: |
       - You want to be notified after the order is served: **${ yesno(notify_served) }** 
-          % if notify_served:
+      % if notify_served:
+        % if defined('users1_notify_phone_number'):
           % if users1_notify_phone_number == "other":
-           at ${ phone_number_formatted(users1_notify_phone_number_other_input) or users1_notify_phone_number_other_input}
+          at ${ phone_number_formatted(users1_notify_phone_number_other_input) or users1_notify_phone_number_other_input}
           % else:
-           at ${ phone_number_formatted(users1_notify_phone_number) or users1_notify_phone_number}
+          at ${ phone_number_formatted(users1_notify_phone_number) or users1_notify_phone_number}
           % endif
-          % endif
+        % endif
+      % endif
       - The defendant will try to avoid being served: **${ yesno(avoid_served) }**
       - The defendant has guard dogs or vicious dogs: **${ yesno(guard_dog) }**
       - The defendant is likely to be under the influence of drugs or alcohol: **${ yesno(under_infl) }**
       - The officer who serves this will be in any danger: **${ yesno(danger_for_officer) }**
-      % if showifdef("danger_for_officer_why"):
+      % if defined("danger_for_officer_why"):
       - Why: **${ showifdef("danger_for_officer_why") }**
       % endif
 
