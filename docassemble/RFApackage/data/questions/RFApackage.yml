@@ -1268,7 +1268,7 @@ fields:
     show if: recent_incident_coercive
   - You were the target of the recent abuse: recent_incident_users1
     datatype: yesnoradio  
-  - Your children were the target of the recent abuse: recent_incident_children
+  - Your child/children were the target of the recent abuse: recent_incident_children
     datatype: yesnoradio  
     show if:
       code: |
@@ -3206,10 +3206,10 @@ review:
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse) }**
       % if danger_more_abuse:
-      % if showifdef("danger_more_abuse_users1"):
+      % if showifdef("danger_more_abuse"):
       - There is danger of more abuse to you: **${ yesno(danger_more_abuse_users1) }**
       % endif
-      % if showifdef("danger_more_abuse_kids"):
+      % if showifdef("danger_more_abuse") and children.target_number > 0:
       - There is danger of more abuse to the child/children: **${ yesno(danger_more_abuse_kids) }**
       % endif
       % if danger_more_abuse_why != ' ':
@@ -3669,13 +3669,13 @@ attachment:
 code: |
   RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
   RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1218
+  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1136
   RFAaffidavit.overflow_fields["recent_incident_description"].label = "The most recent incident"
-  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 880
+  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 788
   RFAaffidavit.overflow_fields["serious_incident_description"].label = "The most serious incident"
-  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 2110
+  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1942
   RFAaffidavit.overflow_fields["other_incident_description"].label = "Other incident(s)"
-  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
+  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 532
   RFAaffidavit.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
   RFAaffidavit.overflow_fields.gathered = True
 ---
