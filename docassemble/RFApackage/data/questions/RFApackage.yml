@@ -1275,19 +1275,21 @@ fields:
         len(children) > 0
   - Which of the children were the target of the recent abuse?: recent_incident_children_names 
     datatype: object_checkboxes
-    required: False
+    minlength: 1
     none of the above: False
     css class: indent-me
     choices:
       - children 
-    show if: recent_incident_children    
+    js show if: |
+      val("recent_incident_children")
   - Other children that were not mentioned?: has_recent_incident_other_children
     datatype: yesnoradio
-    required: False
+    required: True
     css class: indent-me
     show if: recent_incident_children
   - List their names with commas in between: recent_incident_other_children
     datatype: area
+    required: True
     css class: indent-me
     show if: has_recent_incident_other_children
   - note: |
@@ -1301,6 +1303,8 @@ validation code: |
     validation_error("You must enter a state in the United States, or an area outside of the United States")
   if not recent_incident_harm and not recent_incident_fear and not (len(children) > 0 and not recent_incident_abused) and not recent_incident_stalked and not recent_incident_assault and not recent_incident_coercive:
     validation_error("Select at least one incident")
+  if recent_incident_children and recent_incident_children_names.count(True) == 0:
+    validation_error("Please select at least one.")
 ---
 
 ---
@@ -3073,7 +3077,7 @@ review:
       % if children.target_number > 0 and defined("recent_incident_children"):
       - Your children were the target of the recent abuse: **${ yesno(recent_incident_children) }**
       % endif
-      % if children.target_number > 0 and defined("recent_incident_children"):
+      % if recent_incident_children:
       - The children who were the target of the recent abuse: 
       **${ showifdef('recent_incident_children_names') }** 
       % if defined('recent_incident_other_children'):
@@ -4181,7 +4185,7 @@ attachment:
       - "recent_incident_children_names": |
           % if defined('recent_incident_other_children'):
           ${ recent_incident_other_children }, ${ recent_incident_children_names }
-          % elif defined('recent_incident_children_names'):
+          % elif recent_incident_children and defined('recent_incident_children_names'):
           ${ recent_incident_children_names }
           % endif 
       - "recent_incident_harm": ${ recent_incident_harm }
