@@ -378,9 +378,6 @@ code: |
   hair
   set_progress(90)
   notify_served
-
-  if defined("user_selected_county"):
-    trial_court.address.county
   
   
   interview_order_RFApackage = True
@@ -419,6 +416,10 @@ code: |
   RFApackage_intro
   interview_order_RFApackage
   nav.set_section("review_RFApackage")
+  if defined("user_selected_county"):
+    trial_court.address.county
+  if (defined('request_temp_PRR') and request_temp_PRR) or (defined('request_temp_PRR_OBO') and request_temp_PRR_OBO):
+    custody_wanted_true_overflow
   RFApackage_preview_question
   nav.set_section('sign')
   printed_signature
@@ -440,6 +441,8 @@ code: |
   nav.set_section('get_docs')
   if defined("user_selected_county"):
     trial_court.address.county
+  if (defined('request_temp_PRR') and request_temp_PRR) or (defined('request_temp_PRR_OBO') and request_temp_PRR_OBO):
+    custody_wanted_true_overflow
   RFApackage_download
 ---
 
@@ -1275,7 +1278,6 @@ fields:
         len(children) > 0
   - Which of the children were the target of the recent abuse?: recent_incident_children_names 
     datatype: object_checkboxes
-    minlength: 1
     none of the above: False
     css class: indent-me
     choices:
@@ -1901,6 +1903,16 @@ fields:
   - "What is ${x.name.first}'s relationship to the defendant?": x.relationship_OP
     maxlength: 21
     show if: x.custody_wanted
+---
+code: |
+  reconsider: True
+  if (defined('request_temp_PRR') and request_temp_PRR) or (defined('request_temp_PRR_OBO') and request_temp_PRR_OBO):
+    custody_wanted_true_count = sum(1 for child in children if child.custody_wanted)
+    if custody_wanted_true_count > 3:
+      custody_wanted_true_overflow = True
+  else:
+    custody_wanted_true_count = 0
+    custody_wanted_true_overflow = False
 ---
 id: Put something else in order
 question: |
@@ -3415,7 +3427,8 @@ review:
       
       % endif
 
-  - Edit: children.revisit
+  - Edit: 
+    - children.revisit
     button: | 
       % if children.target_number > 0:
       % if showifdef("request_temp_PRR"):
@@ -3430,7 +3443,8 @@ review:
       % endif
     show if: children.target_number > 0 and request_temp_PRR
 
-  - Edit: children.revisit
+  - Edit: 
+    - children.revisit
     button: | 
       % if children.target_number > 0:
       % if showifdef("request_temp_PRR_OBO"):
@@ -3577,13 +3591,15 @@ columns:
       row_item.birthdate if defined("row_item.birthdate") else ""
   - In further danger: |
       row_item.in_danger if defined("row_item.in_danger") else ""
-  - You want custody: |
-      row_item.custody_wanted if defined("row_item.custody_wanted") else ""
+  - "": |
+      "You want custody" if row_item.custody_wanted else ""
 edit:
   - name.first
   - birthdate
   - in_danger
   - custody_wanted
+recompute:
+  - custody_wanted_true_overflow
 confirm: True
 ---
 continue button field: weapons.revisit
@@ -3655,13 +3671,11 @@ attachment:
   docx template file: RFAcomplaint_addendum.docx
 ---
 code: |
-  RFAcomplaint.overflow_fields["children"].label = "Additional children"
-  RFAcomplaint.overflow_fields["children"].overflow_trigger = 4
+  RFAcomplaint.overflow_fields["children"].overflow_trigger = 3
   RFAcomplaint.overflow_fields.gathered = True
 ---
 code: |
-  RFAcomplaintonbehalfofminor.overflow_fields["children"].label = "Additional children"
-  RFAcomplaintonbehalfofminor.overflow_fields["children"].overflow_trigger = 4
+  RFAcomplaintonbehalfofminor.overflow_fields["children"].overflow_trigger = 3
   RFAcomplaintonbehalfofminor.overflow_fields.gathered = True
 ---
 attachment:
@@ -3797,7 +3811,7 @@ attachment:
           % endif
       - "danger_more_abuse_other_children": |
           % if children.number_gathered() > 1:
-          % if children[1].in_danger or children[2].in_danger or children[3].in_danger:
+          % if children[1].in_danger or children[2].in_danger or children[3].in_danger or children[4].in_danger or children[5].in_danger:
           True
           % else:
           False
