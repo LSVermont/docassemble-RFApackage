@@ -418,8 +418,6 @@ code: |
   nav.set_section("review_RFApackage")
   if defined("user_selected_county"):
     trial_court.address.county
-  if (defined('request_temp_PRR') and request_temp_PRR) or (defined('request_temp_PRR_OBO') and request_temp_PRR_OBO):
-    custody_wanted_true_overflow
   RFApackage_preview_question
   nav.set_section('sign')
   printed_signature
@@ -441,8 +439,7 @@ code: |
   nav.set_section('get_docs')
   if defined("user_selected_county"):
     trial_court.address.county
-  if (defined('request_temp_PRR') and request_temp_PRR) or (defined('request_temp_PRR_OBO') and request_temp_PRR_OBO):
-    custody_wanted_true_overflow
+
   RFApackage_download
 ---
 
@@ -1305,8 +1302,6 @@ validation code: |
     validation_error("You must enter a state in the United States, or an area outside of the United States")
   if not recent_incident_harm and not recent_incident_fear and not (len(children) > 0 and not recent_incident_abused) and not recent_incident_stalked and not recent_incident_assault and not recent_incident_coercive:
     validation_error("Select at least one incident")
-  if recent_incident_children and recent_incident_children_names.count(True) == 0:
-    validation_error("Please select at least one.")
 ---
 
 ---
@@ -1904,15 +1899,16 @@ fields:
     maxlength: 21
     show if: x.custody_wanted
 ---
-code: |
-  reconsider: True
-  if (defined('request_temp_PRR') and request_temp_PRR) or (defined('request_temp_PRR_OBO') and request_temp_PRR_OBO):
-    custody_wanted_true_count = sum(1 for child in children if child.custody_wanted)
-    if custody_wanted_true_count > 3:
-      custody_wanted_true_overflow = True
-  else:
-    custody_wanted_true_count = 0
-    custody_wanted_true_overflow = False
+---
+#code: |
+#  reconsider: True
+#  if (defined('request_temp_PRR') and request_temp_PRR) or (defined('request_temp_PRR_OBO') and request_temp_PRR_OBO):
+#    custody_wanted_true_count = sum(1 for child in children if child.custody_wanted)
+#    if custody_wanted_true_count > 3:
+#      custody_wanted_true_overflow = True
+#  else:
+#    custody_wanted_true_count = 0
+#    custody_wanted_true_overflow = False
 ---
 id: Put something else in order
 question: |
@@ -3598,8 +3594,6 @@ edit:
   - birthdate
   - in_danger
   - custody_wanted
-recompute:
-  - custody_wanted_true_overflow
 confirm: True
 ---
 continue button field: weapons.revisit
