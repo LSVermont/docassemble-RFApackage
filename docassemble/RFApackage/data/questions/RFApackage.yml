@@ -1268,26 +1268,28 @@ fields:
     show if: recent_incident_coercive
   - You were the target of the recent abuse: recent_incident_users1
     datatype: yesnoradio  
-  - Your children were the target of the recent abuse: recent_incident_children
+  - Your child/children were the target of the recent abuse: recent_incident_children
     datatype: yesnoradio  
     show if:
       code: |
         len(children) > 0
   - Which of the children were the target of the recent abuse?: recent_incident_children_names 
     datatype: object_checkboxes
-    required: False
+    minlength: 1
     none of the above: False
     css class: indent-me
     choices:
       - children 
-    show if: recent_incident_children    
+    js show if: |
+      val("recent_incident_children")
   - Other children that were not mentioned?: has_recent_incident_other_children
     datatype: yesnoradio
-    required: False
+    required: True
     css class: indent-me
     show if: recent_incident_children
   - List their names with commas in between: recent_incident_other_children
     datatype: area
+    required: True
     css class: indent-me
     show if: has_recent_incident_other_children
   - note: |
@@ -1301,6 +1303,8 @@ validation code: |
     validation_error("You must enter a state in the United States, or an area outside of the United States")
   if not recent_incident_harm and not recent_incident_fear and not (len(children) > 0 and not recent_incident_abused) and not recent_incident_stalked and not recent_incident_assault and not recent_incident_coercive:
     validation_error("Select at least one incident")
+  if recent_incident_children and recent_incident_children_names.count(True) == 0:
+    validation_error("Please select at least one.")
 ---
 
 ---
@@ -1923,7 +1927,7 @@ question: |
 subquestion: |
   Is there an existing court order or a pending court proceeding involving you, the defendant, and/or your child or children? 
   
-  Don't include things you plan to do. Only include things that have been submitted to the court already.
+  Don't include things you plan to do. **Only include things that have been submitted to the court already.**
 fields:  
   - "Select all that apply": existing_order
     datatype: checkboxes
@@ -3073,7 +3077,7 @@ review:
       % if children.target_number > 0 and defined("recent_incident_children"):
       - Your children were the target of the recent abuse: **${ yesno(recent_incident_children) }**
       % endif
-      % if children.target_number > 0 and defined("recent_incident_children"):
+      % if recent_incident_children:
       - The children who were the target of the recent abuse: 
       **${ showifdef('recent_incident_children_names') }** 
       % if defined('recent_incident_other_children'):
@@ -3206,10 +3210,10 @@ review:
     button: |
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse) }**
       % if danger_more_abuse:
-      % if showifdef("danger_more_abuse_users1"):
+      % if showifdef("danger_more_abuse"):
       - There is danger of more abuse to you: **${ yesno(danger_more_abuse_users1) }**
       % endif
-      % if showifdef("danger_more_abuse_kids"):
+      % if showifdef("danger_more_abuse") and children.target_number > 0:
       - There is danger of more abuse to the child/children: **${ yesno(danger_more_abuse_kids) }**
       % endif
       % if danger_more_abuse_why != ' ':
@@ -3485,18 +3489,20 @@ review:
   - Edit: notify_served
     button: |
       - You want to be notified after the order is served: **${ yesno(notify_served) }** 
-          % if notify_served:
+      % if notify_served:
+        % if defined('users1_notify_phone_number'):
           % if users1_notify_phone_number == "other":
-           at ${ phone_number_formatted(users1_notify_phone_number_other_input) or users1_notify_phone_number_other_input}
+          at ${ phone_number_formatted(users1_notify_phone_number_other_input) or users1_notify_phone_number_other_input}
           % else:
-           at ${ phone_number_formatted(users1_notify_phone_number) or users1_notify_phone_number}
+          at ${ phone_number_formatted(users1_notify_phone_number) or users1_notify_phone_number}
           % endif
-          % endif
+        % endif
+      % endif
       - The defendant will try to avoid being served: **${ yesno(avoid_served) }**
       - The defendant has guard dogs or vicious dogs: **${ yesno(guard_dog) }**
       - The defendant is likely to be under the influence of drugs or alcohol: **${ yesno(under_infl) }**
       - The officer who serves this will be in any danger: **${ yesno(danger_for_officer) }**
-      % if showifdef("danger_for_officer_why"):
+      % if defined("danger_for_officer_why"):
       - Why: **${ showifdef("danger_for_officer_why") }**
       % endif
 
@@ -3669,13 +3675,13 @@ attachment:
 code: |
   RFAaffidavit.overflow_fields["weapons"].label = "Additional weapons"
   RFAaffidavit.overflow_fields["weapons"].overflow_trigger = 8
-  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1218
+  RFAaffidavit.overflow_fields["recent_incident_description"].overflow_trigger = 1136
   RFAaffidavit.overflow_fields["recent_incident_description"].label = "The most recent incident"
-  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 880
+  RFAaffidavit.overflow_fields["serious_incident_description"].overflow_trigger = 788
   RFAaffidavit.overflow_fields["serious_incident_description"].label = "The most serious incident"
-  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 2110
+  RFAaffidavit.overflow_fields["other_incident_description"].overflow_trigger = 1942
   RFAaffidavit.overflow_fields["other_incident_description"].label = "Other incident(s)"
-  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 590
+  RFAaffidavit.overflow_fields["used_weapon_how"].overflow_trigger = 532
   RFAaffidavit.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
   RFAaffidavit.overflow_fields.gathered = True
 ---
@@ -4181,7 +4187,7 @@ attachment:
       - "recent_incident_children_names": |
           % if defined('recent_incident_other_children'):
           ${ recent_incident_other_children }, ${ recent_incident_children_names }
-          % elif defined('recent_incident_children_names'):
+          % elif recent_incident_children and defined('recent_incident_children_names'):
           ${ recent_incident_children_names }
           % endif 
       - "recent_incident_harm": ${ recent_incident_harm }
