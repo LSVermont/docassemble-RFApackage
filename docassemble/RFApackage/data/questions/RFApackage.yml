@@ -522,7 +522,17 @@ code: |
   children[i].in_danger
   if (defined('request_temp_PRR') and request_temp_PRR) or (defined('request_temp_PRR_OBO') and request_temp_PRR_OBO):
     children[i].custody_wanted
+  if showifdef('recent_incident_children'):
+    children[i].involved_in_recent_incident
   children[i].complete=True
+---
+question: Was ${ children[i] } involved in the most recent incident?
+subquestion: |
+  You said that children were involved the most recent incident of abuse that happened in 
+fields:
+  - Involved?: children[i].involved_in_recent_incident
+    datatype: yesnoradio
+
 ---
 id: OBO children in danger relationships
 generic object: Individual     
@@ -1120,6 +1130,7 @@ fields:
     datatype: al_international_phone
     required: False
 ---
+reconsider: child_list
 id: what happened most recently
 question: |
   What happened -- most recently
@@ -1273,14 +1284,7 @@ fields:
     show if:
       code: |
         len(children) > 0
-  - Which of the children were the target of the recent abuse?: recent_incident_children_names 
-    datatype: object_checkboxes
-    none of the above: False
-    css class: indent-me
-    choices:
-      - children 
-    js show if: |
-      val("recent_incident_children")
+  - code: child_list
   - Other children that were not mentioned?: has_recent_incident_other_children
     datatype: yesnoradio
     required: True
@@ -1302,9 +1306,16 @@ validation code: |
     validation_error("You must enter a state in the United States, or an area outside of the United States")
   if not recent_incident_harm and not recent_incident_fear and not (len(children) > 0 and not recent_incident_abused) and not recent_incident_stalked and not recent_incident_assault and not recent_incident_coercive:
     validation_error("Select at least one incident")
+  if recent_incident_children and recent_incident_children_names.number() == 0:
+    validation_error("Please select at least one child.")
 ---
-
+code: |
+  temp_child_list = list()
+  for index in range(children.number()):
+    temp_child_list.append({"label":children[index].name.full(),"field":"children[" + str(index) + "].involved_in_recent_incident","show if":"recent_incident_children","datatype":"yesno"})
+  child_list = temp_child_list
 ---
+reconsider: child_list
 id: what happened most recently -- for RFA OBO a child
 question: |
   What happened -- most recently
@@ -2367,18 +2378,14 @@ fields:
     datatype: radio
     code: |
       [{item: phone_number_formatted(item) or item} for item in [users[0].phone_number, users1_work_phone_number] if item] + [{"other": "Other"}]
-    show if:
-      variable: notify_served
-      is: True
-      code: |
-        users[0].phone_number or users1_work_phone_number        
+    js show if: |
+      val("notify_served") === true && ( ${ json.dumps(users[0].phone_number) } != "" || ${ json.dumps(users1_work_phone_number) } != "")
   - Notification phone number: users1_notify_phone_number_other_input
     datatype: al_international_phone
     maxlength: 45
     required: False
-    show if:
-      variable: users1_notify_phone_number
-      is: other
+    js show if: |
+      val("notify_served") === true && ((${ json.dumps(users[0].phone_number) } === "" && ${ json.dumps(users1_work_phone_number) } === "") || val("users1_notify_phone_number") === "other")
   - "Will the defendant try to avoid being served this order?": avoid_served
     datatype: yesnoradio
   - "Does the defendant have guard dogs or vicious dogs?": guard_dog
@@ -3588,12 +3595,11 @@ columns:
   - In further danger: |
       row_item.in_danger if defined("row_item.in_danger") else ""
   - "": |
-      "You want custody" if row_item.custody_wanted else ""
+      "You want custody" if showifdef('row_item.custody_wanted') else ""
 edit:
   - name.first
   - birthdate
   - in_danger
-  - custody_wanted
 confirm: True
 ---
 continue button field: weapons.revisit
