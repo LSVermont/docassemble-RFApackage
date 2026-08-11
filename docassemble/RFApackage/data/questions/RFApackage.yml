@@ -1306,7 +1306,7 @@ validation code: |
     validation_error("You must enter a state in the United States, or an area outside of the United States")
   if not recent_incident_harm and not recent_incident_fear and not (len(children) > 0 and not recent_incident_abused) and not recent_incident_stalked and not recent_incident_assault and not recent_incident_coercive:
     validation_error("Select at least one incident")
-  if recent_incident_children and recent_incident_children_names.number() == 0:
+  if recent_incident_children and len([child for child in children if child.involved_in_recent_incident]) == 0:
     validation_error("Please select at least one child.")
 ---
 code: |
