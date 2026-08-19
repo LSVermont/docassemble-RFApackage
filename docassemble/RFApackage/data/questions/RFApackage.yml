@@ -273,8 +273,7 @@ code: |
     nav.set_section('order')
     set_progress(60)
     request_not_abuse_OBO
-    if request_temp_PRR_OBO:
-      get_kids_relationships
+    get_kids_relationships
     if other_request_OBO:
       request_other_description
     set_progress(70)
@@ -356,8 +355,7 @@ code: |
     if users1_no_shelter: 
       rent_or_own
     request_not_abuse
-    if request_temp_PRR:
-      get_kids_relationships
+    get_kids_relationships
     if other_request:
       request_other_description
     set_progress(70)
@@ -526,13 +524,43 @@ code: |
     children[i].involved_in_recent_incident
   children[i].complete=True
 ---
+id: most recent incident follow up after child added
 question: Was ${ children[i] } involved in the most recent incident?
 subquestion: |
   You said that children were involved the most recent incident of abuse that happened in 
 fields:
   - Involved?: children[i].involved_in_recent_incident
     datatype: yesnoradio
-
+---
+if: not recent_incident_children
+code:
+  children[i].involved_in_recent_incident = False
+---
+only sets: children[i].revisit
+question: Additional questions about ${children[i].name.first}
+continue button field: children[i].revisit
+fields:
+  - Is ${x.name.first} in danger of more abuse?: children[i].in_danger
+    datatype: yesnoradio
+  - "In 1 or 2 words, what is ${children[i].name.first}'s relationship to you?": children[i].relationship_users1
+    maxlength: 22
+    show if: children[i].in_danger
+  - "What is ${children[i].name.first}'s relationship to the defendant? (The “defendant” is the person who is abusing the child.)": children[i].relationship_OP
+    maxlength: 22
+    show if: children[i].in_danger
+  - "Do you want temporary custody of ${children[i].name.first}?": children[i].custody_wanted
+    datatype: yesnoradio
+    show if:
+      code: showifdef('request_temp_PRR') or showifdef('request_temp_PRR_OBO')
+  - "Was ${children[i].name.first} involved in the most recent incident?": children[i].involved_in_recent_incident
+    datatype: yesnoradio
+    show if:
+      code: showifdef('recent_incident_children')
+validation code: |
+  if not (showifdef('request_temp_PRR') or showifdef('request_temp_PRR_OBO')):
+    children[i].custody_wanted = None
+  if not showifdef('recent_incident_children'):
+    children[i].involved_in_recent_incident
 ---
 id: OBO children in danger relationships
 generic object: Individual     
@@ -557,6 +585,10 @@ code: |
   else:
     danger_abuse_other_children_affidavit = False
   define_danger_abuse_other_children_affidavit = True
+---
+id: creates soft copy list for in danger to use in pdf and overflow fields
+code: |
+  children_in_danger = children.filter(in_danger=True)
 ---
 id: OBO danger of more abuse to other children in household
 question: |
@@ -1892,8 +1924,12 @@ validation code: |
 
 ---
 code: |
-  for child in children: 
-    child.custody_wanted
+  if showifdef('request_temp_PRR') or showifdef('request_temp_PRR_OBO'):
+    for child in children: 
+      child.custody_wanted
+  else:
+    for child in children:
+      child.custody_wanted = False
   get_kids_relationships = True
 ---
 id: Childrens relationships
@@ -1910,7 +1946,6 @@ fields:
     maxlength: 21
     show if: x.custody_wanted
 ---
----
 #code: |
 #  reconsider: True
 #  if (defined('request_temp_PRR') and request_temp_PRR) or (defined('request_temp_PRR_OBO') and request_temp_PRR_OBO):
@@ -1920,6 +1955,10 @@ fields:
 #  else:
 #    custody_wanted_true_count = 0
 #    custody_wanted_true_overflow = False
+---
+id: creates soft copy list to use in pdf and overflow fields
+code: |
+  children_custody_wanted = children.filter(custody_wanted=True)
 ---
 id: Put something else in order
 question: |
@@ -2451,6 +2490,9 @@ fields:
 continue button field: saw_signature_choice   
 ---
 id: preview RFApackage
+reconsider:
+  - children_custody_wanted
+  - children_in_danger
 question: |
   Preview your forms before you sign them
 subquestion: |
@@ -2482,6 +2524,9 @@ code: |
 ---
 id: RFApackage review screen
 event: review_RFApackage
+reconsider:
+  - children_custody_wanted
+  - children_in_danger
 question: |
   Review your answers
 subquestion: |
@@ -2604,7 +2649,9 @@ review:
       % if child.attribute_defined('in_danger') and child.in_danger == True:
       - Their relationship to you: **${ child.relationship_users1 }**
       - Their relationship to the defendant: **${ child.relationship_OP }**
+      - Their relationship to the defendant: **${ child.relationship_OP }**
       % endif
+      - Involved in most recent incident: **${ word(yesno(recent_incident_children and child.involved_in_recent_incident)) }**
       
       % endfor
       % else:
@@ -3094,7 +3141,7 @@ review:
       % endif
       % if recent_incident_children:
       - The children who were the target of the recent abuse: 
-      **${ showifdef('recent_incident_children_names') }** 
+      **${ comma_and_list(children.filter(involved_in_recent_incident=True))}** 
       % if defined('recent_incident_other_children'):
       **, ${ showifdef('recent_incident_other_children') }**
       % endif
@@ -3247,10 +3294,8 @@ review:
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse_OBO) }**
       % if danger_more_abuse_OBO:
       - There is danger of more abuse to these children in the household:
-      % for child in children:
-      % if child.in_danger:
+      % for child in children_in_danger:
       - **${ child }**
-      % endif
       % endfor
       % endif
   - Edit: 
@@ -3336,6 +3381,8 @@ review:
     
   - Edit: 
     - request_not_abuse
+    - recompute:
+      - get_kids_relationships
     button: | 
       The things you would like included in the Relief from Abuse order. Select Edit on the right to edit your choices.
             
@@ -3436,11 +3483,9 @@ review:
       % if children.target_number > 0:
       % if showifdef("request_temp_PRR"):
       You want custody of these children:
-      % for child in children:
-      % if defined ('child.custody_wanted') and child.custody_wanted:
       
+      % for child in children_custody_wanted:
       * **${ child }**
-      % endif
       % endfor
       % endif
       % endif
@@ -3452,11 +3497,9 @@ review:
       % if children.target_number > 0:
       % if showifdef("request_temp_PRR_OBO"):
       You want custody of these children:
-      % for child in children:
-      % if defined ('child.custody_wanted') and child.custody_wanted:
+      % for child in children_custody_wanted:
       
       * **${ child }**
-      % endif
       % endfor
       % endif
       % endif
@@ -3594,12 +3637,14 @@ columns:
       row_item.birthdate if defined("row_item.birthdate") else ""
   - In further danger: |
       row_item.in_danger if defined("row_item.in_danger") else ""
+  - Involved in recent incident: |
+      row_item.involved_in_recent_incident if recent_incident_children else ""
   - "": |
       "You want custody" if showifdef('row_item.custody_wanted') else ""
 edit:
   - name.first
   - birthdate
-  - in_danger
+  - revisit
 confirm: True
 ---
 continue button field: weapons.revisit
@@ -3671,7 +3716,7 @@ attachment:
   docx template file: RFAcomplaint_addendum.docx
 ---
 code: |
-  RFAcomplaint.overflow_fields["children"].overflow_trigger = 3
+  RFAcomplaint.overflow_fields["children_custody_wanted"].overflow_trigger = 3
   RFAcomplaint.overflow_fields.gathered = True
 ---
 code: |
@@ -3901,52 +3946,52 @@ attachment:
       - "request_no_contact_children": ${ request_no_contact_OBO }
       - "request_temp_PRR": ${ request_temp_PRR_OBO }
       - "children1_name__3": |
-          % if children[0].custody_wanted:
-          ${ children[0] }
+          % if len(children_custody_wanted) > 0:
+          ${ children_custody_wanted[0] }
           % endif
       - "children1_birthdate__3": |
-          % if children[0].custody_wanted:
-          ${ format_date(children[0].birthdate, format='M/d/yyyy') }
+          % if len(children_custody_wanted) > 0:
+          ${ format_date(children_custody_wanted[0].birthdate, format='M/d/yyyy') }
           % endif
       - "children1_relationship_users1__3": |
-          % if children[0].custody_wanted:
-          ${ children[0].relationship_users1 }
+          % if len(children_custody_wanted) > 0:
+          ${ children_custody_wanted[0].relationship_users1 }
           % endif
       - "children1_relationship_OP__3":  |
-          % if children[0].custody_wanted:
-          ${ children[0].relationship_OP }
+          % if len(children_custody_wanted) > 0:
+          ${ children_custody_wanted[0].relationship_OP }
           % endif
       - "children2_name__2": |
-          % if children[1].custody_wanted:
-          ${ children[1] }
+          % if len(children_custody_wanted) > 1:
+          ${ children_custody_wanted[1] }
           % endif
       - "children2_birthdate__2": |
-          % if children[1].custody_wanted:
-          ${ format_date(children[1].birthdate, format='M/d/yyyy') }
+          % if len(children_custody_wanted) > 1:
+          ${ format_date(children_custody_wanted[1].birthdate, format='M/d/yyyy') }
           % endif      
       - "children2_relationship_users1__2": |
-          % if children[1].custody_wanted:
-          ${ children[1].relationship_users1 }
+          % if len(children_custody_wanted) > 1:
+          ${ children_custody_wanted[1].relationship_users1 }
           % endif
       - "children2_relationship_OP__2": |
-          % if children[1].custody_wanted:
-          ${ children[1].relationship_OP }
+          % if len(children_custody_wanted) > 1:
+          ${ children_custody_wanted[1].relationship_OP }
           % endif
       - "children3_name__2": |
-          % if children[2].custody_wanted:
-          ${ children[2] }
+          % if len(children_custody_wanted) > 2:
+          ${ children_custody_wanted[2] }
           % endif      
       - "children3_birthdate__2": |
-          % if children[2].custody_wanted:
-          ${ format_date(children[2].birthdate, format='M/d/yyyy') }
+          % if len(children_custody_wanted) > 2:
+          ${ format_date(children_custody_wanted[2].birthdate, format='M/d/yyyy') }
           % endif      
       - "children3_relationship_users1__2": |
-          % if children[2].custody_wanted:
-          ${ children[2].relationship_users1 }
+          % if len(children_custody_wanted) > 2:
+          ${ children_custody_wanted[2].relationship_users1 }
           % endif
       - "children3_relationship_OP__2": |
-          % if children[2].custody_wanted:
-          ${ children[2].relationship_OP }
+          % if len(children_custody_wanted) > 2:
+          ${ children_custody_wanted[2].relationship_OP }
           % endif
       - "other_children_PRR": ${ other_children_PRR_OBO }
       - "other_children_PRR_names": ${ other_children_PRR_names_OBO }
@@ -4312,52 +4357,52 @@ attachment:
       - "request_no_contact": ${ request_no_contact }
       - "request_temp_PRR": ${ request_temp_PRR }
       - "children1_name": |
-          % if children[0].custody_wanted:
-          ${ children[0] }
+          % if len(children_custody_wanted) > 0:
+          ${ children_custody_wanted[0] }
           % endif
       - "children1_birthdate": |
-          % if children[0].custody_wanted:
-          ${ format_date(children[0].birthdate, format='M/d/yyyy') }
+          % if len(children_custody_wanted) > 0:
+          ${ format_date(children_custody_wanted[0].birthdate, format='M/d/yyyy') }
           % endif
       - "children1_relationship_users1": |
-          % if children[0].custody_wanted:
-          ${ children[0].relationship_users1 }
+          % if len(children_custody_wanted) > 0:
+          ${ children_custody_wanted[0].relationship_users1 }
           % endif
       - "children1_relationship_OP":  |
-          % if children[0].custody_wanted:
-          ${ children[0].relationship_OP }
+          % if len(children_custody_wanted) > 0:
+          ${ children_custody_wanted[0].relationship_OP }
           % endif
       - "children2_name": |
-          % if children[1].custody_wanted:
-          ${ children[1] }
+          % if len(children_custody_wanted) > 1:
+          ${ children_custody_wanted[1] }
           % endif
       - "children2_birthdate": |
-          % if children[1].custody_wanted:
-          ${ format_date(children[1].birthdate, format='M/d/yyyy') }
+          % if len(children_custody_wanted) > 1:
+          ${ format_date(children_custody_wanted[1].birthdate, format='M/d/yyyy') }
           % endif      
       - "children2_relationship_users1": |
-          % if children[1].custody_wanted:
-          ${ children[1].relationship_users1 }
+          % if len(children_custody_wanted) > 1:
+          ${ children_custody_wanted[1].relationship_users1 }
           % endif
       - "children2_relationship_OP": |
-          % if children[1].custody_wanted:
-          ${ children[1].relationship_OP }
+          % if len(children_custody_wanted) > 1:
+          ${ children_custody_wanted[1].relationship_OP }
           % endif
       - "children3_name": |
-          % if children[2].custody_wanted:
-          ${ children[2] }
+          % if len(children_custody_wanted) > 2:
+          ${ children_custody_wanted[2] }
           % endif      
       - "children3_birthdate": |
-          % if children[2].custody_wanted:
-          ${ format_date(children[2].birthdate, format='M/d/yyyy') }
+          % if len(children_custody_wanted) > 2:
+          ${ format_date(children_custody_wanted[2].birthdate, format='M/d/yyyy') }
           % endif      
       - "children3_relationship_users1": |
-          % if children[2].custody_wanted:
-          ${ children[2].relationship_users1 }
+          % if len(children_custody_wanted) > 2:
+          ${ children_custody_wanted[2].relationship_users1 }
           % endif
       - "children3_relationship_OP": |
-          % if children[2].custody_wanted:
-          ${ children[2].relationship_OP }
+          % if len(children_custody_wanted) > 2:
+          ${ children_custody_wanted[2].relationship_OP }
           % endif
       - "surrender_plaintiffs_documents": ${ surrender_plaintiffs_documents }
       - "surrender_plaintiffs_documents_users1":  |
