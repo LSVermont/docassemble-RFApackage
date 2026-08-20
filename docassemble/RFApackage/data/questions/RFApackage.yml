@@ -525,22 +525,25 @@ code: |
   children[i].complete=True
 ---
 id: most recent incident follow up after child added
-question: Was ${ children[i] } involved in the most recent incident?
+question: Was ${ children[i].name.first } involved in the most recent incident?
 subquestion: |
-  You said that children were involved the most recent incident of abuse that happened in 
+  You said that children were involved the most recent incident of abuse.
 fields:
-  - Involved?: children[i].involved_in_recent_incident
+  - Was ${ children[i].name.first } involved?: children[i].involved_in_recent_incident
     datatype: yesnoradio
 ---
 if: not recent_incident_children
 code:
   children[i].involved_in_recent_incident = False
 ---
+code: |
+  recent_incident_children_name_list = comma_list(children.filter(involved_in_recent_incident = True)) + space('recent_incident_other_children',prefix=" ",suffix="")
+---
 only sets: children[i].revisit
 question: Additional questions about ${children[i].name.first}
 continue button field: children[i].revisit
 fields:
-  - Is ${x.name.first} in danger of more abuse?: children[i].in_danger
+  - Is ${ children[i].name.first} in danger of more abuse?: children[i].in_danger
     datatype: yesnoradio
   - "In 1 or 2 words, what is ${children[i].name.first}'s relationship to you?": children[i].relationship_users1
     maxlength: 22
@@ -552,13 +555,19 @@ fields:
     datatype: yesnoradio
     show if:
       code: showifdef('request_temp_PRR') or showifdef('request_temp_PRR_OBO')
+  - "In 1 or 2 words, what is ${children[i].name.first}'s relationship to you?": children[i].relationship_users1
+    maxlength: 19
+    show if: children[i].custody_wanted
+  - "What is ${children[i].name.first}'s relationship to the defendant?": children[i].relationship_OP
+    maxlength: 21
+    show if: children[i].custody_wanted
   - "Was ${children[i].name.first} involved in the most recent incident?": children[i].involved_in_recent_incident
     datatype: yesnoradio
     show if:
       code: showifdef('recent_incident_children')
 validation code: |
   if not (showifdef('request_temp_PRR') or showifdef('request_temp_PRR_OBO')):
-    children[i].custody_wanted = None
+    undefine('children[i].custody_wanted')
   if not showifdef('recent_incident_children'):
     children[i].involved_in_recent_incident
 ---
@@ -1929,7 +1938,7 @@ code: |
       child.custody_wanted
   else:
     for child in children:
-      child.custody_wanted = False
+      child.custody_wanted = None
   get_kids_relationships = True
 ---
 id: Childrens relationships
@@ -2493,6 +2502,7 @@ id: preview RFApackage
 reconsider:
   - children_custody_wanted
   - children_in_danger
+  - recent_incident_children_name_list
 question: |
   Preview your forms before you sign them
 subquestion: |
@@ -2527,6 +2537,7 @@ event: review_RFApackage
 reconsider:
   - children_custody_wanted
   - children_in_danger
+  - recent_incident_children_name_list
 question: |
   Review your answers
 subquestion: |
@@ -3717,10 +3728,18 @@ attachment:
 ---
 code: |
   RFAcomplaint.overflow_fields["children_custody_wanted"].overflow_trigger = 3
+  RFAcomplaint.overflow_fields["children_custody_wanted"].label = "Additional Custody Wanted"
+  RFAcomplaint.overflow_fields["children"].overflow_trigger = 3
+  RFAcomplaint.overflow_fields["children"].label = "Additional Children"
+  RFAcomplaint.overflow_fields["recent_incident_children_name_list"].overflow_trigger = 90
+  RFAcomplaint.overflow_fields["recent_incident_children_name_list"].label = "Additional Children involved in the recent incident"
   RFAcomplaint.overflow_fields.gathered = True
 ---
 code: |
+  RFAcomplaintonbehalfofminor.overflow_fields["children_custody_wanted"].overflow_trigger = 3
+  RFAcomplaintonbehalfofminor.overflow_fields["children_custody_wanted"].label = "Additional Custody Wanted"
   RFAcomplaintonbehalfofminor.overflow_fields["children"].overflow_trigger = 3
+  RFAcomplaintonbehalfofminor.overflow_fields["children"].label = "Additional Children"
   RFAcomplaintonbehalfofminor.overflow_fields.gathered = True
 ---
 attachment:
@@ -4243,12 +4262,7 @@ attachment:
       - "recent_incident_coercive_start_date": ${ recent_incident_coercive_start_date }
       - "recent_incident_users1": ${ recent_incident_users1 }
       - "recent_incident_children": ${ recent_incident_children }
-      - "recent_incident_children_names": |
-          % if defined('recent_incident_other_children'):
-          ${ recent_incident_other_children }, ${ recent_incident_children_names }
-          % elif recent_incident_children and defined('recent_incident_children_names'):
-          ${ recent_incident_children_names }
-          % endif 
+      - "recent_incident_children_names": ${ RFAcomplaint.safe_value('recent_incident_children_name_list') }
       - "recent_incident_harm": ${ recent_incident_harm }
       - "recent_incident_fear": ${ recent_incident_fear }
       - "recent_incident_abused": ${ recent_incident_abused }
