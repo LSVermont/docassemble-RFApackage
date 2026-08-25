@@ -539,6 +539,21 @@ code:
 code: |
   recent_incident_children_name_list = comma_list(children.filter(involved_in_recent_incident = True)) + space('recent_incident_other_children',prefix=" ",suffix="")
 ---
+id: OBO children in danger relationships
+generic object: Individual     
+question: |
+  About ${x.name.first}
+fields:
+  - Is ${x.name.first} in danger of more abuse?: x.in_danger
+    datatype: yesnoradio
+  - "In 1 or 2 words, what is ${x.name.first}'s relationship to you?": x.relationship_users1
+    maxlength: 22
+    show if: x.in_danger
+  - "What is ${x.name.first}'s relationship to the defendant? (The “defendant” is the person who is abusing the child.)": x.relationship_OP
+    maxlength: 22
+    show if: x.in_danger
+---
+---
 only sets: children[i].additional_information
 id: OBO children in danger relationships
 question: |
