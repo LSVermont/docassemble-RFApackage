@@ -3512,6 +3512,8 @@ review:
   - note: | 
       ##Filing##
   - Edit: 
+    - undefine:
+      - trial_court_index
     - user_selected_county
     - recompute:
       - trial_court
