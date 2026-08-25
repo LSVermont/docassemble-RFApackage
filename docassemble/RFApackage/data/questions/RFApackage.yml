@@ -1309,16 +1309,15 @@ fields:
       If alleging coercive control, describe the behavior of the defendant. Remember, to prove coercive control, you must show a pattern of behavior. This means you have experienced these behaviors more than once.
     show if: recent_incident_coercive
   - You were the target of the recent abuse: recent_incident_users1
-    datatype: yesnoradio  
+    datatype: yesnoradio 
   - Your child/children were the target of the recent abuse: recent_incident_children
     datatype: yesnoradio  
-    show if:
-      code: |
-        len(children) > 0
+    css class: indent-me
+    js show if: |
+      (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')}) && (val("recent_incident_harm") == true || val("recent_incident_harm") == false || val("recent_incident_harm") == null )
   - code: child_list
   - Other children that were not mentioned?: has_recent_incident_other_children
     datatype: yesnoradio
-    required: True
     css class: indent-me
     show if: recent_incident_children
   - List their names with commas in between: recent_incident_other_children
@@ -1329,9 +1328,6 @@ fields:
   - note: |
       ---
     show if: recent_incident_children
-
-
-
 validation code: |
   if (recent_incident_state == "") and (other_recent_incident_state == ""):
     validation_error("You must enter a state in the United States, or an area outside of the United States")
@@ -1339,6 +1335,7 @@ validation code: |
     validation_error("Select at least one incident")
   if len(children) > 0 and recent_incident_children and len([child for child in children if child.involved_in_recent_incident]) == 0:
     validation_error("Please select at least one child.")
+
 ---
 code: |
   temp_child_list = list()
