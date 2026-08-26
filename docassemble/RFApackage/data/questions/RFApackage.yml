@@ -1970,7 +1970,8 @@ id: creates soft copy list to use in pdf and overflow fields
 code: |
   if (defined('request_temp_PRR') and request_temp_PRR) or (defined('request_temp_PRR_OBO') and request_temp_PRR_OBO):
     children_custody_wanted = children.filter(custody_wanted=True)
-  children_custody_wanted = ALPeopleList(auto_gather=False, gathered=True)
+  else:
+    children_custody_wanted = ALPeopleList(auto_gather=False, gathered=True)
 
 ---
 id: Put something else in order
@@ -2452,6 +2453,9 @@ fields:
     maxlength: 220
   - note: |
       **We're ready to generate your draft forms so you can review them!** It will take a moment after you tap the Next button. 
+validation code: |
+  if notify_served and users[0].phone_number == "" and users1_work_phone_number == "":
+    users1_notify_phone_number = "other"
 ---
 id: Signing your forms
 question: |
