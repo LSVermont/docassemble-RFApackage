@@ -3778,7 +3778,7 @@ code: |
   RFAaffidavitonbehalfofminor.overflow_fields["weapons"].overflow_trigger = 8
   RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 510
   RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].label = "The most recent incident"
-  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 520
+  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 492
   RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].label = "The most serious incident"
   RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1972
   RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].label = "Other incident(s)"
@@ -3864,7 +3864,7 @@ attachment:
           % endif 
       - "serious_incident_date": |
           % if not recent_incident_most_serious:
-          ${ serious_incident_date.format() }
+          ${ serious_incident_date }
           % else:
           ${ recent_incident_date_OBO }
           % endif
@@ -4098,19 +4098,38 @@ attachment:
       - "recent_incident_most_serious_no": ${ not recent_incident_most_serious }
       - "serious_incident_date": |
           % if not recent_incident_most_serious:
-          ${ serious_incident_date.format() }
+          ${ serious_incident_date }
           % else:
-          
+          ${}
           % endif
-      - "serious_incident_time": ${ serious_incident_time }
-      - "serious_incident_town": ${ serious_incident_town }
+      - "serious_incident_time": |
+          % if not recent_incident_most_serious:
+          ${ serious_incident_time }
+          % else:
+          ${}
+          % endif          
+      - "serious_incident_town": |
+          % if not recent_incident_most_serious:
+          ${ serious_incident_town }
+          % else:
+          ${}
+          % endif
       - "serious_incident_state": |
+          % if not recent_incident_most_serious:
           % if serious_incident_state: 
           ${ serious_incident_state }
           % elif other_serious_incident_state:
           ${ other_serious_incident_state }
           % endif
-      - "serious_incident_description": ${ RFAaffidavitonbehalfofminor.safe_value("serious_incident_description") }
+          % else:
+          ${}
+          % endif
+      - "serious_incident_description": |
+          % if not recent_incident_most_serious:
+          ${ RFAaffidavitonbehalfofminor.safe_value("serious_incident_description") }
+          % else:
+          ${}
+          % endif
       - "other_incident_description": ${RFAaffidavitonbehalfofminor.safe_value("other_incident_description")}
       - "other_parties1_weapon_yes": ${ weapons.there_are_any == True}
       - "other_parties1_weapon_no": ${ weapons.there_are_any == False }
@@ -4512,19 +4531,38 @@ attachment:
       - "recent_incident_most_serious_no": ${ not recent_incident_most_serious }
       - "serious_incident_date": |
           % if not recent_incident_most_serious:
-          ${ serious_incident_date.format() }
+          ${ serious_incident_date }
           % else:
-          ${ recent_incident_date_OBO.format() }
+          ${ }
           % endif
-      - "serious_incident_time": ${ serious_incident_time }
-      - "serious_incident_town": ${ serious_incident_town }
+      - "serious_incident_time": |
+          % if not recent_incident_most_serious:
+          ${ serious_incident_time }
+          % else:
+          ${  }
+          % endif
+      - "serious_incident_town": |
+          % if not recent_incident_most_serious:
+          ${ serious_incident_town }
+          % else:
+          ${ }
+          % endif
       - "serious_incident_state": |
+          % if not recent_incident_most_serious:
           % if serious_incident_state: 
           ${ serious_incident_state }
           % elif other_serious_incident_state:
           ${ other_serious_incident_state }
           % endif
-      - "serious_incident_description": ${ RFAaffidavit.safe_value("serious_incident_description") }
+          % else:
+          ${ }
+          % endif
+      - "serious_incident_description": |
+          % if not recent_incident_most_serious:
+          ${ RFAaffidavit.safe_value("serious_incident_description") }
+          % else:
+          ${ }
+          % endif
       - "other_incident_description": ${ RFAaffidavit.safe_value("other_incident_description") }
       - "other_parties1_weapon_yes": ${ weapons.there_are_any == True}
       - "other_parties1_weapon_no": ${ weapons.there_are_any == False }
