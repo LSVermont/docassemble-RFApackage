@@ -1270,7 +1270,8 @@ fields:
       val("recent_incident_assault") && (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')})
   - note: |
       ---
-    show if: recent_incident_assault
+    js show if: |
+      val("recent_incident_assault") && (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')})
 
   - label: |
       % if children.number_gathered() > 0:
@@ -1291,12 +1292,11 @@ fields:
     css class: indent-me
     js show if: |
       val("recent_incident_coercive") && (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')})
-  - "When did this abusive behavior first start?": recent_incident_coercive_start_date
+  - "When did this controlling behavior first start?": recent_incident_coercive_start_date
     maxlength: 11
     show if: recent_incident_coercive  
   - note: |
       ---
-    show if: recent_incident_coercive
   - "When was the most recent incident of abuse?": recent_incident_date
     maxlength: 21
   - note: |
@@ -3122,6 +3122,8 @@ review:
       % endif
       % if relationship_for_LE["plaintiffs_child"]:
       - You are the child of a person who currently or has in the past lived with the defendant while having a sexual relationship together, **or** you are  filing on behalf of that person: **${ word(yesno(relationship_for_LE["plaintiffs_child"])) }**
+      % else:
+      - More on your relationship: **None selected**
       % endif
       
   - note: | 
@@ -4725,7 +4727,7 @@ attachment:
       - "other_parties1_mobile_number": ${ other_parties[0].mobile_number }
       - "other_parties1_work_phone_number": ${ other_parties1_work_phone_number }
       - "other_parties1_other_phone_number": ${ other_parties1_other_phone_number }
-      - "other_parties1_address_address": ${ other_parties1_street_only }
+      - "other_parties1_street_name": ${ other_parties1_street_only }
       - "other_parties1_address_city": ${ other_parties1_city }
       - "other_parties1_address_state": ${ other_parties1_state }
       - "location_of_home": ${ RFAserviceinfo.safe_value("location_of_home") }
