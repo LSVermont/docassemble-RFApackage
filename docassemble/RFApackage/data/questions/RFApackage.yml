@@ -273,8 +273,7 @@ code: |
     nav.set_section('order')
     set_progress(60)
     request_not_abuse_OBO
-    if request_temp_PRR_OBO:
-      get_kids_relationships
+    get_kids_relationships
     if other_request_OBO:
       request_other_description
     set_progress(70)
@@ -356,8 +355,7 @@ code: |
     if users1_no_shelter: 
       rent_or_own
     request_not_abuse
-    if request_temp_PRR:
-      get_kids_relationships
+    get_kids_relationships
     if other_request:
       request_other_description
     set_progress(70)
@@ -522,7 +520,24 @@ code: |
   children[i].in_danger
   if (defined('request_temp_PRR') and request_temp_PRR) or (defined('request_temp_PRR_OBO') and request_temp_PRR_OBO):
     children[i].custody_wanted
+  if (who_needs_protection == "order_obo_child" and defined('recent_incident_harm')) or showifdef('recent_incident_children'):
+    children[i].involved_in_recent_incident
   children[i].complete=True
+---
+id: most recent incident follow up after child added
+question: Was ${ children[i].name.first } involved in the most recent incident?
+subquestion: |
+  You said that children were involved the most recent incident of abuse.
+fields:
+  - Was ${ children[i].name.first } involved?: children[i].involved_in_recent_incident
+    datatype: yesnoradio
+---
+if: not (who_needs_protection == "order_obo_child" or recent_incident_children)
+code:
+  children[i].involved_in_recent_incident = False
+---
+code: |
+  recent_incident_children_name_list = comma_list(children.filter(involved_in_recent_incident = True)) + space('recent_incident_other_children',prefix=" ",suffix="")
 ---
 id: OBO children in danger relationships
 generic object: Individual     
@@ -537,6 +552,47 @@ fields:
   - "What is ${x.name.first}'s relationship to the defendant? (The “defendant” is the person who is abusing the child.)": x.relationship_OP
     maxlength: 22
     show if: x.in_danger
+---
+---
+only sets: children[i].additional_information
+id: OBO children in danger relationships
+question: |
+  About ${children[i].name.first}
+fields:
+  - Is ${children[i].name.first} in danger of more abuse?: children[i].in_danger
+    datatype: yesnoradio
+  - "In 1 or 2 words, what is ${children[i].name.first}'s relationship to you?": children[i].relationship_users1
+    maxlength: 22
+    js show if: |
+      val('children[i].in_danger') === true || val('children[i].custody_wanted') === true
+  - "What is ${children[i].name.first}'s relationship to the defendant? (The “defendant” is the person who is abusing the child.)": children[i].relationship_OP
+    maxlength: 22
+    show if: children[i].in_danger
+  - "Do you want temporary custody of ${children[i].name.first}?": children[i].custody_wanted
+    datatype: yesnoradio
+    show if:
+      code: |
+        showifdef('request_temp_PRR') or showifdef('request_temp_PRR_OBO')
+  - "Was ${children[i].name.first} involved in the most recent incident?": children[i].involved_in_recent_incident
+    datatype: yesnoradio
+    show if:
+      code: |
+        (who_needs_protection == "order_obo_child" and defined('recent_incident_harm')) or showifdef('recent_incident_children')
+continue button field: children[i].additional_information
+---
+
+---
+objects:
+  - children_in_danger: ALPeopleList.using(auto_gather=False)
+---
+id: creates soft copy list for in danger to use in pdf and overflow fields
+code: |
+  if len(children) > 1:
+    for child in children[1:]:
+      if child.in_danger:
+        children_in_danger.append(child) 
+  children_in_danger.gathered = True
+  children_in_danger_update = True
 ---
 code: |
   if children.number_gathered() > 1:
@@ -1120,6 +1176,7 @@ fields:
     datatype: al_international_phone
     required: False
 ---
+reconsider: child_list
 id: what happened most recently
 question: |
   What happened -- most recently
@@ -1213,7 +1270,8 @@ fields:
       val("recent_incident_assault") && (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')})
   - note: |
       ---
-    show if: recent_incident_assault
+    js show if: |
+      val("recent_incident_assault") && (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')})
 
   - label: |
       % if children.number_gathered() > 0:
@@ -1234,12 +1292,11 @@ fields:
     css class: indent-me
     js show if: |
       val("recent_incident_coercive") && (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')})
-  - "When did this abusive behavior first start?": recent_incident_coercive_start_date
+  - "When did this controlling behavior first start?": recent_incident_coercive_start_date
     maxlength: 11
     show if: recent_incident_coercive  
   - note: |
       ---
-    show if: recent_incident_coercive
   - "When was the most recent incident of abuse?": recent_incident_date
     maxlength: 21
   - note: |
@@ -1267,23 +1324,15 @@ fields:
       If alleging coercive control, describe the behavior of the defendant. Remember, to prove coercive control, you must show a pattern of behavior. This means you have experienced these behaviors more than once.
     show if: recent_incident_coercive
   - You were the target of the recent abuse: recent_incident_users1
-    datatype: yesnoradio  
+    datatype: yesnoradio 
   - Your child/children were the target of the recent abuse: recent_incident_children
     datatype: yesnoradio  
-    show if:
-      code: |
-        len(children) > 0
-  - Which of the children were the target of the recent abuse?: recent_incident_children_names 
-    datatype: object_checkboxes
-    none of the above: False
     css class: indent-me
-    choices:
-      - children 
     js show if: |
-      val("recent_incident_children")
+      (${ json.dumps(who_needs_protection == 'order_for_both')} || ${ json.dumps(who_needs_protection == 'order_obo_child')}) && (val("recent_incident_harm") == true || val("recent_incident_harm") == false || val("recent_incident_harm") == null )
+  - code: child_list
   - Other children that were not mentioned?: has_recent_incident_other_children
     datatype: yesnoradio
-    required: True
     css class: indent-me
     show if: recent_incident_children
   - List their names with commas in between: recent_incident_other_children
@@ -1294,17 +1343,28 @@ fields:
   - note: |
       ---
     show if: recent_incident_children
-
-
-
 validation code: |
   if (recent_incident_state == "") and (other_recent_incident_state == ""):
     validation_error("You must enter a state in the United States, or an area outside of the United States")
   if not recent_incident_harm and not recent_incident_fear and not (len(children) > 0 and not recent_incident_abused) and not recent_incident_stalked and not recent_incident_assault and not recent_incident_coercive:
     validation_error("Select at least one incident")
----
+  if len(children) > 0 and recent_incident_children and len([child for child in children if child.involved_in_recent_incident]) == 0:
+    validation_error("Please select at least one child.")
 
 ---
+code: |
+  temp_child_list = list()
+  for index in range(children.number()):
+    temp_child_list.append({"label":children[index].name.full(),"field":"children[" + str(index) + "].involved_in_recent_incident","show if":"recent_incident_children","datatype":"yesno"})
+  child_list = temp_child_list
+---
+code: |
+  temp_child_list_OBO = list()
+  for index in range(children.number()):
+    temp_child_list.append({"label":children[index].name.full(),"field":"children[" + str(index) + "].involved_in_recent_incident", "datatype":"yesno"})
+  child_list_OBO= temp_child_list
+---
+reconsider: child_list_OBO
 id: what happened most recently -- for RFA OBO a child
 question: |
   What happened -- most recently
@@ -1337,13 +1397,9 @@ fields:
   - "Describe the most recent incident with as much detail as possible.": recent_incident_description
     input type: area
     rows: 20
-  - Which of the children were the target of the recent abuse?: recent_incident_children_names 
-    datatype: object_checkboxes
-    required: False
-    none of the above: False
-    css class: indent-me
-    choices:
-      - children 
+  - note: |
+      Which children were the target of the abuse?  Check all that apply
+  - code: child_list_OBO
 
 
 ---
@@ -1604,17 +1660,17 @@ fields:
   - "Order the defendant to have supervised contact with the child/children": request_supervised_contact_OBO
     datatype: yesno      
   - "Who would you like to supervise the visits?": supervisor1_name_OBO
-    maxlength: 20
+    maxlength: 13
     css class: indent-me
     show if: request_supervised_contact_OBO
   - "In what location?": supervisor1_location_OBO
-    maxlength: 30
+    maxlength: 32
     css class: indent-me
     show if: request_supervised_contact_OBO
   - "Order that the child/children will be picked up and dropped off at a certain supervised location": request_supervised_exchange_OBO
     datatype: yesno      
   - "Who would you like to supervise the pick-up and drop-offs?": supervisor2_name_OBO
-    maxlength: 20
+    maxlength: 26
     css class: indent-me
     show if: request_supervised_exchange_OBO
   - "In what location?": supervisor2_location_OBO
@@ -1881,8 +1937,9 @@ validation code: |
 
 ---
 code: |
-  for child in children: 
-    child.custody_wanted
+  if showifdef('request_temp_PRR') or showifdef('request_temp_PRR_OBO'):
+    for child in children: 
+      child.custody_wanted
   get_kids_relationships = True
 ---
 id: Childrens relationships
@@ -1899,7 +1956,6 @@ fields:
     maxlength: 21
     show if: x.custody_wanted
 ---
----
 #code: |
 #  reconsider: True
 #  if (defined('request_temp_PRR') and request_temp_PRR) or (defined('request_temp_PRR_OBO') and request_temp_PRR_OBO):
@@ -1909,6 +1965,14 @@ fields:
 #  else:
 #    custody_wanted_true_count = 0
 #    custody_wanted_true_overflow = False
+---
+id: creates soft copy list to use in pdf and overflow fields
+code: |
+  if (defined('request_temp_PRR') and request_temp_PRR) or (defined('request_temp_PRR_OBO') and request_temp_PRR_OBO):
+    children_custody_wanted = children.filter(custody_wanted=True)
+  else:
+    children_custody_wanted = ALPeopleList(auto_gather=False, gathered=True)
+
 ---
 id: Put something else in order
 question: |
@@ -2367,18 +2431,14 @@ fields:
     datatype: radio
     code: |
       [{item: phone_number_formatted(item) or item} for item in [users[0].phone_number, users1_work_phone_number] if item] + [{"other": "Other"}]
-    show if:
-      variable: notify_served
-      is: True
-      code: |
-        users[0].phone_number or users1_work_phone_number        
+    js show if: |
+      val("notify_served") === true && ( ${ json.dumps(users[0].phone_number) } != "" || ${ json.dumps(users1_work_phone_number) } != "")
   - Notification phone number: users1_notify_phone_number_other_input
     datatype: al_international_phone
     maxlength: 45
     required: False
-    show if:
-      variable: users1_notify_phone_number
-      is: other
+    js show if: |
+      val("notify_served") === true && ((${ json.dumps(users[0].phone_number) } === "" && ${ json.dumps(users1_work_phone_number) } === "") || val("users1_notify_phone_number") === "other")
   - "Will the defendant try to avoid being served this order?": avoid_served
     datatype: yesnoradio
   - "Does the defendant have guard dogs or vicious dogs?": guard_dog
@@ -2393,6 +2453,9 @@ fields:
     maxlength: 220
   - note: |
       **We're ready to generate your draft forms so you can review them!** It will take a moment after you tap the Next button. 
+validation code: |
+  if notify_served and users[0].phone_number == "" and users1_work_phone_number == "":
+    users1_notify_phone_number = "other"
 ---
 id: Signing your forms
 question: |
@@ -2444,6 +2507,10 @@ fields:
 continue button field: saw_signature_choice   
 ---
 id: preview RFApackage
+reconsider:
+  - children_custody_wanted
+  - children_in_danger_update
+  - recent_incident_children_name_list
 question: |
   Preview your forms before you sign them
 subquestion: |
@@ -2475,6 +2542,10 @@ code: |
 ---
 id: RFApackage review screen
 event: review_RFApackage
+reconsider:
+  - children_custody_wanted
+  - children_in_danger
+  - recent_incident_children_name_list
 question: |
   Review your answers
 subquestion: |
@@ -2597,7 +2668,9 @@ review:
       % if child.attribute_defined('in_danger') and child.in_danger == True:
       - Their relationship to you: **${ child.relationship_users1 }**
       - Their relationship to the defendant: **${ child.relationship_OP }**
+      - Their relationship to the defendant: **${ child.relationship_OP }**
       % endif
+      - Involved in most recent incident: **${ word(yesno((who_needs_protection == "order_obo_child" or recent_incident_children) and child.involved_in_recent_incident)) }**
       
       % endfor
       % else:
@@ -3049,6 +3122,8 @@ review:
       % endif
       % if relationship_for_LE["plaintiffs_child"]:
       - You are the child of a person who currently or has in the past lived with the defendant while having a sexual relationship together, **or** you are  filing on behalf of that person: **${ word(yesno(relationship_for_LE["plaintiffs_child"])) }**
+      % else:
+      - More on your relationship: **None selected**
       % endif
       
   - note: | 
@@ -3085,9 +3160,9 @@ review:
       % if children.target_number > 0 and defined("recent_incident_children"):
       - Your children were the target of the recent abuse: **${ yesno(recent_incident_children) }**
       % endif
-      % if recent_incident_children:
+      % if who_needs_protection == "order_obo_child" or recent_incident_children:
       - The children who were the target of the recent abuse: 
-      **${ showifdef('recent_incident_children_names') }** 
+      **${ comma_and_list(children.filter(involved_in_recent_incident=True))}** 
       % if defined('recent_incident_other_children'):
       **, ${ showifdef('recent_incident_other_children') }**
       % endif
@@ -3240,10 +3315,8 @@ review:
       - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse_OBO) }**
       % if danger_more_abuse_OBO:
       - There is danger of more abuse to these children in the household:
-      % for child in children:
-      % if child.in_danger:
+      % for child in children_in_danger:
       - **${ child }**
-      % endif
       % endfor
       % endif
   - Edit: 
@@ -3329,6 +3402,8 @@ review:
     
   - Edit: 
     - request_not_abuse
+    - recompute:
+      - get_kids_relationships
     button: | 
       The things you would like included in the Relief from Abuse order. Select Edit on the right to edit your choices.
             
@@ -3429,11 +3504,9 @@ review:
       % if children.target_number > 0:
       % if showifdef("request_temp_PRR"):
       You want custody of these children:
-      % for child in children:
-      % if defined ('child.custody_wanted') and child.custody_wanted:
       
+      % for child in children_custody_wanted:
       * **${ child }**
-      % endif
       % endfor
       % endif
       % endif
@@ -3445,11 +3518,9 @@ review:
       % if children.target_number > 0:
       % if showifdef("request_temp_PRR_OBO"):
       You want custody of these children:
-      % for child in children:
-      % if defined ('child.custody_wanted') and child.custody_wanted:
+      % for child in children_custody_wanted:
       
       * **${ child }**
-      % endif
       % endfor
       % endif
       % endif
@@ -3462,6 +3533,8 @@ review:
   - note: | 
       ##Filing##
   - Edit: 
+    - undefine:
+      - trial_court_index
     - user_selected_county
     - recompute:
       - trial_court
@@ -3587,13 +3660,14 @@ columns:
       row_item.birthdate if defined("row_item.birthdate") else ""
   - In further danger: |
       row_item.in_danger if defined("row_item.in_danger") else ""
+  - Involved in recent incident: |
+      row_item.involved_in_recent_incident if (who_needs_protection == "order_obo_child" or recent_incident_children) else ""
   - "": |
-      "You want custody" if row_item.custody_wanted else ""
+      "You want custody" if showifdef('row_item.custody_wanted') else ""
 edit:
   - name.first
   - birthdate
-  - in_danger
-  - custody_wanted
+  - additional_information
 confirm: True
 ---
 continue button field: weapons.revisit
@@ -3665,11 +3739,17 @@ attachment:
   docx template file: RFAcomplaint_addendum.docx
 ---
 code: |
-  RFAcomplaint.overflow_fields["children"].overflow_trigger = 3
+  RFAcomplaint.overflow_fields["recent_incident_children_name_list"].overflow_trigger = 90
+  RFAcomplaint.overflow_fields["recent_incident_children_name_list"].label = "Additional Children Involved in Recent Incident"
+  RFAcomplaint.overflow_fields["children_custody_wanted"].overflow_trigger = 3
+  RFAcomplaint.overflow_fields["children_custody_wanted"].label = "Additional Custody Wanted"
   RFAcomplaint.overflow_fields.gathered = True
 ---
 code: |
-  RFAcomplaintonbehalfofminor.overflow_fields["children"].overflow_trigger = 3
+  RFAcomplaintonbehalfofminor.overflow_fields["children_in_danger"].overflow_trigger = 3
+  RFAcomplaintonbehalfofminor.overflow_fields["children_in_danger"].label = "Additional Children"
+  RFAcomplaintonbehalfofminor.overflow_fields["children_custody_wanted"].overflow_trigger = 3
+  RFAcomplaintonbehalfofminor.overflow_fields["children_custody_wanted"].label = "Additional Custody Wanted"
   RFAcomplaintonbehalfofminor.overflow_fields.gathered = True
 ---
 attachment:
@@ -3698,7 +3778,7 @@ code: |
   RFAaffidavitonbehalfofminor.overflow_fields["weapons"].overflow_trigger = 8
   RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].overflow_trigger = 510
   RFAaffidavitonbehalfofminor.overflow_fields["recent_incident_description"].label = "The most recent incident"
-  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 520
+  RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].overflow_trigger = 492
   RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].label = "The most serious incident"
   RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1972
   RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].label = "Other incident(s)"
@@ -3784,7 +3864,7 @@ attachment:
           % endif 
       - "serious_incident_date": |
           % if not recent_incident_most_serious:
-          ${ serious_incident_date.format() }
+          ${ serious_incident_date }
           % else:
           ${ recent_incident_date_OBO }
           % endif
@@ -3804,60 +3884,58 @@ attachment:
           False
           % endif
       - "danger_more_abuse_other_children": |
-          % if children.number_gathered() > 1:
-          % if children[1].in_danger or children[2].in_danger or children[3].in_danger or children[4].in_danger or children[5].in_danger:
+          % if len(children_in_danger) > 0:
           True
           % else:
           False
           % endif
-          % endif
       - "children1_name__2": |
-          % if children[1].in_danger:
-          ${ children[1].name }
+          % if len(children_in_danger) > 0:
+          ${ children_in_danger[0].name }
           % endif
       - "children1_birthdate__2": |
-          % if children[1].in_danger:
-          ${ format_date(children[1].birthdate, format='M/d/yyyy') }
+          % if len(children_in_danger) > 0:
+          ${ format_date(children_in_danger[0].birthdate, format='M/d/yyyy') }
           % endif
       - "children1_relationship_users1__2": |
-          % if children[1].in_danger:
-          ${ children[1].relationship_users1 }
+          % if len(children_in_danger) > 0:
+          ${ children[0].relationship_users1 }
           % endif
       - "children1_relationship_OP__2": |
-          % if children[1].in_danger:
-          ${ children[1].relationship_OP }
+          % if len(children_in_danger) > 0:
+          ${ children_in_danger[0].relationship_OP }
           % endif
       - "children2_name__1": |
-          % if children[2].in_danger:
-          ${ children[2] }
+          % if len(children_in_danger) > 1:
+          ${ children_in_danger[1] }
           % endif
       - "children2_birthdate__1": |
-          % if children[2].in_danger:
-          ${ format_date(children[2].birthdate, format='M/d/yyyy') }
+          % if len(children_in_danger) > 1:
+          ${ format_date(children_in_danger[1].birthdate, format='M/d/yyyy') }
           % endif
       - "children2_relationship_users1__1": |
-          % if children[2].in_danger:
-          ${ children[2].relationship_users1 }
+          % if len(children_in_danger) > 1:
+          ${ children_in_danger[1].relationship_users1 }
           % endif
       - "children2_relationship_OP__1": |
-          % if children[2].in_danger:
-          ${ children[2].relationship_OP }
+          % if len(children_in_danger) > 1:
+          ${ children_in_danger[1].relationship_OP }
           % endif
       - "children3_name__1": |
-          % if children[3].in_danger:
-          ${ children[3] }
+          % if len(children_in_danger) > 2:
+          ${ children_in_danger[2] }
           % endif
       - "children3_birthdate__1": |
-          % if children[3].in_danger:
-          ${ format_date(children[3].birthdate, format='M/d/yyyy') }
+          % if len(children_in_danger) > 2:
+          ${ format_date(children_in_danger[2].birthdate, format='M/d/yyyy') }
           % endif
       - "children3_relationship_users1__1": |
-          % if children[3].in_danger:
-          ${ children[3].relationship_users1 }
+          % if len(children_in_danger) > 2:
+          ${ children_in_danger[2].relationship_users1 }
           % endif
       - "children3_relationship_OP__1": |
-          % if children[3].in_danger:
-          ${ children[3].relationship_OP }
+          % if len(children_in_danger) > 2:
+          ${ children_in_danger[2].relationship_OP }
           % endif
       - "used_firearm": ${ used_firearm_OBO }
       - "incarcerated": ${ other_parties1_incarcerated }
@@ -3895,52 +3973,52 @@ attachment:
       - "request_no_contact_children": ${ request_no_contact_OBO }
       - "request_temp_PRR": ${ request_temp_PRR_OBO }
       - "children1_name__3": |
-          % if children[0].custody_wanted:
-          ${ children[0] }
+          % if len(children_custody_wanted) > 0:
+          ${ children_custody_wanted[0] }
           % endif
       - "children1_birthdate__3": |
-          % if children[0].custody_wanted:
-          ${ format_date(children[0].birthdate, format='M/d/yyyy') }
+          % if len(children_custody_wanted) > 0:
+          ${ format_date(children_custody_wanted[0].birthdate, format='M/d/yyyy') }
           % endif
       - "children1_relationship_users1__3": |
-          % if children[0].custody_wanted:
-          ${ children[0].relationship_users1 }
+          % if len(children_custody_wanted) > 0:
+          ${ children_custody_wanted[0].relationship_users1 }
           % endif
       - "children1_relationship_OP__3":  |
-          % if children[0].custody_wanted:
-          ${ children[0].relationship_OP }
+          % if len(children_custody_wanted) > 0:
+          ${ children_custody_wanted[0].relationship_OP }
           % endif
       - "children2_name__2": |
-          % if children[1].custody_wanted:
-          ${ children[1] }
+          % if len(children_custody_wanted) > 1:
+          ${ children_custody_wanted[1] }
           % endif
       - "children2_birthdate__2": |
-          % if children[1].custody_wanted:
-          ${ format_date(children[1].birthdate, format='M/d/yyyy') }
+          % if len(children_custody_wanted) > 1:
+          ${ format_date(children_custody_wanted[1].birthdate, format='M/d/yyyy') }
           % endif      
       - "children2_relationship_users1__2": |
-          % if children[1].custody_wanted:
-          ${ children[1].relationship_users1 }
+          % if len(children_custody_wanted) > 1:
+          ${ children_custody_wanted[1].relationship_users1 }
           % endif
       - "children2_relationship_OP__2": |
-          % if children[1].custody_wanted:
-          ${ children[1].relationship_OP }
+          % if len(children_custody_wanted) > 1:
+          ${ children_custody_wanted[1].relationship_OP }
           % endif
       - "children3_name__2": |
-          % if children[2].custody_wanted:
-          ${ children[2] }
+          % if len(children_custody_wanted) > 2:
+          ${ children_custody_wanted[2] }
           % endif      
       - "children3_birthdate__2": |
-          % if children[2].custody_wanted:
-          ${ format_date(children[2].birthdate, format='M/d/yyyy') }
+          % if len(children_custody_wanted) > 2:
+          ${ format_date(children_custody_wanted[2].birthdate, format='M/d/yyyy') }
           % endif      
       - "children3_relationship_users1__2": |
-          % if children[2].custody_wanted:
-          ${ children[2].relationship_users1 }
+          % if len(children_custody_wanted) > 2:
+          ${ children_custody_wanted[2].relationship_users1 }
           % endif
       - "children3_relationship_OP__2": |
-          % if children[2].custody_wanted:
-          ${ children[2].relationship_OP }
+          % if len(children_custody_wanted) > 2:
+          ${ children_custody_wanted[2].relationship_OP }
           % endif
       - "other_children_PRR": ${ other_children_PRR_OBO }
       - "other_children_PRR_names": ${ other_children_PRR_names_OBO }
@@ -4020,19 +4098,38 @@ attachment:
       - "recent_incident_most_serious_no": ${ not recent_incident_most_serious }
       - "serious_incident_date": |
           % if not recent_incident_most_serious:
-          ${ serious_incident_date.format() }
+          ${ serious_incident_date }
           % else:
-          
+          ${}
           % endif
-      - "serious_incident_time": ${ serious_incident_time }
-      - "serious_incident_town": ${ serious_incident_town }
+      - "serious_incident_time": |
+          % if not recent_incident_most_serious:
+          ${ serious_incident_time }
+          % else:
+          ${}
+          % endif          
+      - "serious_incident_town": |
+          % if not recent_incident_most_serious:
+          ${ serious_incident_town }
+          % else:
+          ${}
+          % endif
       - "serious_incident_state": |
+          % if not recent_incident_most_serious:
           % if serious_incident_state: 
           ${ serious_incident_state }
           % elif other_serious_incident_state:
           ${ other_serious_incident_state }
           % endif
-      - "serious_incident_description": ${ RFAaffidavitonbehalfofminor.safe_value("serious_incident_description") }
+          % else:
+          ${}
+          % endif
+      - "serious_incident_description": |
+          % if not recent_incident_most_serious:
+          ${ RFAaffidavitonbehalfofminor.safe_value("serious_incident_description") }
+          % else:
+          ${}
+          % endif
       - "other_incident_description": ${RFAaffidavitonbehalfofminor.safe_value("other_incident_description")}
       - "other_parties1_weapon_yes": ${ weapons.there_are_any == True}
       - "other_parties1_weapon_no": ${ weapons.there_are_any == False }
@@ -4192,12 +4289,7 @@ attachment:
       - "recent_incident_coercive_start_date": ${ recent_incident_coercive_start_date }
       - "recent_incident_users1": ${ recent_incident_users1 }
       - "recent_incident_children": ${ recent_incident_children }
-      - "recent_incident_children_names": |
-          % if defined('recent_incident_other_children'):
-          ${ recent_incident_other_children }, ${ recent_incident_children_names }
-          % elif recent_incident_children and defined('recent_incident_children_names'):
-          ${ recent_incident_children_names }
-          % endif 
+      - "recent_incident_children_names": ${ RFAcomplaint.safe_value('recent_incident_children_name_list') }
       - "recent_incident_harm": ${ recent_incident_harm }
       - "recent_incident_fear": ${ recent_incident_fear }
       - "recent_incident_abused": ${ recent_incident_abused }
@@ -4306,52 +4398,52 @@ attachment:
       - "request_no_contact": ${ request_no_contact }
       - "request_temp_PRR": ${ request_temp_PRR }
       - "children1_name": |
-          % if children[0].custody_wanted:
-          ${ children[0] }
+          % if len(children_custody_wanted) > 0:
+          ${ children_custody_wanted[0] }
           % endif
       - "children1_birthdate": |
-          % if children[0].custody_wanted:
-          ${ format_date(children[0].birthdate, format='M/d/yyyy') }
+          % if len(children_custody_wanted) > 0:
+          ${ format_date(children_custody_wanted[0].birthdate, format='M/d/yyyy') }
           % endif
       - "children1_relationship_users1": |
-          % if children[0].custody_wanted:
-          ${ children[0].relationship_users1 }
+          % if len(children_custody_wanted) > 0:
+          ${ children_custody_wanted[0].relationship_users1 }
           % endif
       - "children1_relationship_OP":  |
-          % if children[0].custody_wanted:
-          ${ children[0].relationship_OP }
+          % if len(children_custody_wanted) > 0:
+          ${ children_custody_wanted[0].relationship_OP }
           % endif
       - "children2_name": |
-          % if children[1].custody_wanted:
-          ${ children[1] }
+          % if len(children_custody_wanted) > 1:
+          ${ children_custody_wanted[1] }
           % endif
       - "children2_birthdate": |
-          % if children[1].custody_wanted:
-          ${ format_date(children[1].birthdate, format='M/d/yyyy') }
+          % if len(children_custody_wanted) > 1:
+          ${ format_date(children_custody_wanted[1].birthdate, format='M/d/yyyy') }
           % endif      
       - "children2_relationship_users1": |
-          % if children[1].custody_wanted:
-          ${ children[1].relationship_users1 }
+          % if len(children_custody_wanted) > 1:
+          ${ children_custody_wanted[1].relationship_users1 }
           % endif
       - "children2_relationship_OP": |
-          % if children[1].custody_wanted:
-          ${ children[1].relationship_OP }
+          % if len(children_custody_wanted) > 1:
+          ${ children_custody_wanted[1].relationship_OP }
           % endif
       - "children3_name": |
-          % if children[2].custody_wanted:
-          ${ children[2] }
+          % if len(children_custody_wanted) > 2:
+          ${ children_custody_wanted[2] }
           % endif      
       - "children3_birthdate": |
-          % if children[2].custody_wanted:
-          ${ format_date(children[2].birthdate, format='M/d/yyyy') }
+          % if len(children_custody_wanted) > 2:
+          ${ format_date(children_custody_wanted[2].birthdate, format='M/d/yyyy') }
           % endif      
       - "children3_relationship_users1": |
-          % if children[2].custody_wanted:
-          ${ children[2].relationship_users1 }
+          % if len(children_custody_wanted) > 2:
+          ${ children_custody_wanted[2].relationship_users1 }
           % endif
       - "children3_relationship_OP": |
-          % if children[2].custody_wanted:
-          ${ children[2].relationship_OP }
+          % if len(children_custody_wanted) > 2:
+          ${ children_custody_wanted[2].relationship_OP }
           % endif
       - "surrender_plaintiffs_documents": ${ surrender_plaintiffs_documents }
       - "surrender_plaintiffs_documents_users1":  |
@@ -4439,19 +4531,38 @@ attachment:
       - "recent_incident_most_serious_no": ${ not recent_incident_most_serious }
       - "serious_incident_date": |
           % if not recent_incident_most_serious:
-          ${ serious_incident_date.format() }
+          ${ serious_incident_date }
           % else:
-          ${ recent_incident_date_OBO.format() }
+          ${ }
           % endif
-      - "serious_incident_time": ${ serious_incident_time }
-      - "serious_incident_town": ${ serious_incident_town }
+      - "serious_incident_time": |
+          % if not recent_incident_most_serious:
+          ${ serious_incident_time }
+          % else:
+          ${  }
+          % endif
+      - "serious_incident_town": |
+          % if not recent_incident_most_serious:
+          ${ serious_incident_town }
+          % else:
+          ${ }
+          % endif
       - "serious_incident_state": |
+          % if not recent_incident_most_serious:
           % if serious_incident_state: 
           ${ serious_incident_state }
           % elif other_serious_incident_state:
           ${ other_serious_incident_state }
           % endif
-      - "serious_incident_description": ${ RFAaffidavit.safe_value("serious_incident_description") }
+          % else:
+          ${ }
+          % endif
+      - "serious_incident_description": |
+          % if not recent_incident_most_serious:
+          ${ RFAaffidavit.safe_value("serious_incident_description") }
+          % else:
+          ${ }
+          % endif
       - "other_incident_description": ${ RFAaffidavit.safe_value("other_incident_description") }
       - "other_parties1_weapon_yes": ${ weapons.there_are_any == True}
       - "other_parties1_weapon_no": ${ weapons.there_are_any == False }
@@ -4616,7 +4727,7 @@ attachment:
       - "other_parties1_mobile_number": ${ other_parties[0].mobile_number }
       - "other_parties1_work_phone_number": ${ other_parties1_work_phone_number }
       - "other_parties1_other_phone_number": ${ other_parties1_other_phone_number }
-      - "other_parties1_address_address": ${ other_parties1_street_only }
+      - "other_parties1_street_name": ${ other_parties1_street_only }
       - "other_parties1_address_city": ${ other_parties1_city }
       - "other_parties1_address_state": ${ other_parties1_state }
       - "location_of_home": ${ RFAserviceinfo.safe_value("location_of_home") }
