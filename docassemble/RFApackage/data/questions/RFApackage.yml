@@ -1660,17 +1660,17 @@ fields:
   - "Order the defendant to have supervised contact with the child/children": request_supervised_contact_OBO
     datatype: yesno      
   - "Who would you like to supervise the visits?": supervisor1_name_OBO
-    maxlength: 20
+    maxlength: 13
     css class: indent-me
     show if: request_supervised_contact_OBO
   - "In what location?": supervisor1_location_OBO
-    maxlength: 30
+    maxlength: 32
     css class: indent-me
     show if: request_supervised_contact_OBO
   - "Order that the child/children will be picked up and dropped off at a certain supervised location": request_supervised_exchange_OBO
     datatype: yesno      
   - "Who would you like to supervise the pick-up and drop-offs?": supervisor2_name_OBO
-    maxlength: 20
+    maxlength: 26
     css class: indent-me
     show if: request_supervised_exchange_OBO
   - "In what location?": supervisor2_location_OBO
