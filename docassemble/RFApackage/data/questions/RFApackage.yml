@@ -3737,19 +3737,17 @@ attachment:
   docx template file: RFAcomplaint_addendum.docx
 ---
 code: |
+  RFAcomplaint.overflow_fields["recent_incident_children_name_list"].overflow_trigger = 90
+  RFAcomplaint.overflow_fields["recent_incident_children_name_list"].label = "Additional Children Involved in Recent Incident"
   RFAcomplaint.overflow_fields["children_custody_wanted"].overflow_trigger = 3
   RFAcomplaint.overflow_fields["children_custody_wanted"].label = "Additional Custody Wanted"
-  RFAcomplaint.overflow_fields["children"].overflow_trigger = 3
-  RFAcomplaint.overflow_fields["children"].label = "Additional Children"
-  RFAcomplaint.overflow_fields["recent_incident_children_name_list"].overflow_trigger = 90
-  RFAcomplaint.overflow_fields["recent_incident_children_name_list"].label = "Additional Children involved in the recent incident"
   RFAcomplaint.overflow_fields.gathered = True
 ---
 code: |
-  RFAcomplaintonbehalfofminor.overflow_fields["children_custody_wanted"].overflow_trigger = 3
-  RFAcomplaintonbehalfofminor.overflow_fields["children_custody_wanted"].label = "Additional Custody Wanted"
   RFAcomplaintonbehalfofminor.overflow_fields["children_in_danger"].overflow_trigger = 3
   RFAcomplaintonbehalfofminor.overflow_fields["children_in_danger"].label = "Additional Children"
+  RFAcomplaintonbehalfofminor.overflow_fields["children_custody_wanted"].overflow_trigger = 3
+  RFAcomplaintonbehalfofminor.overflow_fields["children_custody_wanted"].label = "Additional Custody Wanted"
   RFAcomplaintonbehalfofminor.overflow_fields.gathered = True
 ---
 attachment:
