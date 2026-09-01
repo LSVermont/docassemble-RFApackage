@@ -3779,7 +3779,7 @@ code: |
   RFAaffidavitonbehalfofminor.overflow_fields["serious_incident_description"].label = "The most serious incident"
   RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].overflow_trigger = 1972
   RFAaffidavitonbehalfofminor.overflow_fields["other_incident_description"].label = "Other incident(s)"
-  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 406
+  RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].overflow_trigger = 378
   RFAaffidavitonbehalfofminor.overflow_fields["used_weapon_how"].label = "How they used or threatened to use weapon"
   RFAaffidavitonbehalfofminor.overflow_fields.gathered = True
 ---
