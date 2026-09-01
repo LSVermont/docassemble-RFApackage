@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "docassemble.RFApackage"
-version = "2.0"
+version = "2.1"
 description = "RFApackage"
 readme = "README.md"
 authors = [
