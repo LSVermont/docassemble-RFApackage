@@ -2,6 +2,8 @@
 
 RFApackage
 
-Author: K. Surette, VTCourtForms / Legal Services Vermont
+Authors: 
+K. Surette, VTCourtForms / Legal Services Vermont
+T. Fey, Lemma Legal
 
 
