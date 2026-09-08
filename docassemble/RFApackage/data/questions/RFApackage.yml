@@ -3,6 +3,7 @@
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
+  - litefile.yml
   - docassemble.ALToolbox:phone-number-validation.yml
   - docassemble.ALToolbox:display_template.yml
   - docassemble.VTSharedYMLFile:VTSharedYMLFile.yml
@@ -3699,6 +3700,8 @@ subquestion: |
 
   <hr>
   
+  ${ litefile_continue_button }
+
   <h4 style="margin-bottom: 18px;">Documents to download</h4>
   
   ${ al_user_bundle.download_list_html() }
