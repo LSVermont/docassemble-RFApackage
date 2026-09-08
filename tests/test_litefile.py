@@ -32,6 +32,9 @@ def declared_data(answers=None):
     namespace = {
         "showifdef": reader,
         "litefile_person": partial(adapter.litefile_person, known=reader),
+        "litefile_filing_hint_overrides": BLOCKS["litefile_filing_hint_overrides"][
+            "data"
+        ],
     }
 
     def evaluate(node):
@@ -189,6 +192,33 @@ def test_declarative_hints_and_unknown_facts_are_transmitted(tmp_path):
     }
     assert "file" not in payload["documents"][0]
     assert "path" not in payload["documents"][0]
+
+
+def test_declarative_county_and_court_hint_overrides_are_transmitted(tmp_path):
+    data = declared_data()
+    data["filing_hint_overrides"] = {
+        "counties": {
+            "Cook": {
+                "case_type_name_hints": ["County-specific case type"],
+                "documents": {
+                    "RFAcomplaint": {
+                        "filing_type_name_hints": ["County-specific complaint"]
+                    }
+                },
+            }
+        },
+        "courts": {
+            "First Municipal District": {
+                "documents": {
+                    "RFAcomplaint": {
+                        "filing_component_name_hints": ["Court-specific lead"]
+                    }
+                }
+            }
+        },
+    }
+    payload = adapter.build_litefile_payload(data, "stable", bundle(tmp_path), "")
+    assert payload["filing_hint_overrides"] == data["filing_hint_overrides"]
 
 
 def test_prepared_cache_can_be_uploaded_repeatedly_without_regeneration(tmp_path):

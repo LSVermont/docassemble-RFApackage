@@ -43,6 +43,34 @@ filer. LITEFile resolves live metadata and remains responsible for optional
 services, fees, payment, validation, and submission. A `supporting` PDF's filing
 component can still be `Lead Document`: those describe different concepts.
 
+When names vary by filing location, populate `litefile_filing_hint_overrides`.
+County hints replace general hints, then a matching court replaces the county's
+values field by field. Document entries use the same stable IDs as
+`litefile_document_map`:
+
+```yaml
+variable name: litefile_filing_hint_overrides
+data:
+  counties:
+    Cook:
+      case_type_name_hints:
+        - County-specific case type
+      documents:
+        complaint:
+          filing_type_name_hints:
+            - County-specific complaint
+  courts:
+    First Municipal District:
+      documents:
+        complaint:
+          filing_component_name_hints:
+            - Court-specific lead document
+```
+
+Keys are compared as normalized names. A county key may include or omit the
+word `County`. General hints remain in effect for fields a matching override
+does not mention.
+
 The adult/minor RFA case-type condition is visible in `litefile_data`.
 No Python code chooses Vermont courts, RFA forms, party roles, or case types.
 The reusable `litefile_send` and `litefile_upload` events use only generic

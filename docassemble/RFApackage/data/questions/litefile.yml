@@ -18,6 +18,11 @@ code: |
 code: |
   litefile_transfers = {}
 ---
+variable name: litefile_filing_hint_overrides
+data:
+  counties: {}
+  courts: {}
+---
 code: |
   litefile_upload_pending = False
 ---
@@ -121,6 +126,7 @@ data from code:
     ["Relief from Abuse on Behalf of a Minor"] if showifdef("who_needs_protection") == "order_obo_child" else ["Relief from Abuse"]
   # No subtype default: let LITEFile ask if this court needs one.
   case_subtype_name_hints: '[]'
+  filing_hint_overrides: litefile_filing_hint_overrides
   case:
     existing_case: 'False'
     court_name: showifdef("trial_court.name")
