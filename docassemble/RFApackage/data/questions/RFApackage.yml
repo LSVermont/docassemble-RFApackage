@@ -3223,6 +3223,10 @@ review:
       - recent_incident_most_serious
       - invalidate:
           - serious_incident_date
+          - serious_incident_time
+          - serious_incident_state
+          - other_serious_incident_state
+          - serious_incident_description
       - recompute:
           - recent_or_serious
     button: |
