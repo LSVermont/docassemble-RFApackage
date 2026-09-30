@@ -1,5 +1,3 @@
-#THIS IS THE VERSION where I have pulled the current, active RFA package and I am incorporating the changes I made elsewhere to include RFA on behalf of a minor. I am also incorporating the VTSharedYMLFile.
-# This version reflects July 1, 2025, law changes and Judiciary form changes.
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -328,6 +326,7 @@ code: |
     users[0].email
     set_progress(16)
     share_contact
+    nav.set_section("kids")
     children.gather()
     set_progress(24)
   
@@ -460,6 +459,8 @@ code: |
 id: OBO CHILD how children related to you and defendant
 question: |
   Relationship to the child or children
+subquestion: |
+  These questions may feel repetitive. They are questions that are worded a specific way on the RFA forms.
 fields:
   - note: |
       **Your relationship to them**
@@ -2667,7 +2668,6 @@ review:
       - In further danger: **${ word(yesno(child.in_danger)) }**
       % if child.attribute_defined('in_danger') and child.in_danger == True:
       - Their relationship to you: **${ child.relationship_users1 }**
-      - Their relationship to the defendant: **${ child.relationship_OP }**
       - Their relationship to the defendant: **${ child.relationship_OP }**
       % endif
       - Involved in most recent incident: **${ word(yesno((who_needs_protection == "order_obo_child" or recent_incident_children) and child.involved_in_recent_incident)) }**
