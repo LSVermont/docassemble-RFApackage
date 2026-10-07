@@ -13,7 +13,7 @@ authors = [
     { name = "VTCourtForms by Legal Services Vermont", email = "ksurette@legalservicesvt.org" },
 ]
 dependencies = [
-    "docassemble.ALToolbox>=0.19.0",
+    "docassemble.ALToolbox @ git+https://github.com/SuffolkLITLab/docassemble-ALToolbox.git@main",
     "docassemble.AssemblyLine @ git+https://github.com/SuffolkLITLab/docassemble-AssemblyLine.git@main",
     "docassemble.GithubFeedbackForm @ git+https://github.com/SuffolkLITLab/docassemble-GithubFeedbackForm.git@main",
     "docassemble.VTFeedback @ git+https://github.com/VTskier/docassemble-VTFeedback.git@main",
