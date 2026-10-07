@@ -235,6 +235,7 @@ code: |
     users[0].phone_number
     share_contact
     nav.set_section("kids")
+    danger_more_abuse_OBO
     children.gather()
     children[0].name.first
     children[0].birthdate
@@ -508,11 +509,9 @@ fields:
 ---
 id: OBO danger of more abuse
 question: |
-  Immediate danger of more abuse
-subquestion: |
-  If you want to get a court order that starts right way, answer **Yes** to this question.
+  Danger of more abuse to the child or children
 fields:
-  - "Is there immediate danger of more abuse from the defendant?": danger_more_abuse_OBO
+  - "Is there danger of more abuse from the defendant?": danger_more_abuse_OBO
     datatype: yesnoradio
 ---
 code: |
@@ -996,11 +995,13 @@ code: |
 ---
 comment: 
 if: who_needs_protection in ['order_for_both','order_obo_child']
-id: how many children if obo or both
+id: how many children if OBO or both
 question: |
   Number of children involved in this case
 subquestion: |
-  Include children under 18 who have been affected by abuse. Also include children who you would like to ask for temporary custody of.
+  Include children under 18 who have been affected by abuse
+  
+  If you want to ask for temporary custody, be sure to include the names of those children.
 fields:
   - How many children are involved in this case?: children.target_number
     datatype: integer
@@ -1186,7 +1187,7 @@ subquestion: |
   
   See the [VTLawHelp.org legal help website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3#forms) for tips on what to include in your description. This information will be part of your "Affidavit". 
   
-  Note: **The defendant will get a copy of the affidavit** if the judge gives you a temporary order or if the case goes to a hearing.
+  Note: **The defendant will get a copy of the complaint and affidavit** if the judge gives you a temporary order or if the case goes to a hearing. [Learn more about temporary orders.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-4)
 fields:
     
   - note: |
@@ -1374,7 +1375,7 @@ subquestion: |
   
   See the [VTLawHelp.org legal help website](https://vtlawhelp.org/roadmap/relief-from-abuse/step-3#forms) for tips on what to include in your description. This information will be part of your "Affidavit". 
   
-  Note: **The defendant will get a copy of the affidavit** if the judge gives you a temporary order or if the case goes to a hearing.
+  Note: **The defendant will get a copy of the complaint and affidavit** if the judge gives you a temporary order or if the case goes to a hearing. [Learn more about temporary orders.](https://vtlawhelp.org/roadmap/relief-from-abuse/step-4)
 fields:
   - "When was the most recent incident of abuse?": recent_incident_date_OBO
     maxlength: 21
@@ -3313,7 +3314,7 @@ review:
     - recompute:
       - define_danger_abuse_other_children_affidavit
     button: |
-      - There is immediate danger of more abuse from the defendant: **${ yesno(danger_more_abuse_OBO) }**
+      - There is danger of more abuse from the defendant: **${ yesno(danger_more_abuse_OBO) }**
       % if danger_more_abuse_OBO:
       - There is danger of more abuse to these children in the household:
       % for child in children_in_danger:
