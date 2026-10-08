@@ -5,18 +5,11 @@ include:
   - docassemble.ALToolbox:display_template.yml
   - docassemble.VTSharedYMLFile:VTSharedYMLFile.yml
 ---
----
-# customized feedback form
-code: |   
-  feedback_form = "docassemble.VTFeedback:VTfeedback.yml"
----
 #####Feedback review widget - thumbs up, thumbs down#####
 ---
 include:
   - docassemble.GithubFeedbackForm:embedded_review.yml
----
-code: |
-  thumbs_up_thumbs_down_review = only_once_review_widget(thumbs_display="Did this tool help you?", review_display="Thank you for your feedback. OPTIONAL: Let us know what we could do better.", submit_review_button="Submit", post_review_display="Thank you!")
+
 ---
 objects:
   - all_courts: ALCourtLoader.using(file_name='docassemble.VTSharedYMLFile:data/sources/courts_list_full.xlsx')
@@ -411,6 +404,7 @@ mandatory: True
 code: |
   nav.set_section("intro")
   al_intro_screen
+  VT_start_time
   RFApackage_intro
   interview_order_RFApackage
   nav.set_section("review_RFApackage")
@@ -420,7 +414,9 @@ code: |
   nav.set_section('sign')
   printed_signature
   al_form_requires_digital_signature = False
-  basic_questions_signature_flow  
+  basic_questions_signature_flow
+  VT_end_time
+  elapsed
 
   # Store anonymous data for analytics / statistics
   store_variables_snapshot(
@@ -432,6 +428,7 @@ code: |
           "number_of_forms": len(al_user_bundle.enabled_documents()),
           "who_needs_protection": showifdef("who_needs_protection"),
           "number_of_kids_in_this_case": showifdef("children.target_number"),
+          "elapsed_time_seconds": showifdef("elapsed.seconds"),
       },
   )
   nav.set_section('get_docs')
