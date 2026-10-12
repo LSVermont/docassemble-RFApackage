@@ -1360,8 +1360,8 @@ code: |
 code: |
   temp_child_list_OBO = list()
   for index in range(children.number()):
-    temp_child_list.append({"label":children[index].name.full(),"field":"children[" + str(index) + "].involved_in_recent_incident", "datatype":"yesno"})
-  child_list_OBO= temp_child_list
+    temp_child_list_OBO.append({"label":children[index].name.full(),"field":"children[" + str(index) + "].involved_in_recent_incident", "datatype":"yesno"})
+  child_list_OBO= temp_child_list_OBO
 ---
 reconsider: child_list_OBO
 id: what happened most recently -- for RFA OBO a child
