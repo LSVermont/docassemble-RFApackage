@@ -1702,7 +1702,7 @@ fields:
     show if: request_stay_away_OBO
   - "Order the defendant to not contact the child/children in any way": request_no_contact_OBO
     datatype: yesno    
-  - "Award temporary Parental Rights and Responsibilities (custody) of our child/children to me. (For child/children of you and the defendant.)": request_temp_PRR_OBO
+  - "Award temporary Parental Rights and Responsibilities (custody) of the child/children to me. (For child/children of you and the defendant.)": request_temp_PRR_OBO
     datatype: yesno  
   - note: If you choose custody, we will ask for the names of the children on the next screen.
     show if: request_temp_PRR_OBO
@@ -2220,8 +2220,10 @@ fields:
       - "I am the spouse or ex-spouse (former spouse) of the defendant.": spouse_or_ex_spouse
       - "The defendant and I have lived together while having a sexual relationship together.": lived_together
       - "The defendant and I have a child or children in common.": had_kids_together
-      - "I am the defendant’s child or step-child, **or** I am filing on behalf of that child or step-child.": defendants_child
-      - "I am the child of a person who currently or has in the past lived with the defendant while having a sexual relationship together, **or** I am filing on behalf of that child.": plaintiffs_child
+      - "I am the defendant’s child or step-child.": defendants_child
+      - "I am the child of a person who currently or has in the past lived with the defendant while having a sexual relationship together.": plaintiffs_child
+      - "I am filing on behalf of the defendant’s child or step-child.": defendants_child
+      - "I am filing on behalf of child of a person who currently or has in the past lived with the defendant while having a sexual relationship together.": plaintiffs_child
 ---
 id: Defendants work information
 question: |
@@ -2377,14 +2379,14 @@ fields:
       - "Dark": skin_dark
       - "Other": skin_other
   - note: |
-      <h2 class="h4">Height:</h2>
+      <h2 class="h4">Height (estimate):</h2>
   - "Feet": other_parties1_height_ft
     maxlength: 2
   - "Inches": other_parties1_height_in
     maxlength: 2
   - note: |
       <h2 class="h4">Weight:</h2>
-  - "Weight -- in pounds": other_parties1_weight_lbs
+  - "Weight -- in pounds (estimate)": other_parties1_weight_lbs
     maxlength: 3
   - note: |
       <h2 class="h4">Eye color:</h2>
@@ -3646,7 +3648,8 @@ review:
   - note: |
       ${ review_screen_attestation_reminder }
       
-      ${ review_screen_select_resume_will_take_moment }
+  - note: |
+      **Select Resume, below, when you are done. It will take a moment to generate your form(s) again.**
      
 ---
 continue button field: users.revisit
