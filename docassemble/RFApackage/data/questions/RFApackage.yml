@@ -632,13 +632,63 @@ continue button field: RFApackage_intro
 question: |
   Important information before you start
 subquestion: |
-  <i class="fas fa-circle-exclamation fa-3x" aria-hidden="true"></i>  If you haven't reviewed this important information already on the VTLawHelp.org website, please take time to do so:
-  
-  * [What to know before you start](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#what-to-know)
-  * [**Safety**: About using this tool safely](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#about-this-interview)
-  * [Information you will need at hand](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#info-you-need)
-  * [After answering the questions](https://vtlawhelp.org/vtcourtforms/relief-from-abuse#after-questions)
+  <i class="fas fa-circle-exclamation fa-3x" aria-hidden="true"></i>  If you haven't reviewed this important information already on the VTLawHelp.org website, please take time to do so.
 
+  ${ start_accordion('<h2 class="h5">What to know before you start</h2>') }
+
+  Some important things to know about asking the court for a Relief from Abuse order (RFA) in Vermont:
+  
+  <ul><li>There is no fee for an RFA order. It is free.</li>
+
+  <li>Even when the courts are closed, it’s after hours, or it’s a weekend or holiday, you can start a Relief from Abuse case. You may be able to get a temporary order right away to help keep you safe. At these times, you can email these forms and then make a follow-up call to the courts. Or simply call and ask for help. Call the Vermont courts’ answering service at 1-800-540-9990. Say that you need help applying for a Relief from Abuse order over the phone. If you call, you need to leave a message with a number where they can call you back within an hour.</li>
+
+  <li>Many people in Vermont get an RFA without a lawyer. But you do not have to do this on your own. You can get help from one of the member organizations of the <a href="https://www.vtnetwork.org/get-help/" target="_blank">Vermont Network Against Domestic and Sexual Violence</a>.</li>
+
+  <li>Applying for an RFA order can be a very dangerous time. Consider working with an advocate from the <a href="https://www.vtnetwork.org/get-help/" target="_blank">Vermont Network</a> to create a safety plan — whether you end up asking for an RFA or not.</li>
+
+  <li>For details on the whole RFA process, visit the <a href="https://vtlawhelp.org/roadmap/relief-from-abuse/step-1" data-linknum="9" target="_blank">RFA Roadmap on the VTLawHelp.org website.</a></li></ul>
+  
+  ${ next_accordion('<h2 class="h5"><strong>Safety</strong>: About using this tool safely</h2>') }
+  
+  <ul><li>Make sure you are in a safe place. It takes time to work through this tool. It may take 1 hour or more.</li>
+
+  <li>If you are in danger right now, dial 911.</li>
+
+  <li>Use a computer or device that no one else has access to. If you don’t have access to a safe device, consider contacting an advocate at the <a href="https://www.vtnetwork.org/get-help/" target="_blank">Vermont Network</a> so they can fill out the forms for you.</li>
+
+  <li>QUICK EXIT: There is an “Exit and delete my answers” option under the Menu at the top of the VTCourtForms screen. This is a way to clear the answers you filled in. You will then be taken to Google.com.</li>
+
+  <li>Select “Share” at the bottom of the screen to share a link to your progress with someone you trust. Important: The person you share this link with will be able to see AND change your answers.</li>
+  
+  <li>Consider creating an account in VTCourtForms and saving your work along the way. You could log in later to review your answers with an advocate. Choose “sign up” in the menu at the top of the VTCourtForms screen, or “register” at the bottom of the screen.</li>
+
+  <li>Even if you don’t create an account, at the end you can download your completed forms and the instructions sheet for the next steps to take. You can email the filled-in PDF forms to yourself or someone else, too. You can also use the Share feature.</li>
+
+  <li>If you are signed into your VTCourtForms account, you can save your work and then log out so no one can come along and see what you were working on. Then close your web browser.</li>
+  
+  <li><a href="https://vtlawhelp.org/vtcourtforms#safety">Follow this link for more safety tips about computers and mobile devices.</a></li></ul>
+
+  ${ next_accordion('<h2 class="h5">Information you will need at hand</h2>') }
+
+  <ul><li>To complete this, you will need to know the date or dates when the abuse occurred and give a detailed description of the abuse. This includes the most recent incident and the most serious incident. You will need to fully describe the incidents and make it clear how severe or how frequent the abuse has been.</li>
+
+  <li>You will need to give a safe address and telephone number where the court can reach you. If you don’t have one, ask an advocate from the <a href="https://www.vtnetwork.org/get-help/" target="_blank">Vermont Network.</a></li>
+
+  <li>You will need an address of some kind for the “defendant” – the person who is doing the abuse. If you don’t know the defendant’s home address, you can give their work address. Or give the address of the place where they are staying. You need to provide at least one address.</li>
+
+  <li>You will see important questions about weapons that the defendant might have access to. If you list what they are and where they are located, the court can order law enforcement to collect them to help keep you safe.</li></ul>
+  
+  ${ next_accordion('<h2 class="h5">After answering the questions</h2>') }
+
+  <ul><li>At the end you will get a chance to preview your forms and make changes if you need to.</li>
+
+  <li>Then you can download, save, print and/or email PDFs of your completed forms.</li>
+
+  <li>You will also get an instruction sheet about how to get the completed forms to the court – this includes emailing them or dropping them off at your local family court.</li>
+
+  <li>This tool does not file the forms for you. You will need to follow the instructions to get them to the court.</li></ul>
+  
+  ${ end_accordion() }
 fields:
   - To continue, please accept our [terms of use](https://vtlawhelp.org/vtcourtforms/terms-of-use).: acknowledged_information_use
     datatype: checkboxes
@@ -1652,7 +1702,7 @@ fields:
     show if: request_stay_away_OBO
   - "Order the defendant to not contact the child/children in any way": request_no_contact_OBO
     datatype: yesno    
-  - "Award temporary Parental Rights and Responsibilities (custody) of our child/children to me. (For child/children of you and the defendant.)": request_temp_PRR_OBO
+  - "Award temporary Parental Rights and Responsibilities (custody) of the child/children to me. (For child/children of you and the defendant.)": request_temp_PRR_OBO
     datatype: yesno  
   - note: If you choose custody, we will ask for the names of the children on the next screen.
     show if: request_temp_PRR_OBO
@@ -2170,8 +2220,10 @@ fields:
       - "I am the spouse or ex-spouse (former spouse) of the defendant.": spouse_or_ex_spouse
       - "The defendant and I have lived together while having a sexual relationship together.": lived_together
       - "The defendant and I have a child or children in common.": had_kids_together
-      - "I am the defendant’s child or step-child, **or** I am filing on behalf of that child or step-child.": defendants_child
-      - "I am the child of a person who currently or has in the past lived with the defendant while having a sexual relationship together, **or** I am filing on behalf of that child.": plaintiffs_child
+      - "I am the defendant’s child or step-child.": defendants_child
+      - "I am the child of a person who currently or has in the past lived with the defendant while having a sexual relationship together.": plaintiffs_child
+      - "I am filing on behalf of the defendant’s child or step-child.": defendants_child
+      - "I am filing on behalf of child of a person who currently or has in the past lived with the defendant while having a sexual relationship together.": plaintiffs_child
 ---
 id: Defendants work information
 question: |
@@ -2327,14 +2379,14 @@ fields:
       - "Dark": skin_dark
       - "Other": skin_other
   - note: |
-      <h2 class="h4">Height:</h2>
+      <h2 class="h4">Height (estimate):</h2>
   - "Feet": other_parties1_height_ft
     maxlength: 2
   - "Inches": other_parties1_height_in
     maxlength: 2
   - note: |
       <h2 class="h4">Weight:</h2>
-  - "Weight -- in pounds": other_parties1_weight_lbs
+  - "Weight -- in pounds (estimate)": other_parties1_weight_lbs
     maxlength: 3
   - note: |
       <h2 class="h4">Eye color:</h2>
@@ -3596,7 +3648,8 @@ review:
   - note: |
       ${ review_screen_attestation_reminder }
       
-      ${ review_screen_select_resume_will_take_moment }
+  - note: |
+      **Select Resume, below, when you are done. It will take a moment to generate your form(s) again.**
      
 ---
 continue button field: users.revisit
