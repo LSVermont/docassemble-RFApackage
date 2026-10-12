@@ -716,6 +716,14 @@ fields:
       - "I need this order to protect **me only**": order_for_me
       - "I need this order to protect **me and my child or children**": order_for_both
       - "I’m asking for an RFA order **only on behalf of a child or children** under the age of 18": order_obo_child
+  - note: |
+      ${ collapse_template(undo_button) }
+---
+template: undo_button
+subject: |
+  About the Undo button below
+content: |
+  The Undo button **deletes** answers as you move backwards through the screens that you have completed. If you need to edit your answers from more than one screen ago, use the "Edit" links and buttons instead.
 ---
 id: initial_screening_questions_1
 question: |
