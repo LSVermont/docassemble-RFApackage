@@ -1,6 +1,7 @@
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
+  - litefile.yml
   - docassemble.ALToolbox:phone-number-validation.yml
   - docassemble.ALToolbox:display_template.yml
   - docassemble.VTSharedYMLFile:VTSharedYMLFile.yml
@@ -3813,6 +3814,8 @@ subquestion: |
 
   <hr>
   
+  ${ litefile_continue_button }
+
   <h4 style="margin-bottom: 18px;">Documents to download</h4>
   
   ${ al_user_bundle.download_list_html() }
@@ -4296,7 +4299,7 @@ attachment:
       - "other_parties1_military_yes": ${ other_parties1_military }
       - "other_parties1_military_no": ${ not other_parties1_military }
       - "printed_signature": ${ printed_signature }
-      - "affidavit_signature_date": ${ format_date(signature_date, format='M/d/yyyy') }
+      - "signature_date": ${ format_date(signature_date, format='M/d/yyyy') }
       - "users1_signature": ${ users[0].signature_if_final(i) }
 ---
 attachment:
