@@ -1,24 +1,19 @@
 """The adapter can be tested without starting Docassemble or an EFSP client."""
 
 import hashlib
-import importlib.util
 from functools import partial
 from pathlib import Path
 from unittest.mock import Mock, patch
 
 import yaml
 import pytest
+from docassemble.LITEfile import litefile as adapter
 
-MODULE = Path(__file__).parents[1] / "docassemble" / "RFApackage" / "litefile.py"
-spec = importlib.util.spec_from_file_location("rfa_litefile", MODULE)
-adapter = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(adapter)
-
-
-YAML = MODULE.parent / "data/questions/litefile.yml"
+YAML = Path(__file__).parents[1] / "docassemble" / "RFApackage" / "data/questions/litefile.yml"
+SHARED_YAML = Path(adapter.__file__).parent / "data/questions/litefile.yml"
 BLOCKS = {
     block.get("variable name"): block
-    for block in yaml.safe_load_all(YAML.read_text())
+    for block in [*yaml.safe_load_all(SHARED_YAML.read_text()), *yaml.safe_load_all(YAML.read_text())]
     if block
 }
 
@@ -179,11 +174,11 @@ def test_declarative_hints_and_unknown_facts_are_transmitted(tmp_path):
     )
     docs = bundle(tmp_path)
     payload = adapter.build_litefile_payload(data, "stable", docs, "")
-    assert payload["filing_type_name_hints"] == ["Complaint"]
+    assert payload["filing_type_name_hints"] == ["Initial Filing"]
     assert payload["case_category_name_hints"] == ["Family"]
     assert payload["case_type_name_hints"] == ["Relief from Abuse"]
     assert payload["documents"][0]["filing_component_name_hints"] == ["Lead Document"]
-    assert payload["documents"][0]["filing_type_name_hints"] == ["Complaint"]
+    assert payload["documents"][0]["filing_type_name_hints"] == ["Initial Filing"]
     assert payload["parties"][0]["semantic_role"] == "plaintiff"
     assert payload["parties"][0]["first_name"] == "Taylor"
     assert payload["known_filing_facts"] == {
@@ -356,7 +351,7 @@ def test_person_default_fields_match_assemblyline_individual():
 
 
 def test_background_flow_saves_cache_before_upload_and_reuses_it_on_retry():
-    blocks = list(yaml.safe_load_all(YAML.read_text()))
+    blocks = [*yaml.safe_load_all(SHARED_YAML.read_text()), *yaml.safe_load_all(YAML.read_text())]
     events = {
         block["event"]: block["code"]
         for block in blocks
@@ -420,7 +415,7 @@ def test_background_flow_saves_cache_before_upload_and_reuses_it_on_retry():
 def test_upload_reads_selected_flat_server_configuration():
     event = next(
         block["code"]
-        for block in yaml.safe_load_all(YAML.read_text())
+        for block in [*yaml.safe_load_all(SHARED_YAML.read_text()), *yaml.safe_load_all(YAML.read_text())]
         if block and block.get("event") == "litefile_upload"
     )
     for name in ("litefile", "alternate_filing"):

@@ -2,9 +2,11 @@
 
 Include `litefile.yml` after AssemblyLine and display `${ litefile_continue_button }`
 on the interview's download screen. All interview-specific customization lives
-in that YAML file. The Python module is a reusable transport helper; a future
-LITEFile integration package can supply it without changing the data contract.
-Until that package exists, copy `litefile.py` unchanged alongside the YAML.
+in that YAML file. The shared actions and Python transport helper come from
+[docassemble.LITEfile](https://github.com/SuffolkLITLab/docassemble-LITEfile),
+declared as a package dependency. The local `litefile.yml` includes
+`docassemble.LITEfile:litefile.yml` and contains only RFA settings. Do not copy
+the shared Python module or events into this package.
 
 ## Adapt the YAML to another interview
 
@@ -75,7 +77,7 @@ The adult/minor RFA case-type condition is visible in `litefile_data`.
 No Python code chooses Vermont courts, RFA forms, party roles, or case types.
 The reusable `litefile_send` and `litefile_upload` events use only generic
 `litefile_*` variables. Authors normally edit the data blocks
-under “Interview customization” and leave those events unchanged. The default
+in this package and leave the shared package's events unchanged. The default
 `litefile_bundle` is `al_court_bundle` and the default download event is
 `al_download`; the RFA adaptation overrides the latter in a later block.
 
