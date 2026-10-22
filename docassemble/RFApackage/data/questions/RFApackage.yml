@@ -619,7 +619,13 @@ question: |
   **${interview_short_title} in Vermont**
 subquestion: |  
   
+  % if get_config(litefile_config_name, {}).get('enabled', False):
+  Answer questions, check your completed forms, then continue to LITEfile to file
+  online. Your forms and answers will go with you. You will choose when to submit
+  them to the court. You can also download your forms and follow the filing instructions.
+  % else:
   <p>${ intro_vtcourtforms_3_steps }</p>
+  % endif
   
   <i class="fas fa-file-text fa-2x"></i> This tool will produce a complete package of 4 forms needed to ask the court for a Relief from Abuse (RFA) order in Vermont: the Complaint, Affidavit, Confidential Notification form and Protection Order Service Information form. Learn more about RFA orders and this tool on the next screen.
   
@@ -2105,9 +2111,11 @@ fields:
     maxlength: 20
     required: False
   - "Town / city": other_parties1_city
+    default: ${ showifdef("other_parties[0].address.city") }
     maxlength: 23
     required: False
   - "State": other_parties1_state
+    default: ${ showifdef("other_parties[0].address.state") }
     maxlength: 5
     code: |
       states_list()
@@ -3690,19 +3698,31 @@ confirm: True
 id: download RFApackage
 event: RFApackage_download
 question: |
+  % if get_config(litefile_config_name, {}).get('enabled', False):
+  Your forms are ready
+  % else:
   ${ download_screen_instructions_headline }
-subquestion: |  
+  % endif
+subquestion: |
+  % if get_config(litefile_config_name, {}).get('enabled', False):
+  **Your forms have not been filed yet.**
+
+  ${ litefile_continue_button }
+
+  ${ action_button_html(url_action('review_RFApackage'), label='Edit your answers', color='secondary') }
+
+  You can also download your forms below. Read the NEXT STEPS document for
+  instructions on getting your forms to court, including at night or on weekends.
+  % else:
   ${ download_screen_instructions }
 
   - working with an advocate from [Vermont Network](https://www.vtnetwork.org/get-help/) to create a safety plan or to get advice and support during the RFA process.
 
   ${ action_button_html(url_action('review_RFApackage'), label='<i class="fa-solid fa-pencil"></i> Edit your answers', color='info') }
 
-  <hr>
-  
-  ${ litefile_continue_button }
+  % endif
 
-  <h4 style="margin-bottom: 18px;">Documents to download</h4>
+  <h2>Documents to download</h2>
   
   ${ al_user_bundle.download_list_html() }
 
@@ -3710,9 +3730,19 @@ subquestion: |
 
   <hr>  
   
+  % if get_config(litefile_config_name, {}).get('enabled', False):
+  ### Filing and support
+
+  Sending your forms to LITEfile saves a draft. Finish the filing steps there
+  and submit your forms to the court.
+
+  You can work with an advocate from [Vermont Network](https://www.vtnetwork.org/get-help/)
+  for safety planning and support during the RFA process.
+  % else:
   ${ download_screen_bottom_instructions }
 
   - The NEXT STEPS document will tell you how to get your forms to the court at **any time of the day or night.**
+  % endif
   
   ${ collapse_template(not_seeing_email) }
   ${ collapse_template(log_out_when_done) }
