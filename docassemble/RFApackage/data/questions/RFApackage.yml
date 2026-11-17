@@ -2516,30 +2516,30 @@ validation code: |
   if notify_served and users[0].phone_number == "" and users1_work_phone_number == "":
     users1_notify_phone_number = "other"
 ---
-id: Signing your forms
-question: |
-  Attestation and signature
-subquestion: |
-  You must agree to this statement before you can sign your documents. Check the box to agree.
-fields:
-  - "I declare that my statements are true and accurate to the best of my knowledge and belief. I understand that if my statements are false, I will be subject to the penalty of perjury or to other sanctions in the discretion of the court.": attestation
-    datatype: yesno
-  - "This is how your name will appear under your signature.": printed_signature
-    default: |
-      ${ users[0].name }
-    maxlength: 34
-    show if: attestation
-  - "Date of your signature for these forms": signature_date
-    show if: attestation
-    datatype: date
-    required: False
-    default: |
-      ${ today() }
-  -  note: |
-       You can change this date later if you want.
-       
-       **Tap Next to choose how to sign your documents.**
-     show if: attestation
+#id: Signing your forms
+#question: |
+#  Attestation and signature
+#subquestion: |
+#  You must agree to this statement before you can sign your documents. Check the box to agree.
+#fields:
+#  - "I declare that my statements are true and accurate to the best of my knowledge and belief. I understand that if my statements are false, I will be subject to the penalty of perjury or to other sanctions in the discretion of the court.": attestation
+#    datatype: yesno
+#  - "This is how your name will appear under your signature.": printed_signature
+#    default: |
+#      ${ users[0].name }
+#    maxlength: 34
+#    show if: attestation
+#  - "Date of your signature for these forms": signature_date
+#    show if: attestation
+#    datatype: date
+#    required: False
+#    default: |
+#      ${ today() }
+#  -  note: |
+#       You can change this date later if you want.
+#       
+#       **Tap Next to choose how to sign your documents.**
+#     show if: attestation
 ---
 #id: signature choice
 #decoration: file-signature
@@ -3834,12 +3834,12 @@ progress: 100
 # ALDocument objects specify the metadata for each template
 objects:
   - RFApackage_Post_interview_instructions: ALDocument.using(title="NEXT STEPS - Instructions for filing these forms with the court", filename="RFApackage_next_steps.docx", enabled=True, has_addendum=False)
-  - RFAcomplaint: ALDocument.using(title="RFA Complaint", filename="1_RFA-complaint", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - RFAcomplaintonbehalfofminor: ALDocument.using(title="RFA Complaint on behalf of a child or children", filename="5_RFA_complaint_on_behalf_of_minor", has_addendum=True, )
-  - RFAaffidavit: ALDocument.using(title="RFA Affidavit", filename="3_RFA-affidavit", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - RFAaffidavitonbehalfofminor: ALDocument.using(title="RFA Affidavit on behalf of a child or children", filename="6_RFA-affidavit-on-behalf-of-minor", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)    
-  - RFAconfidentialcontactinfo: ALDocument.using(title="Address for Notification", filename="4_RFA-confidential-contact-info", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - RFAserviceinfo: ALDocument.using(title="Protection Order Service Info", filename="2_RFA-service-info", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - RFAcomplaint: ALDocument.using(title="RFA Complaint", filename="RFA_complaint_400-00150C", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - RFAcomplaintonbehalfofminor: ALDocument.using(title="RFA Complaint on behalf of a child or children", filename="RFA_complaint_behalf_of_minor_400-00150CC", has_addendum=True, )
+  - RFAaffidavit: ALDocument.using(title="RFA Affidavit", filename="RFA_affidavit_400-00151", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - RFAaffidavitonbehalfofminor: ALDocument.using(title="RFA Affidavit on behalf of a child or children", filename="RFA_affidavit_behalf_of_minor_400-00151M", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)    
+  - RFAconfidentialcontactinfo: ALDocument.using(title="Litigant Address Form", filename="RFA_litigant_address_400-00156", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - RFAserviceinfo: ALDocument.using(title="Protection Order Service Info", filename="RFA_protection_order_service_DPS_132", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 attachment:
   variable name: RFAcomplaint.addendum
@@ -4296,7 +4296,7 @@ attachment:
       - "other_parties1_military_yes": ${ other_parties1_military }
       - "other_parties1_military_no": ${ not other_parties1_military }
       - "printed_signature": ${ printed_signature }
-      - "affidavit_signature_date": ${ format_date(signature_date, format='M/d/yyyy') }
+      - "signature_date": ${ format_date(signature_date, format='M/d/yyyy') }
       - "users1_signature": ${ users[0].signature_if_final(i) }
 ---
 attachment:
@@ -4744,7 +4744,7 @@ attachment:
       - "share_contact_no": ${ not share_contact }
       - "signature_date": ${ format_date(signature_date, format='M/d/yyyy') }
       - "users1_signature": ${ users[0].signature_if_final(i) }
-      - "users1_name_printed": ${ users[0] }
+      - "printed_signature": ${ printed_signature }
 ---
 attachment:
   name: 2 RFA-service-info
